@@ -1,0 +1,21 @@
+Package: NetCoupler
+Title: Inference of Causal Links Between Metabolomics and Disease Incidence
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Clemens", "Wittenbecher", email = NULL, role = c("aut", "cre")),
+    person("Luke", "Johnston", email = "lwjohnst@gmail.com", role = "aut")
+    )
+Description: Need to fill in here.
+License: MIT + file LICENSE
+URL: https://github.com/ClemensWittenbecher/NetCoupler
+BugReports: https://github.com/ClemensWittenbecher/NetCoupler/issues
+ByteCompile: true
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+Suggests: 
+    covr,
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
