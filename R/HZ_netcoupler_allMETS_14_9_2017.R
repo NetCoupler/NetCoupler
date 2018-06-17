@@ -440,7 +440,7 @@ final_netin_redmeat_005<-bind_rows(netin_redmeat_sum_005[-which(netin_redmeat_su
 #add connected component membership:
 final_netin_redmeat_005<-dplyr::left_join(final_netin_redmeat_005,REDMEATCC_005,by="Metabolite")
 
-# library(xlsx)
+# 
 # write.xlsx(final_netin_redmeat,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/aaPC_redmeat_final_test.xls")
 
 netin_redmeat_sum_CC_0001<-rbind(netin_redmeat_CC2_sum_0001,netin_redmeat_CC3_sum_0001)
@@ -780,7 +780,7 @@ final_netin_redmeat_short_005<-bind_rows(net_coupler_in_redmeat_initial_CC1_005[
 #add connected component membership:
 final_netin_redmeat_short_005<-dplyr::left_join(final_netin_redmeat_short_005,CC_memb_005,by="Metabolite")
 
-library(xlsx)
+
 write.xlsx(final_netin_redmeat_short_005,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/aaPC_redmeat_final_test_ambloop_15_9_2017.xls")
 
 
@@ -818,7 +818,7 @@ final_netin_redmeat_short_0001<-bind_rows(net_coupler_in_redmeat_initial_CC1_000
 #add connected component membership:
 final_netin_redmeat_short_0001<-dplyr::left_join(final_netin_redmeat_short_0001,CC_memb_0001,by="Metabolite")
 
-library(xlsx)
+
 write.xlsx(final_netin_redmeat_short_0001,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/aaPC_redmeat_final_test_ambloop_0001_15_9_2017.xls")
 
 

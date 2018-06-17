@@ -6,20 +6,20 @@
 
 rm(list=ls())
 
-require(rlist)
-require(glmulti)
-require(pcalg)
-require(plyr)
-require(dplyr)
-require(RBGL)
-require(survival)
-require(mgcv)
-require(gRbase)
-require(rlist)
-require(mosaic)
-library("igraph")
-library('RCy3')
-library(ppcor)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #########################################################Rename feature names in order to avoid clash with glm#######################################
@@ -49,8 +49,8 @@ est.pcor.skel.DAG.adj<-function(dat){
 
   #dat: samples x metabolites data matrix
 
-  library(ppcor)
-  library(pcalg)
+  
+  
 
   #check if input data is gaussian
 
@@ -713,7 +713,7 @@ final_netin_redmeat<-bind_rows(netin_redmeat_sum[-which(netin_redmeat_sum$Outcom
 #add connected component membership:
 final_netin_redmeat<-dplyr::left_join(final_netin_redmeat,REDMEATCC,by="Metabolite")
 
-library(xlsx)
+
 write.xlsx(final_netin_redmeat,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/aaPC_redmeat_final_test.xls")
 
 
@@ -797,20 +797,20 @@ DE1_coffee_CC1
 
 rm(list=ls())
 
-require(rlist)
-require(glmulti)
-require(pcalg)
-require(plyr)
-require(dplyr)
-require(RBGL)
-require(survival)
-require(mgcv)
-require(gRbase)
-require(rlist)
-require(mosaic)
-library("igraph")
-library('RCy3')
-library(ppcor)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #########################################################Rename feature names in order to avoid clash with glm#######################################
@@ -840,8 +840,8 @@ est.pcor.skel.DAG.adj<-function(dat){
   
   #dat: samples x metabolites data matrix
   
-  library(ppcor)
-  library(pcalg)
+  
+  
   
   #check if input data is gaussian
   
@@ -1535,7 +1535,7 @@ final_netin_redmeat_short<-bind_rows(net_coupler_in_redmeat_initial_CC1[-which(n
 #add connected component membership:
 final_netin_redmeat_short<-dplyr::left_join(final_netin_redmeat_short,CC_memb,by="Metabolite")
 
-library(xlsx)
+
 write.xlsx(final_netin_redmeat_short,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/aaPC_redmeat_final_test_ambloop_14_7_2017.xls")
 
 
