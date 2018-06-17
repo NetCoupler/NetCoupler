@@ -2,8 +2,6 @@
 
 # longer analysis version#
 
-rm(list = ls())
-
 # Rename feature names in order to avoid clash with glm#
 
 rename.met <- function(dat) {

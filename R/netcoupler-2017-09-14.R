@@ -1,7 +1,5 @@
 # NETcoupler aaPCs#
 
-rm(list = ls())
-
 source("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netcoupler_final_14_9_2017/NETcoupler_general_R-commands.R")
 
 # metabolite data (e.g. phosphatidylcholines) data for subcohort:
@@ -539,8 +537,6 @@ DE1_coffee_CC1_0001
 
 #
 # shorter analysis version#
-
-rm(list = ls())
 
 source("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netcoupler_final_14_9_2017/NETcoupler_general_R-commands.R")
 

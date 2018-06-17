@@ -341,7 +341,7 @@ DE1_PC_Diab <- PC_T2Dsum %>% filter(Assoc != 0 & DE != 0)
 #
 # Exposure
 #
-# rm(list = ls())
+# 
 # PC
 memory.limit(size = 250000)
 Ll <- dplyr::bind_cols(LA, l_abcd) %>% dplyr::transmute(Ll = paste0(Let, l))
@@ -781,7 +781,7 @@ rm(PC_IN)
 #
 # Generate ConnectedComponents
 #
-# rm(list = ls())
+# 
 # deleteAllWindows(CytoscapeConnection())
 memory.limit(size = 250000)
 #
@@ -1028,7 +1028,7 @@ SC_PCsum_Coffee_FV <- dplyr::left_join(SC_PCsum_Coffee_FV, CoffeeCC, by = "Metab
 SC_PCsum_Coffee_FV <- SC_PCsum_Coffee_FV %>% dplyr::rowwise() %>% dplyr::mutate(Est_range_FV = paste0(formatC(bestGuess, format = "f", digits = 2), " (", formatC(lowEst, format = "f", digits = 2), ", ", formatC(highEst, format = "f", digits = 2), ")"))
 rm(PC_IN)
 
-# rm(list = ls())
+# 
 # PC
 memory.limit(size = 250000)
 Ll <- dplyr::bind_cols(LA, l_abcd) %>% dplyr::transmute(Ll = paste0(Let, l))
@@ -1058,7 +1058,7 @@ RENAME_PC_SC <- dplyr::bind_cols(data.frame(colnames(PC_data_SC)), data.frame(PC
 colnames(RENAME_PC_SC) <- c("Metabolite", "Outcome")
 colnames(PC_data_SC) <- PC_ren_SC
 
-# rm(list = ls())
+# 
 # deleteAllWindows(CytoscapeConnection())
 memory.limit(size = 250000)
 #

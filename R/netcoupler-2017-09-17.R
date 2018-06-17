@@ -1,8 +1,6 @@
 # HZ MGM Netcoupler out Clemens Wittenbecher#
 # aaPCs#
 
-rm(list = ls())
-
 # Rename feature names in order to avoid clash with glm#
 
 rename.met <- function(dat) {
@@ -608,8 +606,6 @@ write.xlsx(netout_sum_1_2_3_final, file = "C:/Users/helena.zacharias/Documents/H
 #
 # shorter analysis version with loop for ambiguous metabolites#
 #
-
-rm(list = ls())
 
 # Rename feature names in order to avoid clash with glm#
 

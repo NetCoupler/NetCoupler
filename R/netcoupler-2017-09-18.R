@@ -3,8 +3,6 @@
 # shorter analysis version with loop for ambiguous metabolites#
 #
 
-rm(list = ls())
-
 # Data import and analysis#
 
 # load metabolite data (e.g. SM) for complete cohort:

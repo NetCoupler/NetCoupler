@@ -2,8 +2,6 @@
 
 # longer analysis version#
 
-rm(list = ls())
-
 # Rename feature names in order to avoid clash with glm#
 
 rename.met <- function(dat) {
@@ -750,8 +748,6 @@ DE1_coffee_CC1
 
 #
 # shorter analysis version#
-
-rm(list = ls())
 
 # Rename feature names in order to avoid clash with glm#
 
