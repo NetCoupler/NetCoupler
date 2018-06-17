@@ -1,6 +1,6 @@
-#####################################
+#
 # NETcoupler.Out 1
-#####################################
+#
 
 memory.limit(size = 250000)
 #PC
@@ -25,20 +25,20 @@ EXP_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 PC_data <- dplyr::select(GPL_data ,contains("_aa_"))
 PC_data_SC <- dplyr::select(GPL_data_SC,contains("_aa_"))
 
-##################################################
-## Using Gaussian Data
-##################################################
-## Load predefined data
+#
+# Using Gaussian Data
+#
+# Load predefined data
 n <- nrow(PC_data_SC)
 V <- colnames(data.frame(PC_data_SC)) # labels aka node names
-## estimate CPDAG
+# estimate CPDAG
 #PC_skel <-  skeleton(suffStat = list(C = cor(PC_data), n = n),
-#                     indepTest = gaussCItest,labels = V, method ="stable", ## indep.test: partial correlations
+#                     indepTest = gaussCItest,labels = V, method ="stable", # indep.test: partial correlations
 #                     alpha=0.05, fixedGaps = NULL, fixedEdges = NULL,verbose = FALSE)
 #saveRDS(PC_skel,"H:/Metabolomics/DISS I/R_Obj/T2D/PC_skel.rds")
 
 #PC_DAG <-  pc(suffStat = list(C = cor(PC_data_SC), n = n),
-#              indepTest = gaussCItest,labels = V, skel.method ="stable", ## indep.test: partial correlations
+#              indepTest = gaussCItest,labels = V, skel.method ="stable", # indep.test: partial correlations
 #              alpha=0.05, fixedGaps = NULL, fixedEdges = NULL,verbose = FALSE,maj.rule = F, solve.confl = F)
 #saveRDS(PC_DAG,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/PC_DAG.rds")
 
@@ -56,14 +56,14 @@ LABEL$Metabolite<-as.character(LABEL$Metabolite)
 PCT2D_data <- dplyr::bind_cols(PC_data,T2D_data,EXP_data )
 SURV<-Surv(T2D_data$sta_time, T2D_data$sto_time, T2D_data$fall)
 print(is.Surv(SURV))
-##################################################
-## Using Gaussian Data
-##################################################
-## Load predefined data
+#
+# Using Gaussian Data
+#
+# Load predefined data
 n <- nrow(PC_data_SC)
 V <- colnames(data.frame(PC_data_SC)) # labels aka node names
 PC_skel <-  skeleton(suffStat = list(C = cor(PC_data_SC), n = n),
-                     indepTest = gaussCItest,labels = V, method ="stable", ## indep.test: partial correlations
+                     indepTest = gaussCItest,labels = V, method ="stable", # indep.test: partial correlations
                      alpha=0.05, fixedGaps = NULL, fixedEdges = NULL,verbose = FALSE)
 #saveRDS(PC_skel,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/PC_skel.rds")
 
@@ -163,7 +163,7 @@ net.coupler.out<-function(Graph , data)
   OUT1
 }
 
-#############################################################
+#
 #1.3 GETTERS (OUTPUT SUMMARY FUNCTIONS)
 #1.3.1 For specified exposure-outcome pairs: Get Exposure coefficients from all possible models
 #A. Get exposure coefficients for a single outcome
@@ -268,8 +268,8 @@ getExp.coef.out<-  function(object,exposure)
   mm_coef
 }
 
-##############################################################
-##############################################################
+#
+#
 #2.          MULTIMODEL INFERENCE
 
 PC_OUT<-net.coupler.out(Graph =PC_skel, data=PCT2D_data)
@@ -284,8 +284,8 @@ PC_T2Dsum<-left_join(PC_T2D%>%dplyr::group_by(Exposure)%>%dplyr::summarise(Nbmds
                      PC_T2D%>%dplyr::group_by(Exposure)%>%dplyr::filter(nchar(Covariables)==max(nchar(Covariables)))%>%dplyr::select(NCov=NCov,Exposure=Exposure, Metabolite=Metabolite,ind_HR = HR, ind_P = P)
                      ,by="Exposure")
 
-#####################################################################
-## Adjust p-Values (controlling false discovery rate):
+#
+# Adjust p-Values (controlling false discovery rate):
 p.adjust.M <- p.adjust.methods[p.adjust.methods == "fdr"]
 p.adj    <- sapply(p.adjust.M, function(meth) p.adjust(PC_T2Dsum$ind_P, meth))
 # fdr<-noquote(apply(p.adj, 2, format.pval, digits = 3))
@@ -315,13 +315,13 @@ PC_T2Dsum<-mutate(PC_T2Dsum,
 AMB1_PC_Diab<-PC_T2Dsum%>%filter(Assoc!=0&DE==0)
 DE1_PC_Diab<-PC_T2Dsum%>%filter(Assoc!=0&DE!=0)
 
-############################################################################################################
-#####################################
+#
+#
 # NETcoupler.In 1
-#####################################
-#########################################
+#
+#
 #Exposure
-########################################
+#
 #rm(list = ls())
 #PC
 memory.limit(size = 250000)
@@ -343,10 +343,10 @@ rm(a,b,c,d,A1,A2,A3,A4,LA,l_abcd)
 GPL_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
 Exp_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/EXP_SC.rds")
 PC_data_SC <- dplyr::select(GPL_data_SC,contains("_aa_"))
-##################################################
-## Using Gaussian Data
-##################################################
-## Load predefined data
+#
+# Using Gaussian Data
+#
+# Load predefined data
 PC_ren_SC<-c(Ll$Ll[1:length(colnames(PC_data_SC))])
 RENAME_PC_SC<-dplyr::bind_cols(data.frame(colnames(PC_data_SC)),data.frame(PC_ren_SC))
 colnames(RENAME_PC_SC)<-c("Metabolite","Outcome")
@@ -355,13 +355,13 @@ colnames(PC_data_SC)<-PC_ren_SC
 n <- nrow(PC_data_SC)
 V <- colnames(data.frame(PC_data_SC)) # labels aka node names
 
-## estimate CPDAG
+# estimate CPDAG
 PC_skel <-  skeleton(suffStat = list(C = cor(PC_data_SC), n = n),
-                     indepTest = gaussCItest,labels = V, method ="stable", ## indep.test: partial correlations
+                     indepTest = gaussCItest,labels = V, method ="stable", # indep.test: partial correlations
                      alpha=0.05, fixedGaps = NULL, fixedEdges = NULL,verbose = FALSE)
 
 PC_DAG <-  pc(suffStat = list(C = cor(PC_data_SC), n = n),
-              indepTest = gaussCItest,labels = V, skel.method ="stable", ## indep.test: partial correlations
+              indepTest = gaussCItest,labels = V, skel.method ="stable", # indep.test: partial correlations
               alpha=0.05, fixedGaps = NULL, fixedEdges = NULL,verbose = FALSE,maj.rule = F, solve.confl = F)
 
 #saveRDS(PC_skel,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/aaPC/FV/Results/Networks/PC_skel.rds")
@@ -593,11 +593,11 @@ MinMod<-c(paste(colnames(Exp_data_SC), collapse=", "))
 #saveRDS(MinMod,"Covs.rds")
 print(MinMod)
 
-###############################################################
+#
 #WGB
 PC_IN<-net.coupler(Graph=PC_skel , Graph_data=PC_data_SC , Exp_data_SC=Exp_data_SC ,exposure="WGBperMJ")
 SC_PC_WGB<-getExp.coef(object = PC_IN, outcome=colnames(data.frame(PC_data_SC)),exposure="WGBperMJ")
-##saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
+#saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
 RENAME_PC_SC$Outcome<-as.character(RENAME_PC_SC$Outcome)
 SC_PC_WGB<-merge(SC_PC_WGB, RENAME_PC_SC,by="Outcome")
 SC_PCsum_WGB<-	dplyr::left_join(SC_PC_WGB%>%dplyr::group_by(Outcome)%>%dplyr::summarise(avgbeta=mean(Estimate),minbeta=min(Estimate),maxbeta=max(Estimate),upperP=max(P),lowerP=min(P),Nbmds=mean(Nbmds)),
@@ -637,11 +637,11 @@ SC_PCsum_WGB_FV<-SC_PCsum_WGB_FV%>%dplyr::rowwise()%>%dplyr::mutate(Est_range_FV
 #WGBCC<-CC.WGB.PC%>%dplyr::select(Metabolite,contains("CC"))
 #SC_PCsum_WGB_FV<-dplyr::left_join(SC_PCsum_WGB_FV,WGBCC,by="Metabolite")
 
-###############################################################
+#
 #Redmeat
 #PC_IN<-net.coupler(Graph=PC_skel , Graph_data=PC_data_SC , Exp_data_SC=Exp_data_SC ,exposure="TMperMJ")
 SC_PC_Redmeat<-getExp.coef(object = PC_IN, outcome=colnames(data.frame(PC_data_SC)),exposure="TMperMJ")
-##saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
+#saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
 RENAME_PC_SC$Outcome<-as.character(RENAME_PC_SC$Outcome)
 SC_PC_Redmeat<-merge(SC_PC_Redmeat, RENAME_PC_SC,by="Outcome")
 SC_PCsum_Redmeat<-	dplyr::left_join(SC_PC_Redmeat%>%dplyr::group_by(Outcome)%>%dplyr::summarise(avgbeta=mean(Estimate),minbeta=min(Estimate),maxbeta=max(Estimate),upperP=max(P),lowerP=min(P),Nbmds=mean(Nbmds)),
@@ -678,11 +678,11 @@ DE1_PC_Redmeat<-SC_PCsum_Redmeat%>%filter(Assoc!=0&DE!=0)
 
 #SC_PCsum_Redmeat_FV<- SC_PCsum_Redmeat%>%dplyr::mutate(round=1,Assoc_FV=as.character(Assoc),DE_FV=as.character(DE))
 
-###############################################################
+#
 #Coffee
 #PC_IN<-net.coupler(Graph=PC_skel , Graph_data=PC_data_SC , Exp_data_SC=Exp_data_SC ,exposure="CofCup")
 SC_PC_Coffee<-getExp.coef(object = PC_IN, outcome=colnames(data.frame(PC_data_SC)),exposure="CofCup")
-##saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
+#saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
 RENAME_PC_SC$Outcome<-as.character(RENAME_PC_SC$Outcome)
 SC_PC_Coffee<-merge(SC_PC_Coffee, RENAME_PC_SC,by="Outcome")
 SC_PCsum_Coffee<-	dplyr::left_join(SC_PC_Coffee%>%dplyr::group_by(Outcome)%>%dplyr::summarise(avgbeta=mean(Estimate),minbeta=min(Estimate),maxbeta=max(Estimate),upperP=max(P),lowerP=min(P),Nbmds=mean(Nbmds)),
@@ -726,24 +726,24 @@ SC_PCsum_Coffee_FV<-SC_PCsum_Coffee_FV%>%dplyr::rowwise()%>%dplyr::mutate(Est_ra
 
 rm(PC_IN)
 
-#############################################################################################
-#############################
+#
+#
 #Generate ConnectedComponents
-#############################
+#
 #rm(list = ls())
 #deleteAllWindows(CytoscapeConnection())
 memory.limit(size = 250000)
-#####################################################
+#
 #load("H:/Metabolomics/DISS I/R_obj/PC/MULTI_PC_IN")
 #show(CHECK_IN)
 
-############################################################################################
+#
 #define function to get rownames as variable in dplyr
 draw_rownames <- function(.data) .data %>% do(mutate(.,Metabolite=rownames(.)))
 draw_rownames_out <- function(.data) .data %>% do(mutate(.,Metabolite=as.factor(rownames(.))))
 
-############################################################################################
-##import multi-model estimates for Exposure effects on Acylcarnitines:
+#
+#import multi-model estimates for Exposure effects on Acylcarnitines:
 GPL_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
 PC_data_SC <- dplyr::select(GPL_data_SC,contains("_aa_"))
 pCor_PC<-ppcor::pcor(PC_data_SC)
@@ -751,23 +751,23 @@ colnames(pCor_PC$estimate)<-colnames(PC_data_SC)
 rownames(pCor_PC$estimate)<-colnames(PC_data_SC)
 is.matrix(pCor_PC$estimate)
 
-#############################################################################################
+#
 # Generate networks: DAG; Skeleton; Adjacency matrix
 n <- nrow(PC_data_SC)
 V <- colnames(data.frame(PC_data_SC)) # labels aka node names
 PC_skel <-  skeleton(suffStat = list(C = cor(PC_data_SC), n = n),
-                     indepTest = gaussCItest,labels = V, method ="stable", ## indep.test: partial correlations
+                     indepTest = gaussCItest,labels = V, method ="stable", # indep.test: partial correlations
                      alpha=0.05, fixedGaps = NULL, fixedEdges = NULL,verbose = FALSE)
 
 PC_DAG <-  pc(suffStat = list(C = cor(PC_data_SC), n = n),
-              indepTest = gaussCItest,labels = V, skel.method ="stable", ## indep.test: partial correlations
+              indepTest = gaussCItest,labels = V, skel.method ="stable", # indep.test: partial correlations
               alpha=0.05, fixedGaps = NULL, fixedEdges = NULL,verbose = FALSE,maj.rule = F, solve.confl = F)
 
 #get adjacency matrix (transform GraphNEL in Igraph)
 adjM_PC<-get.adjacency(graphNEL2igraph(PC_skel@graph))
 
-############################################################################
-## Write multi-model summaries into named list for looped data-processing:
+#
+# Write multi-model summaries into named list for looped data-processing:
 
 Exp<-c("Redmeat","WGB","Coffee")
 EXP_PC<-list(Redmeat=SC_PCsum_Redmeat,WGB=SC_PCsum_WGB,Coffee=SC_PCsum_Coffee)
@@ -777,8 +777,8 @@ Out<-c("Diabetes")
 OUT_PC<-list(Diabetes=PC_T2Dsum)
 names(OUT_PC)
 
-####################################################################################
-##get estimated network + vector with metabolic-network node-names
+#
+#get estimated network + vector with metabolic-network node-names
 
 NW_PC_EPIC <-PC_DAG@graph
 
@@ -805,11 +805,11 @@ for (i in 1:length(NW_PC_EPIC@edgeData@data))
 }
 Mets<-NW_PC_EPIC@nodes
 
-#########################################################################
-## GET CONNECTED COMPONENTS PER EXPOSURE
-## Connected component(CC):
-## CC Cluster(>=2) of metabolites where
-## Met~Exp in non-metabolite adjusted model
+#
+# GET CONNECTED COMPONENTS PER EXPOSURE
+# Connected component(CC):
+# CC Cluster(>=2) of metabolites where
+# Met~Exp in non-metabolite adjusted model
 NC.PC_res<-list()
 nam<-c()
 ALL_CC<-list()
@@ -875,11 +875,11 @@ for (k in Exp)
   rm(CC_PC)
 
 }
-#########################################################################
-## GET CONNECTED COMPONENTS PER Outcome
-## Connected component(CC):
-## CC Cluster(>=2) of metabolites where
-## Met~Exp in non-metabolite adjusted model
+#
+# GET CONNECTED COMPONENTS PER Outcome
+# Connected component(CC):
+# CC Cluster(>=2) of metabolites where
+# Met~Exp in non-metabolite adjusted model
 
 #For each Outcome do
 for (k in Out)
@@ -954,13 +954,13 @@ nam<-names(NC.PC_res)
 names(NC.PC) <- sprintf(nam,seq_along(nam))
 CC.labels<-paste0("CC",sep=".",k,sep=".","PC")
 
-############################################################################################################
-#####################################
+#
+#
 # NETcoupler.In 1
-#####################################
-#########################################
+#
+#
 #Exposure
-########################################
+#
 
 WGBCC<-CC.WGB.PC%>%dplyr::select(Metabolite,contains("CC"))
 SC_PCsum_WGB_FV<-dplyr::left_join(SC_PCsum_WGB_FV,WGBCC,by="Metabolite")
@@ -994,10 +994,10 @@ rm(a,b,c,d,A1,A2,A3,A4,LA,l_abcd)
 GPL_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
 Exp_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/EXP_SC.rds")
 PC_data_SC <- dplyr::select(GPL_data_SC,contains("_aa_"))
-##################################################
-## Using Gaussian Data
-##################################################
-## Load predefined data
+#
+# Using Gaussian Data
+#
+# Load predefined data
 PC_ren_SC<-c(Ll$Ll[1:length(colnames(PC_data_SC))])
 RENAME_PC_SC<-dplyr::bind_cols(data.frame(colnames(PC_data_SC)),data.frame(PC_ren_SC))
 colnames(RENAME_PC_SC)<-c("Metabolite","Outcome")
@@ -1006,14 +1006,14 @@ colnames(PC_data_SC)<-PC_ren_SC
 #rm(list = ls())
 #deleteAllWindows(CytoscapeConnection())
 memory.limit(size = 250000)
-#####################################################
+#
 #load("H:/Metabolomics/DISS I/R_obj/PC/MULTI_PC_IN")
 #show(CHECK_IN)
 draw_rownames_Exp <- function(.data) .data %>% do(mutate(.,Exp=rownames(.)))
 draw_rownames <- function(.data) .data %>% do(mutate(.,Outcome=rownames(.)))
 draw_rownames_out <- function(.data) .data %>% do(mutate(.,Metabolite=as.factor(rownames(.))))
-############################################################################
-## Write multi-model summaries into named list for looped data-processing:
+#
+# Write multi-model summaries into named list for looped data-processing:
 #PC_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/PC/STR_PC_SC.rds")
 #Exp_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/PC/EXP_SC.rds")
 #Exp<-c("Redmeat","WGB","Coffee")
@@ -1177,7 +1177,7 @@ net.coupler<-function(Graph , Graph_data , Exp_data_SC, exposure)
 #MinMod<-paste0(paste0(adj_plus$Outcome, collapse=", "),", ",paste0(colnames(Exp_data_SC), collapse = ", "))
 #print(MinMod)
 #PC_IN_CC2<-net.coupler(Graph=PC_skel , Graph_data=PC_data_SC , Exp_data_SC=Exp_data_SC ,exposure="TMperMJ")
-###############################################################################
+#
 getExp.coef<-function(object,exposure)
 {SUM<-data.frame(NULL)
 for (j in 1:length(names(object$Outcomes)))
@@ -1201,9 +1201,9 @@ name.as.string <- function(v1)
 {
   deparse(substitute(v1))
 }
-###############################################################################################
+#
 #   Connected Component 1
-###############################################################################################
+#
 EXP<-colnames(Exp_data_SC)
 CC<-data.frame()
 CC<-data.frame(CC_Redmeat_PC[1])%>%draw_rownames_out()%>%filter(CC_Redmeat_PC[[1]]==TRUE)%>%dplyr::select(Metabolite)
@@ -1273,9 +1273,9 @@ rmPC_still_AMB<-filter(SC_PCsum_Redmeat_CC1,Assoc!=0 & DE==0)
 #saveRDS(SC_PC_Redmeat_CC1,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/SC_PC_Redmeat_CC1.rds")
 #saveRDS(SC_PCsum_Redmeat_CC1,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/SC_PCsum_Redmeat_CC1.rds")
 
-###############################################################################################
+#
 #   Connected Component 2
-###############################################################################################
+#
 EXP<-colnames(Exp_data_SC)
 CC<-data.frame()
 CC<-data.frame(CC_Redmeat_PC[2])%>%draw_rownames_out()%>%filter(CC_Redmeat_PC[[2]]==TRUE)%>%dplyr::select(Metabolite)
@@ -1289,7 +1289,7 @@ EXP<-colnames(Exp_data_SC)
 MinMod<-paste0(paste0(DE1, collapse=", "),", ",paste0(EXP, collapse = ", "))
 print(MinMod)
 PC_IN_CC2<-net.coupler(Graph=PC_skel , Graph_data=PC_data_SC , Exp_data_SC=Exp_data_SC ,exposure="TMperMJ")
-##saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
+#saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
 getExp.coef<-function(object,exposure)
 {SUM<-data.frame(NULL)
 for (j in 1:length(names(object$Outcomes)))
@@ -1348,11 +1348,11 @@ rmPC_still_AMB<-bind_rows(rmPC_still_AMB,rmPC_still_AMB_temp)
 #saveRDS(SC_PC_Redmeat_CC2,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/SC_PC_Redmeat_CC2.rds")
 #saveRDS(SC_PCsum_Redmeat_CC2,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/SC_PCsum_Redmeat_CC2.rds")
 
-######################################################################################
+#
 
-###############################################################################################
+#
 #   Connected Component 3
-###############################################################################################
+#
 EXP<-colnames(Exp_data_SC)
 CC<-data.frame()
 CC<-data.frame(CC_Redmeat_PC[3])%>%draw_rownames_out()%>%filter(CC_Redmeat_PC[[3]]==TRUE)%>%dplyr::select(Metabolite)
@@ -1366,7 +1366,7 @@ EXP<-colnames(Exp_data_SC)
 MinMod<-paste0(paste0(DE1, collapse=", "),", ",paste0(EXP, collapse = ", "))
 print(MinMod)
 PC_IN_CC3<-net.coupler(Graph=PC_skel , Graph_data=PC_data_SC , Exp_data_SC=Exp_data_SC ,exposure="TMperMJ")
-##saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
+#saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
 getExp.coef<-function(object,exposure)
 {SUM<-data.frame(NULL)
 for (j in 1:length(names(object$Outcomes)))
@@ -1451,7 +1451,7 @@ SC_PCsum_Redmeat_FV<-bind_rows(
 
 SC_PCsum_Redmeat_FV<-dplyr::left_join(SC_PCsum_Redmeat_FV,LABEL,by="Metabolite")
 SC_PCsum_Redmeat_FV$Met_label<-as.character(SC_PCsum_Redmeat_FV$Met_label)
-######################################################################################
+#
 
 rmPC_new_NEM_round2<-bind_rows(filter(SC_PCsum_Redmeat_CC2,Assoc==0),filter(SC_PCsum_Redmeat_CC3,Assoc==0))
 rmPC_new_NEM_temp1<-SC_PCsum_Redmeat%>%filter(Metabolite %in% rmPC_new_NEM_round2$Metabolite)%>%dplyr::select(Metabolite,Assoc,DE)%>%dplyr::mutate(Metabolite=as.character(Metabolite))

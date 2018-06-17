@@ -1,10 +1,10 @@
-#############################################################HZ Clemens Wittenbecher netcoupler.in for phosphatidylcholines#####################################
+#HZ Clemens Wittenbecher netcoupler.in for phosphatidylcholines#
 
-##########################################################################longer analysis version##########################################################################################
+#longer analysis version#
 
 rm(list=ls())
 
-#########################################################Rename feature names in order to avoid clash with glm#######################################
+#Rename feature names in order to avoid clash with glm#
 
 rename.met<-function(dat){
 
@@ -22,7 +22,7 @@ rename.met<-function(dat){
 
 }
 
-#########################################################Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#########################
+#Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#
 
 est.pcor.skel.DAG.adj<-function(dat){
 
@@ -51,7 +51,7 @@ est.pcor.skel.DAG.adj<-function(dat){
 
 }
 
-###################################################Net Coupler IN function: exposure -> metabolome##################################################
+#Net Coupler IN function: exposure -> metabolome#
 
 #return: for each metabolite all possible models with different adjacency subsets and complete list of exposures and covariates
 
@@ -83,7 +83,7 @@ net.coupler.in<-function(graph_skel,dat,dat_compl,exp_dat,DE){
 
   for(i in node_names){                                          #net.coupler.in loop over all metabolite nodes
 
-    ##########################################prepare separate datasets for each metabolite:########################################################
+    #prepare separate datasets for each metabolite:#
 
     met_outcome<-i
 
@@ -120,7 +120,7 @@ net.coupler.in<-function(graph_skel,dat,dat_compl,exp_dat,DE){
     #combine data on exposure (including already identified direct effect metabolites), metabolite outcome, and adjacency set, store as dataframe ("modeldata"), input data for glm:
     modeldata<-data.frame(cbind(met_out_data,exp_dat,adjset_data))
 
-    ###########################################################estimate multimodel coefficients#####################################################
+    #estimate multimodel coefficients#
 
     #modify fitting function of glm so that it always includes one predefined set of variables (here: exposure + covariates), while subsetting adjacent metabolite set:
     glm.redefined<-function(formula,data,always="",...){
@@ -172,7 +172,7 @@ net.coupler.in<-function(graph_skel,dat,dat_compl,exp_dat,DE){
 
 }
 
-####################################################Extract exposure coefficients per outcome, i.e. metabolite#######################################################
+#Extract exposure coefficients per outcome, i.e. metabolite#
 
 getExp.coef.peroutcome<-function(object,outcome,exposure){
 
@@ -233,7 +233,7 @@ getExp.coef.peroutcome<-function(object,outcome,exposure){
 
 }
 
-####################################################Extract exposure coefficients for specific exposure and outcomes, i.e. metabolites (?)###############################################
+#Extract exposure coefficients for specific exposure and outcomes, i.e. metabolites (?)#
 
 getExp.coef<-function(object,outcome,exposure){
 
@@ -283,7 +283,7 @@ getExp.coef<-function(object,outcome,exposure){
 
 }
 
-#####################Summary statistics and multiple testing adjustment############################################################################
+#Summary statistics and multiple testing adjustment#
 
 mult.stat<-function(sum_netin,MinMod,adjust_method,rule_1 = 11,rule_1_cut = 0.1,rule_2 = 5,rule_2_cut = 0.05,rule_3 = 4,rule_4 = 3, ass_rule1=9, round_number){
 
@@ -347,7 +347,7 @@ mult.stat<-function(sum_netin,MinMod,adjust_method,rule_1 = 11,rule_1_cut = 0.1,
 
 }
 
-############################################Get rownames as variable in dplyr#######################################################################################
+#Get rownames as variable in dplyr#
 
 draw.rownames<-function(dat){
   dat%>%do(mutate(.,Metabolite=rownames(.)))
@@ -357,7 +357,7 @@ draw.rownames.out<-function(dat){
   dat%>%do(mutate(.,Metabolite=as.factor(rownames(.))))
 }
 
-############################################Get connected components per exposure################################################################################################
+#Get connected components per exposure#
 
 get.con.comp<-function(exposure_names,exposure_list,adjM_norename,met_group){
 
@@ -424,7 +424,7 @@ get.con.comp<-function(exposure_names,exposure_list,adjM_norename,met_group){
 
 }
 
-####################################################Import data + data analysis######################################################################################
+#Import data + data analysis#
 
 #metabolite data (e.g. phosphatidylcholines) data for subcohort:
 
@@ -465,7 +465,7 @@ met_adj_mat_rename<-met_estimates_rename$adj_matrix                             
 
 #visualisation of skeletons and DAGs?
 
-##########################longer analysis version################################################
+#longer analysis version#
 
 MinMod_exp<-c(paste(colnames(Exp_data_SC),collapse=", "))                                           #record covariates for minimal model without any adjacency set
 
@@ -730,12 +730,12 @@ DE1_coffee_CC1
 
 #no direct effect metabolite in CC1 -> stop algorithm for connected component 1
 
-###########################################################################################################################################################################################
-##########################################################################shorter analysis version##########################################################################################
+#
+#shorter analysis version#
 
 rm(list=ls())
 
-#########################################################Rename feature names in order to avoid clash with glm#######################################
+#Rename feature names in order to avoid clash with glm#
 
 rename.met<-function(dat){
 
@@ -753,7 +753,7 @@ rename.met<-function(dat){
 
 }
 
-#########################################################Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#########################
+#Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#
 
 est.pcor.skel.DAG.adj<-function(dat){
 
@@ -782,7 +782,7 @@ est.pcor.skel.DAG.adj<-function(dat){
 
 }
 
-###################################################Net Coupler IN function: exposure -> metabolome##################################################
+#Net Coupler IN function: exposure -> metabolome#
 
 #return: for each metabolite all possible models with different adjacency subsets and complete list of exposures and covariates
 
@@ -814,7 +814,7 @@ net.coupler.in<-function(graph_skel,dat,dat_compl,exp_dat,DE){
 
   for(i in node_names){                                          #net.coupler.in loop over all metabolite nodes
 
-    ##########################################prepare separate datasets for each metabolite:########################################################
+    #prepare separate datasets for each metabolite:#
 
     met_outcome<-i
 
@@ -851,7 +851,7 @@ net.coupler.in<-function(graph_skel,dat,dat_compl,exp_dat,DE){
     #combine data on exposure (including already identified direct effect metabolites), metabolite outcome, and adjacency set, store as dataframe ("modeldata"), input data for glm:
     modeldata<-data.frame(cbind(met_out_data,exp_dat,adjset_data))
 
-    ###########################################################estimate multimodel coefficients#####################################################
+    #estimate multimodel coefficients#
 
     #modify fitting function of glm so that it always includes one predefined set of variables (here: exposure + covariates), while subsetting adjacent metabolite set:
     glm.redefined<-function(formula,data,always="",...){
@@ -903,7 +903,7 @@ net.coupler.in<-function(graph_skel,dat,dat_compl,exp_dat,DE){
 
 }
 
-####################################################Extract exposure coefficients per outcome, i.e. metabolite#######################################################
+#Extract exposure coefficients per outcome, i.e. metabolite#
 
 getExp.coef.peroutcome<-function(object,outcome,exposure){
 
@@ -964,7 +964,7 @@ getExp.coef.peroutcome<-function(object,outcome,exposure){
 
 }
 
-####################################################Extract exposure coefficients for specific exposure and outcomes, i.e. metabolites (?)###############################################
+#Extract exposure coefficients for specific exposure and outcomes, i.e. metabolites (?)#
 
 getExp.coef<-function(object,outcome,exposure){
 
@@ -1014,7 +1014,7 @@ getExp.coef<-function(object,outcome,exposure){
 
 }
 
-#####################Summary statistics and multiple testing adjustment############################################################################
+#Summary statistics and multiple testing adjustment#
 
 mult.stat<-function(sum_netin,MinMod,adjust_method,rule_1 = 11,rule_1_cut = 0.1,rule_2 = 5,rule_2_cut = 0.05,rule_3 = 4,rule_4 = 3, ass_rule1=9, round_number){
 
@@ -1078,7 +1078,7 @@ mult.stat<-function(sum_netin,MinMod,adjust_method,rule_1 = 11,rule_1_cut = 0.1,
 
 }
 
-############################################Get rownames as variable in dplyr#######################################################################################
+#Get rownames as variable in dplyr#
 
 draw.rownames<-function(dat){
   dat%>%do(mutate(.,Metabolite=rownames(.)))
@@ -1088,7 +1088,7 @@ draw.rownames.out<-function(dat){
   dat%>%do(mutate(.,Metabolite=as.factor(rownames(.))))
 }
 
-############################################Get connected components per exposure################################################################################################
+#Get connected components per exposure#
 
 get.con.comp<-function(exposure_names,exposure_list,adjM_norename,met_group){
 
@@ -1155,7 +1155,7 @@ get.con.comp<-function(exposure_names,exposure_list,adjM_norename,met_group){
 
 }
 
-#######################################################Ambiguous metabolites loop###################################################################
+#Ambiguous metabolites loop#
 
 amb.met.loop<-function(exp_dat,graph_skel,dat,dat_compl,DE,exposure,met_map,adjust_method,round_number,adjM_norename,met_group,CC_ind){
 
@@ -1263,7 +1263,7 @@ amb.met.loop<-function(exp_dat,graph_skel,dat,dat_compl,DE,exposure,met_map,adju
 
 }
 
-#################################################Ambiguous metabolites loop for several connected components#########################################################
+#Ambiguous metabolites loop for several connected components#
 
 amb.met.loop.CC<-function(exp_dat,graph_skel,dat,dat_compl,DE,exposure,met_map,adjust_method,round_number,adjM_norename,met_group){
 
@@ -1296,9 +1296,9 @@ amb.met.loop.CC<-function(exp_dat,graph_skel,dat,dat_compl,DE,exposure,met_map,a
   return(amb_met_loop)
 }
 
-##################################################################################################################################################################################
+#
 
-####################################################Import data + data analysis######################################################################################
+#Import data + data analysis#
 
 #metabolite data (e.g. phosphatidylcholines) data for subcohort:
 

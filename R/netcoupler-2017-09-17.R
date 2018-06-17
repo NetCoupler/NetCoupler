@@ -1,9 +1,9 @@
-#####################################################HZ MGM Netcoupler out Clemens Wittenbecher#############################################################
-################################################################aaPCs######################################################################################
+#HZ MGM Netcoupler out Clemens Wittenbecher#
+#aaPCs#
 
 rm(list=ls())
 
-#########################################################Rename feature names in order to avoid clash with glm#######################################
+#Rename feature names in order to avoid clash with glm#
 
 rename.met<-function(dat){
 
@@ -21,7 +21,7 @@ rename.met<-function(dat){
 
 }
 
-#########################################################Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#########################
+#Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#
 
 est.pcor.skel.DAG.adj<-function(dat){
 
@@ -50,7 +50,7 @@ est.pcor.skel.DAG.adj<-function(dat){
 
 }
 
-###############################################Net Coupler Out function: metabolome -> time-to-type-2-diabetes-incident############################################################
+#Net Coupler Out function: metabolome -> time-to-type-2-diabetes-incident#
 
 #return: estimate of direct effects of each metabolite on survival time, models are adjusted for all possible combinations of direct neighboring metabolites and all covariates
 
@@ -83,7 +83,7 @@ net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,alway
 
   for(i in node_names){                                          #net.coupler.out loop over all metabolite nodes
 
-    ##########################################prepare separate datasets for each metabolite:######################################################## 
+    #prepare separate datasets for each metabolite:# 
 
     met_outcome<-i
 
@@ -123,7 +123,7 @@ net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,alway
     modeldata<-data.frame(cbind(met_out_data,exp_dat,adjset_data))
     colnames(modeldata)[1]<-met_outcome
 
-    ###########################################################estimate multimodel coefficients#####################################################
+    #estimate multimodel coefficients#
 
     #modify fitting function of coxph so that it always includes one predefined set of variables (here: exposure + covariates), while subsetting adjacent metabolite set:
     coxph.redefined<-function(formula,data,always="",...){
@@ -174,7 +174,7 @@ net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,alway
 
 }
 
-####################################################Extract exposure coefficients per outcome, i.e. metabolite#######################################################
+#Extract exposure coefficients per outcome, i.e. metabolite#
 
 getExp.coef.permetabolite<-function(object,metabolite){
 
@@ -240,7 +240,7 @@ getExp.coef.permetabolite<-function(object,metabolite){
 
 }
 
-####################################################Extract exposure coefficients for metabolite(s) on time-to-incidence###############################################
+#Extract exposure coefficients for metabolite(s) on time-to-incidence#
 
 getExp.coef.out<-function(object,metabolite){
 
@@ -293,7 +293,7 @@ getExp.coef.out<-function(object,metabolite){
 
 }
 
-#####################Summary statistics and multiple testing adjustment for net.coupler.out with survival object############################################################################
+#Summary statistics and multiple testing adjustment for net.coupler.out with survival object#
 
 mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,rule_2 = 5,rule_2_cut = 0.05,rule_3 = 15,rule_4 = 14, ass_rule1=16, round_number){
 
@@ -364,7 +364,7 @@ mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,r
 
 }
 
-####################################################Data import and analysis###########################################################################
+#Data import and analysis#
 
 #load metabolite data (e.g. aaPCs) for complete cohort:
 gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
@@ -583,14 +583,14 @@ netout_sum_1_2_3_final<-bind_rows(netout_sum[-which(netout_sum$Outcome %in% neto
 
 write.xlsx(netout_sum_1_2_3_final,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netout_aaPC_20_7_2017.xls")
 
-#################################################################################################################################################################################################################################
-#################################################################################################################################################################################################################################
-##############################################################shorter analysis version with loop for ambiguous metabolites#######################################################################################################
-#################################################################################################################################################################################################################################
+#
+#
+#shorter analysis version with loop for ambiguous metabolites#
+#
 
 rm(list=ls())
 
-#########################################################Rename feature names in order to avoid clash with glm#######################################
+#Rename feature names in order to avoid clash with glm#
 
 rename.met<-function(dat){
 
@@ -608,7 +608,7 @@ rename.met<-function(dat){
 
 }
 
-#########################################################Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#########################
+#Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#
 
 est.pcor.skel.DAG.adj<-function(dat){
 
@@ -637,7 +637,7 @@ est.pcor.skel.DAG.adj<-function(dat){
 
 }
 
-###############################################Net Coupler Out function: metabolome -> time-to-type-2-diabetes-incident############################################################
+#Net Coupler Out function: metabolome -> time-to-type-2-diabetes-incident#
 
 #return: estimate of direct effects of each metabolite on survival time, models are adjusted for all possible combinations of direct neighboring metabolites and all covariates
 
@@ -670,7 +670,7 @@ net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,alway
 
   for(i in node_names){                                          #net.coupler.out loop over all metabolite nodes
 
-    ##########################################prepare separate datasets for each metabolite:######################################################## 
+    #prepare separate datasets for each metabolite:# 
 
     met_outcome<-i
 
@@ -708,7 +708,7 @@ net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,alway
     modeldata<-data.frame(cbind(met_out_data,exp_dat,adjset_data))
     colnames(modeldata)[1]<-met_outcome
 
-    ###########################################################estimate multimodel coefficients#####################################################
+    #estimate multimodel coefficients#
 
     #modify fitting function of coxph so that it always includes one predefined set of variables (here: exposure + covariates), while subsetting adjacent metabolite set:
     coxph.redefined<-function(formula,data,always="",...){
@@ -759,7 +759,7 @@ net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,alway
 
 }
 
-####################################################Extract exposure coefficients per outcome, i.e. metabolite#######################################################
+#Extract exposure coefficients per outcome, i.e. metabolite#
 
 getExp.coef.permetabolite<-function(object,metabolite){
 
@@ -825,7 +825,7 @@ getExp.coef.permetabolite<-function(object,metabolite){
 
 }
 
-####################################################Extract exposure coefficients for metabolite(s) on time-to-incidence###############################################
+#Extract exposure coefficients for metabolite(s) on time-to-incidence#
 
 getExp.coef.out<-function(object,metabolite){
 
@@ -878,7 +878,7 @@ getExp.coef.out<-function(object,metabolite){
 
 }
 
-#####################Summary statistics and multiple testing adjustment for net.coupler.out with survival object############################################################################
+#Summary statistics and multiple testing adjustment for net.coupler.out with survival object#
 
 mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,rule_2 = 5,rule_2_cut = 0.05,rule_3 = 15,rule_4 = 14, ass_rule1=16, round_number){
 
@@ -944,7 +944,7 @@ mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,r
 
 }
 
-################################################ambiguous metabolites loop for net.coupler.out. survival analysis###############################################################################################################
+#ambiguous metabolites loop for net.coupler.out. survival analysis#
 
 amb.met.loop.out.surv<-function(exp_dat,graph_skel,dat,dat_compl,DE,survival_obj,always_set,met_map,adjust_method,round_number){
 
@@ -1024,8 +1024,8 @@ amb.met.loop.out.surv<-function(exp_dat,graph_skel,dat,dat_compl,DE,survival_obj
 
 }
 
-###########################################################################################################################################################
-####################################################Data import and analysis aaPC###########################################################################
+#
+#Data import and analysis aaPC#
 
 #load metabolite data (e.g. aaPCs) for complete cohort:
 gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
@@ -1144,8 +1144,8 @@ amb_met_loop_out$netout_amb$`3. iteration`
 # 4    NM29 0.8289516 0.8009908 0.8703262 0.1695697 0.036505825     8    59 rPC_aa_C42_0 0.8152448 0.056753682 0.06810442 -0.1875935 -0.22190579 -0.13888723 -0.2042669      0      2
 # 5    NM31 0.8471528 0.7909966 0.9189214 0.3306723 0.014083141    32    61 rPC_aa_C42_2 0.8036937 0.023134249 0.03470137 -0.1658742 -0.23446156 -0.08455471 -0.2185371      0      2
 
-###########################################################################################################################################################
-####################################################Data import and analysis aePC #########################################################################
+#
+#Data import and analysis aePC #
 #load metabolite data (e.g. aePCs) for complete cohort:
 gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
 
@@ -1274,8 +1274,8 @@ amb_met_loop_out$netout_amb$`5. iteration`
 # 4    NM29 0.8289516 0.8009908 0.8703262 0.1695697 0.036505825     8    59 rPC_aa_C42_0 0.8152448 0.056753682 0.06810442 -0.1875935 -0.22190579 -0.13888723 -0.2042669      0      2
 # 5    NM31 0.8471528 0.7909966 0.9189214 0.3306723 0.014083141    32    61 rPC_aa_C42_2 0.8036937 0.023134249 0.03470137 -0.1658742 -0.23446156 -0.08455471 -0.2185371      0      2
 
-###########################################################################################################################################################
-####################################################Data import and analysis LPC ###########################################################################
+#
+#Data import and analysis LPC #
 
 #load metabolite data (e.g. aaPCs) for complete cohort:
 gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
@@ -1392,8 +1392,8 @@ net_coupler_out_direct_final
 amb_met_loop_out$netout_amb$`3. iteration`
 #NONE
 
-###########################################################################################################################################################
-####################################################Data import and analysis AA ###########################################################################
+#
+#Data import and analysis AA #
 
 #load metabolite data (AA) for complete cohort:
 met_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_AA.rds")
@@ -1508,8 +1508,8 @@ amb_met_loop_out$netout_amb$`3. iteration`
 #(chr)    (dbl)    (dbl)    (dbl)    (dbl)      (dbl) (dbl) (dbl)     (fctr)    (dbl)      (dbl)      (dbl)     (dbl)     (dbl)     (dbl)     (dbl) (fctr) (fctr)
 #1    NM11 1.180499 1.130403 1.217358 0.159311 0.03429691     4    57       rTrp 1.217358 0.03429691 0.03429691 0.1659374 0.1225741 0.1966828 0.1966828      0      1
 
-###########################################################################################################################################################
-#################################################### Data import and analysis AC ##########################################################################
+#
+# Data import and analysis AC #
 
 #load metabolite data (AC) for complete cohort:
 met_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_AC.rds")
@@ -1622,8 +1622,8 @@ amb_met_loop_out$netout_amb$`2. iteration`
 # (chr)    (dbl)    (dbl)    (dbl)     (dbl)      (dbl) (dbl) (dbl)         (fctr)    (dbl)      (dbl)      (dbl)    (dbl)     (dbl)     (dbl)     (dbl)     (fctr) (fctr)
 #1    NM14 1.174185 1.128595 1.229115 0.1327538 0.00186365    32    60 rC5_DC__C6_OH_ 1.162542 0.07232613 0.07232613 0.160574 0.1209732 0.2062942 0.1506091      0      1
 
-###########################################################################################################################################################
-#################################################### Data import and analysis SM ERROR ##########################################################################
+#
+# Data import and analysis SM ERROR #
 
 #load metabolite data (e.g. aaPCs) for complete cohort:
 gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")

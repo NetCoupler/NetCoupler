@@ -1,4 +1,4 @@
-############################################NETcoupler aaPCs#######################################################################
+#NETcoupler aaPCs#
 
 rm(list=ls())
 
@@ -53,7 +53,7 @@ met_adj_mat_rename_0001<-met_estimates_rename_0001$adj_matrix                   
 
 #visualisation of skeletons and DAGs?
 
-##########################longer analysis version################################################
+#longer analysis version#
 
 MinMod_exp<-c(paste(colnames(Exp_data_SC),collapse=", "))                                           #record covariates for minimal model without any adjacency set
 
@@ -537,8 +537,8 @@ DE1_coffee_CC1_0001<-intersect(as.character(unlist(names_COFFEECC_1_0001)),as.ch
 DE1_coffee_CC1_0001
 #[1] "rPC_aa_C32_1"
 
-###########################################################################################################################################################################################
-##########################################################################shorter analysis version##########################################################################################
+#
+#shorter analysis version#
 
 rm(list=ls())
 
