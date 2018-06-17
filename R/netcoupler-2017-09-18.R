@@ -1,12 +1,9 @@
-
-
 #################################################################################################################################################################################################################################
 #################################################################################################################################################################################################################################
 ##############################################################shorter analysis version with loop for ambiguous metabolites#######################################################################################################
 #################################################################################################################################################################################################################################
 
 rm(list=ls())
-
 
 ####################################################Data import and analysis###########################################################################
 
@@ -45,7 +42,6 @@ Exp_data<- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 dim(Exp_data)
 #[1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
 
-
 met_data_SC_rename<-rename.met(dat=met_data_SC)$data_renamed                               #rename metabolites with short names
 met_mapping_SC<-rename.met(dat=met_data_SC)$names_mapping                                     #mapping information between old and new metabolite names
 
@@ -81,8 +77,6 @@ t2d_surv<-Surv(T2D_data$sta_time,T2D_data$sto_time,T2D_data$fall)
 always_set<-paste0(colnames(Exp_data)[-(which(colnames(Exp_data) %in% c("SEX","subcohort","ID","age","age_years")))],collapse = " + ")
 always_set<-paste0(always_set," + cluster(ID) + strata(age_years)")                                   #cluster(ID) specific for case-cohort design, strata(age_years) stratification of baseline risk according to age in years
 
-
-
 #estimate direct effects of metabolites on time-to-diabetes-incident:
 tic()
 amb_met_loop_out_005<-amb.met.loop.out.surv(exp_dat=Exp_data,graph_skel=met_SC_skel_rename_005,dat=met_data_rename,dat_compl=met_data_rename,DE=NULL,survival_obj=t2d_surv,always_set=always_set,met_map=met_mapping,adjust_method="fdr",round_number=1)
@@ -98,8 +92,6 @@ net_coupler_out_iteration2_005<-amb_met_loop_out_005$netout_sum$`2. iteration`
 net_coupler_out_iteration3_005<-amb_met_loop_out_005$netout_sum$`3. iteration`
 
 netout_sum_1_2_3_final_005<-Reduce(function(x,y,z)merge(x,y,all=TRUE,by="Outcome"),list(net_coupler_out_iteration1_005,net_coupler_out_iteration2_005,net_coupler_out_iteration3_005))
-
-
 
 #write.xlsx(netout_sum_1_2_3_final_005,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netout_SM_ambloop_005_18_9_2017.xls")
 
@@ -121,7 +113,6 @@ net_coupler_out_direct_final_005
 # 5     NM8 1.9840487 1.4258317 2.6258792 0.0001075808 9.144132e-10    16    58      rSM_C18_0 2.5521299 9.017145e-08 3.606858e-07  0.6851395  0.3547553  0.9654158  0.9369283      1      1
 # 6     NM4 0.4939919 0.4409137 0.5593462 0.0001239414 9.196026e-06     4    58 rSM__OH__C22_2 0.4409137 3.534616e-05 7.069232e-05 -0.7052362 -0.8189062 -0.5809866 -0.8189062      2      2
 # 7     NM9 0.6246849 0.6246849 0.6246849 0.0021135068 2.113507e-03     1    56      rSM_C18_1 0.6246849 2.113507e-03 2.113507e-03 -0.4705080 -0.4705080 -0.4705080 -0.4705080      2      2
-
 
 #all final ambiguous effects:
 amb_met_loop_out_005$netout_amb$`3. iteration`

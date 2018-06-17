@@ -1,10 +1,8 @@
 ############################################NETcoupler aaPCs#######################################################################
 
-
 rm(list=ls())
 
 source("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netcoupler_final_14_9_2017/NETcoupler_general_R-commands.R")
-
 
 #metabolite data (e.g. phosphatidylcholines) data for subcohort:
 
@@ -53,9 +51,6 @@ met_skel_rename_0001<-met_estimates_rename_0001$skel_est                        
 met_DAG_rename_0001<-met_estimates_rename_0001$DAG_est                                                         #estimate DAG for renamed matrix
 met_adj_mat_rename_0001<-met_estimates_rename_0001$adj_matrix                                                  #estimate adjacency matrix for renamed matrix
 
-
-
-
 #visualisation of skeletons and DAGs?
 
 ##########################longer analysis version################################################
@@ -67,23 +62,19 @@ net_coupler_in_PC_005<-net.coupler.in(graph_skel=met_skel_rename_005,dat=met_dat
 
 net_coupler_in_PC_0001<-net.coupler.in(graph_skel=met_skel_rename_0001,dat=met_data_SC_rename,dat_compl = met_data_SC_rename,exp_dat = Exp_data_SC,DE=NULL,glmulti_method="h")
 
-
 #1.) return results (e.g. p-values, etc.) for whole-grain bread:
 sum_netin_WGB_005<-getExp.coef(object=net_coupler_in_PC_005,outcome=colnames(met_data_SC_rename),exposure="WGBperMJ")
 
 sum_netin_WGB_0001<-getExp.coef(object=net_coupler_in_PC_0001,outcome=colnames(met_data_SC_rename),exposure="WGBperMJ")
-
 
 #get original metabolite names back:
 sum_netin_WGB_005<-merge(sum_netin_WGB_005,as.data.frame(met_mapping),by="Outcome")
 
 sum_netin_WGB_0001<-merge(sum_netin_WGB_0001,as.data.frame(met_mapping),by="Outcome")
 
-
 sum_stat_netin_WGB_005<-mult.stat(sum_netin=sum_netin_WGB_005,MinMod = MinMod_exp,adjust_method = "fdr", round_number = 1)             #calculate summary statistics and determine direct and ambiguous effects
 
 sum_stat_netin_WGB_0001<-mult.stat(sum_netin=sum_netin_WGB_0001,MinMod = MinMod_exp,adjust_method = "fdr", round_number = 1)             #calculate summary statistics and determine direct and ambiguous effects
-
 
 netin_WGB_amb_005<-sum_stat_netin_WGB_005$amb                              #summary statistics for metabolites on which WGB has ambiguous effect
 netin_WGB_direct_005<-sum_stat_netin_WGB_005$direct                        #summary statistics for metabolites on which WGB has direct effect
@@ -92,10 +83,6 @@ netin_WGB_sum_005<-sum_stat_netin_WGB_005$sum_netin_sum_adj_FV             #summ
 netin_WGB_amb_0001<-sum_stat_netin_WGB_0001$amb                              #summary statistics for metabolites on which WGB has ambiguous effect
 netin_WGB_direct_0001<-sum_stat_netin_WGB_0001$direct                        #summary statistics for metabolites on which WGB has direct effect
 netin_WGB_sum_0001<-sum_stat_netin_WGB_0001$sum_netin_sum_adj_FV             #summary statistics for all metabolites including round-number information
-
-
-
-
 
 netin_WGB_direct_005
 # A tibble: 0 x 13
@@ -108,24 +95,19 @@ netin_WGB_direct_0001
 
 #no direct effect of WGB on metabolites -> ambiguous effects still classified as ambiguous
 
-
-
 #2.) return results (e.g. p-values, etc.) for redmeat:
 sum_netin_redmeat_005<-getExp.coef(object=net_coupler_in_PC_005,outcome=colnames(met_data_SC_rename),exposure="TMperMJ")
 
 sum_netin_redmeat_0001<-getExp.coef(object=net_coupler_in_PC_0001,outcome=colnames(met_data_SC_rename),exposure="TMperMJ")
-
 
 #get original metabolite names back:
 sum_netin_redmeat_005<-merge(sum_netin_redmeat_005,as.data.frame(met_mapping),by="Outcome")
 
 sum_netin_redmeat_0001<-merge(sum_netin_redmeat_0001,as.data.frame(met_mapping),by="Outcome")
 
-
 sum_stat_netin_redmeat_005<-mult.stat(sum_netin=sum_netin_redmeat_005,MinMod=MinMod_exp,adjust_method = "fdr",round_number = 1)       #calculate summary statistics and determine direct and ambiguous effects
 
 sum_stat_netin_redmeat_0001<-mult.stat(sum_netin=sum_netin_redmeat_0001,MinMod=MinMod_exp,adjust_method = "fdr",round_number = 1)       #calculate summary statistics and determine direct and ambiguous effects
-
 
 netin_redmeat_amb_005<-sum_stat_netin_redmeat_005$amb                    #summary statistics for metabolites on which redmeat has ambiguous effect
 netin_redmeat_direct_005<-sum_stat_netin_redmeat_005$direct              #summary statistics for metabolites on which redmeat has direct effect
@@ -134,7 +116,6 @@ netin_redmeat_sum_005<-sum_stat_netin_redmeat_005$sum_netin_sum_adj_FV   #summar
 netin_redmeat_amb_0001<-sum_stat_netin_redmeat_0001$amb                    #summary statistics for metabolites on which redmeat has ambiguous effect
 netin_redmeat_direct_0001<-sum_stat_netin_redmeat_0001$direct              #summary statistics for metabolites on which redmeat has direct effect
 netin_redmeat_sum_0001<-sum_stat_netin_redmeat_0001$sum_netin_sum_adj_FV   #summary statistics for meatbolites including round-number information
-
 
 #there are direct effects of redmeat on metabolites -> extract connected components:
 
@@ -217,15 +198,11 @@ print.data.frame(con_comp_redmeat_0001$NC_res$Redmeat)
 # 33     NM8 -0.026832642 -0.100839814  0.032224169 0.958833025 5.614083e-04    16 rPC_aa_C34_2 -0.002660506 9.588330e-01 9.664208e-01  0     0     1        0     0       FALSE       FALSE       FALSE
 # 34     NM9 -0.040967592 -0.110816417  0.031174952 0.540416046 2.235802e-03     8 rPC_aa_C34_3 -0.110816417 3.037999e-02 1.032920e-01  0     0     1        0     0       FALSE       FALSE       FALSE
 
-
-
-
 CC.redmeat.PC_005<-con_comp_redmeat_005$NC_res$Redmeat               #original summary statistics for all metabolites including membership in specific connected components for redmeat
 REDMEATCC_005<-CC.redmeat.PC_005%>%dplyr::select(Metabolite,contains("CC"))   #Metabolites and membership in specific connected component for redmeat
 
 CC.redmeat.PC_0001<-con_comp_redmeat_0001$NC_res$Redmeat               #original summary statistics for all metabolites including membership in specific connected components for redmeat
 REDMEATCC_0001<-CC.redmeat.PC_0001%>%dplyr::select(Metabolite,contains("CC"))   #Metabolites and membership in specific connected component for redmeat
-
 
 names_REDMEATCC_1_005<-REDMEATCC_005[which(REDMEATCC_005[,2]==TRUE),1]     #metabolites which are member of first connected component
 names_REDMEATCC_2_005<-REDMEATCC_005[which(REDMEATCC_005[,3]==TRUE),1]     #metabolites which are member of second connected component
@@ -234,8 +211,6 @@ names_REDMEATCC_3_005<-REDMEATCC_005[which(REDMEATCC_005[,4]==TRUE),1]     #meta
 names_REDMEATCC_1_0001<-REDMEATCC_0001[which(REDMEATCC_0001[,2]==TRUE),1]     #metabolites which are member of first connected component
 names_REDMEATCC_2_0001<-REDMEATCC_0001[which(REDMEATCC_0001[,3]==TRUE),1]     #metabolites which are member of second connected component
 names_REDMEATCC_3_0001<-REDMEATCC_0001[which(REDMEATCC_0001[,4]==TRUE),1]     #metabolites which are member of third connected component
-
-
 
 #intersection of metabolites with direct effect from redmeat and connected components: are there direct effect metabolites which are also in specific connected components, i.e. are connected to at least one other metabolite?
 
@@ -259,31 +234,24 @@ DE1_redmeat_CC2_0001<-intersect(as.character(unlist(names_REDMEATCC_2_0001)),as.
 
 DE1_redmeat_CC2_0001_rename<-met_mapping[which(met_mapping[,1] %in% DE1_redmeat_CC2_0001),2]                #get back short metabolite names
 
-
 #intersection of metabolites with ambiguous effect from redmeat and connected components: are there ambiguous effect metabolites which are also in specific connected components, i.e. are connected to at least one other metabolite?
 AMB1_redmeat_CC2_005<-intersect(as.character(unlist(names_REDMEATCC_2_005)),as.character(netin_redmeat_amb_005$Metabolite))
 
 AMB1_redmeat_CC2_005_rename<-met_mapping[which(met_mapping[,1] %in% AMB1_redmeat_CC2_005),2]
 
-
 AMB1_redmeat_CC2_0001<-intersect(as.character(unlist(names_REDMEATCC_2_0001)),as.character(netin_redmeat_amb_0001$Metabolite))
 
 AMB1_redmeat_CC2_0001_rename<-met_mapping[which(met_mapping[,1] %in% AMB1_redmeat_CC2_0001),2]
-
-
-
 
 #define new minimal model, now including connected component direct effect metabolite as fixed variable:
 MinMod_exp_DE1_redmeat_CC2_005<-paste0(paste0(DE1_redmeat_CC2_005_rename,collapse=", "),", ",MinMod_exp)
 
 MinMod_exp_DE1_redmeat_CC2_0001<-paste0(paste0(DE1_redmeat_CC2_0001_rename,collapse=", "),", ",MinMod_exp)
 
-
 #define new metabolite data matrix only including ambiguous effect metabolites from redmeat which are also in specific connected component:
 met_data_SC_rename_AMB1_redmeat_CC2_005<-met_data_SC_rename[,c(which(colnames(met_data_SC_rename) %in% AMB1_redmeat_CC2_005_rename))] 
 
 met_data_SC_rename_AMB1_redmeat_CC2_0001<-met_data_SC_rename[,c(which(colnames(met_data_SC_rename) %in% AMB1_redmeat_CC2_0001_rename)),drop=FALSE] 
-
 
 #add connected component direct effect metabolite data to Exp_data_SC:
 Exp_data_SC_DE1_redmeat_CC2_005<-cbind(met_data_SC_rename[,c(which(colnames(met_data_SC_rename)==DE1_redmeat_CC2_005_rename))],Exp_data_SC)
@@ -292,18 +260,15 @@ colnames(Exp_data_SC_DE1_redmeat_CC2_005)<-c(DE1_redmeat_CC2_005_rename,colnames
 Exp_data_SC_DE1_redmeat_CC2_0001<-cbind(met_data_SC_rename[,c(which(colnames(met_data_SC_rename)==DE1_redmeat_CC2_0001_rename))],Exp_data_SC)
 colnames(Exp_data_SC_DE1_redmeat_CC2_0001)<-c(DE1_redmeat_CC2_0001_rename,colnames(Exp_data_SC))
 
-
 #repeat net.coupler.in with new set of fixed variables ("always"-set consists now of all exposures, all covariates, and all connected components direct effects):
 net_coupler_in_PC_redmeat_CC2_005<-net.coupler.in(graph_skel=met_skel_rename_005,dat=met_data_SC_rename_AMB1_redmeat_CC2_005,dat_compl = met_data_SC_rename,exp_dat = Exp_data_SC_DE1_redmeat_CC2_005,DE=DE1_redmeat_CC2_005_rename,glmulti_method = "h")
 
 net_coupler_in_PC_redmeat_CC2_0001<-net.coupler.in(graph_skel=met_skel_rename_0001,dat=as.matrix(met_data_SC_rename_AMB1_redmeat_CC2_0001),dat_compl = met_data_SC_rename,exp_dat = Exp_data_SC_DE1_redmeat_CC2_0001,DE=DE1_redmeat_CC2_0001_rename,glmulti_method = "h")
 
-
 #return results (e.g. p-values, etc.) for redmeat for second net.coupler.in round for CC2:
 sum_netin_redmeat_CC2_005<-getExp.coef(object=net_coupler_in_PC_redmeat_CC2_005,outcome=colnames(met_data_SC_rename_AMB1_redmeat_CC2_005),exposure="TMperMJ")
 
 sum_netin_redmeat_CC2_0001<-getExp.coef(object=net_coupler_in_PC_redmeat_CC2_0001,outcome=colnames(met_data_SC_rename_AMB1_redmeat_CC2_0001),exposure="TMperMJ")
-
 
 #get original metabolite names back:
 sum_netin_redmeat_CC2_005<-merge(sum_netin_redmeat_CC2_005,as.data.frame(met_mapping),by="Outcome")
@@ -322,8 +287,6 @@ netin_redmeat_CC2_amb_0001<-sum_stat_netin_redmeat_CC2_0001$amb                 
 netin_redmeat_CC2_direct_0001<-sum_stat_netin_redmeat_CC2_0001$direct              #summary statistics for metabolites on which redmeat has direct effect
 netin_redmeat_CC2_sum_0001<-sum_stat_netin_redmeat_CC2_0001$sum_netin_sum_adj_FV   #summary statistics for meatbolites including round-number information
 
-
-
 netin_redmeat_CC2_amb_005
 # A tibble: 0 x 13
 # ... with 13 variables: Outcome <chr>, avgEst <dbl>, lowEst <dbl>, highEst <dbl>, upperP <dbl>, lowerP <dbl>, Nbmds <dbl>, Metabolite <fctr>, bestGuess <dbl>, marg_P <dbl>, fdr <dbl>, DE <fctr>, Assoc <fctr>
@@ -340,8 +303,6 @@ netin_redmeat_CC2_direct_0001
 
 #no additional direct or ambiguous effect metabolites identified, stop algorithm for this connected component
 
-
-
 DE1_redmeat_CC3_005<-intersect(as.character(unlist(names_REDMEATCC_3_005)),as.character(netin_redmeat_direct_005$Metabolite))
 
 DE1_redmeat_CC3_005_rename<-met_mapping[which(met_mapping[,1] %in% DE1_redmeat_CC3_005),2]                #get back short metabolite names
@@ -349,7 +310,6 @@ DE1_redmeat_CC3_005_rename<-met_mapping[which(met_mapping[,1] %in% DE1_redmeat_C
 DE1_redmeat_CC3_0001<-intersect(as.character(unlist(names_REDMEATCC_3_0001)),as.character(netin_redmeat_direct_0001$Metabolite))
 
 DE1_redmeat_CC3_0001_rename<-met_mapping[which(met_mapping[,1] %in% DE1_redmeat_CC3_0001),2]                #get back short metabolite names
-
 
 #intersection of metabolites with ambiguous effect from redmeat and connected components: are there ambiguous effect metabolites which are also in specific connected components, i.e. are connected to at least one other metabolite?
 AMB1_redmeat_CC3_005<-intersect(as.character(unlist(names_REDMEATCC_3_005)),as.character(netin_redmeat_amb_005$Metabolite))
@@ -359,7 +319,6 @@ AMB1_redmeat_CC3_005_rename<-met_mapping[which(met_mapping[,1] %in% AMB1_redmeat
 AMB1_redmeat_CC3_0001<-intersect(as.character(unlist(names_REDMEATCC_3_0001)),as.character(netin_redmeat_amb_0001$Metabolite))
 
 AMB1_redmeat_CC3_0001_rename<-met_mapping[which(met_mapping[,1] %in% AMB1_redmeat_CC3_0001),2]
-
 
 #define new minimal model, now including connected component direct effect metabolite as fixed variable:
 MinMod_exp_DE1_redmeat_CC3_005<-paste0(paste0(DE1_redmeat_CC3_005_rename,collapse=", "),", ",MinMod_exp)
@@ -393,11 +352,9 @@ sum_netin_redmeat_CC3_005<-merge(sum_netin_redmeat_CC3_005,as.data.frame(met_map
 
 sum_netin_redmeat_CC3_0001<-merge(sum_netin_redmeat_CC3_0001,as.data.frame(met_mapping),by="Outcome")
 
-
 sum_stat_netin_redmeat_CC3_005<-mult.stat(sum_netin=sum_netin_redmeat_CC3_005,MinMod=MinMod_exp_DE1_redmeat_CC3_005,adjust_method = "fdr",round_number = 2)       #calculate summary statistics and determine direct and ambiguous effects
 
 sum_stat_netin_redmeat_CC3_0001<-mult.stat(sum_netin=sum_netin_redmeat_CC3_0001,MinMod=MinMod_exp_DE1_redmeat_CC3_0001,adjust_method = "fdr",round_number = 2)       #calculate summary statistics and determine direct and ambiguous effects
-
 
 netin_redmeat_CC3_amb_005<-sum_stat_netin_redmeat_CC3_005$amb                    #summary statistics for metabolites on which redmeat has ambiguous effect
 netin_redmeat_CC3_direct_005<-sum_stat_netin_redmeat_CC3_005$direct              #summary statistics for metabolites on which redmeat has direct effect
@@ -406,8 +363,6 @@ netin_redmeat_CC3_sum_005<-sum_stat_netin_redmeat_CC3_005$sum_netin_sum_adj_FV  
 netin_redmeat_CC3_amb_0001<-sum_stat_netin_redmeat_CC3_0001$amb                    #summary statistics for metabolites on which redmeat has ambiguous effect
 netin_redmeat_CC3_direct_0001<-sum_stat_netin_redmeat_CC3_0001$direct              #summary statistics for metabolites on which redmeat has direct effect
 netin_redmeat_CC3_sum_0001<-sum_stat_netin_redmeat_CC3_0001$sum_netin_sum_adj_FV   #summary statistics for meatbolites including round-number information
-
-
 
 netin_redmeat_CC3_amb_005
 # A tibble: 0 x 13
@@ -424,7 +379,6 @@ netin_redmeat_CC3_direct_0001
 # ... with 13 variables: Outcome <chr>, avgEst <dbl>, lowEst <dbl>, highEst <dbl>, upperP <dbl>, lowerP <dbl>, Nbmds <dbl>, Metabolite <fctr>, bestGuess <dbl>, marg_P <dbl>, fdr <dbl>, DE <fctr>, Assoc <fctr>
 
 #no additional direct or ambiguous effect metabolites identified, stop algorithm for this connected component
-
 
 #final results:
 
@@ -455,25 +409,19 @@ final_netin_redmeat_0001<-bind_rows(netin_redmeat_sum_0001[-which(netin_redmeat_
 #add connected component membership:
 final_netin_redmeat_0001<-dplyr::left_join(final_netin_redmeat_0001,REDMEATCC_0001,by="Metabolite")
 
-
-
-
 #3.) return results (e.g. p-values, etc.) for coffee:
 sum_netin_coffee_005<-getExp.coef(object=net_coupler_in_PC_005,outcome=colnames(met_data_SC_rename),exposure="CofCup")
 
 sum_netin_coffee_0001<-getExp.coef(object=net_coupler_in_PC_0001,outcome=colnames(met_data_SC_rename),exposure="CofCup")
-
 
 #get original metabolite names back:
 sum_netin_coffee_005<-merge(sum_netin_coffee_005,as.data.frame(met_mapping),by="Outcome")
 
 sum_netin_coffee_0001<-merge(sum_netin_coffee_0001,as.data.frame(met_mapping),by="Outcome")
 
-
 sum_stat_netin_coffee_005<-mult.stat(sum_netin=sum_netin_coffee_005,MinMod=MinMod_exp,adjust_method = "fdr",round_number = 1)       #calculate summary statistics and determine direct and ambiguous effects
 
 sum_stat_netin_coffee_0001<-mult.stat(sum_netin=sum_netin_coffee_0001,MinMod=MinMod_exp,adjust_method = "fdr",round_number = 1)       #calculate summary statistics and determine direct and ambiguous effects
-
 
 netin_coffee_amb_005<-sum_stat_netin_coffee_005$amb                    #summary statistics for metabolites on which coffee has ambiguous effect
 netin_coffee_direct_005<-sum_stat_netin_coffee_005$direct              #summary statistics for metabolites on which coffee has direct effect
@@ -482,8 +430,6 @@ netin_coffee_sum_005<-sum_stat_netin_coffee_005$sum_netin_sum_adj_FV   #summary 
 netin_coffee_amb_0001<-sum_stat_netin_coffee_0001$amb                    #summary statistics for metabolites on which coffee has ambiguous effect
 netin_coffee_direct_0001<-sum_stat_netin_coffee_0001$direct              #summary statistics for metabolites on which coffee has direct effect
 netin_coffee_sum_0001<-sum_stat_netin_coffee_0001$sum_netin_sum_adj_FV   #summary statistics for meatbolites including round-number information
-
-
 
 #there are direct effects of coffee on metabolites -> extract connected components:
 
@@ -567,8 +513,6 @@ print.data.frame(con_comp_coffee_0001$NC_res$Coffee)
 # 33     NM8  0.0194471325 -0.027156465  0.048865073 0.94948275 7.312927e-02    16 rPC_aa_C34_2  0.003805232 0.9348260977 0.93482610  0     0     1        0     0      FALSE
 # 34     NM9 -0.0642663199 -0.119964128 -0.008188597 0.76439774 1.785879e-04     8 rPC_aa_C34_3 -0.112367032 0.0150428440 0.12383284  0     0     1        0     0      FALSE
 
-
-
 CC.coffee.PC_005<-con_comp_coffee_005$NC_res$Coffee               #original summary statistics for all metabolites including membership in specific connected components for coffee
 COFFEECC_005<-CC.coffee.PC_005%>%dplyr::select(Metabolite,contains("CC"))   #Metabolites and membership in specific connected component for coffee
 
@@ -593,15 +537,8 @@ DE1_coffee_CC1_0001<-intersect(as.character(unlist(names_COFFEECC_1_0001)),as.ch
 DE1_coffee_CC1_0001
 #[1] "rPC_aa_C32_1"
 
-
-
-
-
-
 ###########################################################################################################################################################################################
 ##########################################################################shorter analysis version##########################################################################################
-
-
 
 rm(list=ls())
 
@@ -632,7 +569,6 @@ dim(Exp_data_SC)
 met_data_SC_rename<-rename.met(dat=met_data_SC)$data_renamed                               #rename metabolites with short names
 met_mapping<-rename.met(dat=met_data_SC)$names_mapping                                     #mapping information between old and new metabolite names
 
-
 met_estimates_norename_005<-est.pcor.skel.DAG.adj(dat=met_data_SC,alpha_val = 0.05)
 met_skel_norename_005<-met_estimates_norename_005$skel_est                                                   #estimate DAG skeleton for non-renamed matrix
 met_DAG_norename_005<-met_estimates_norename_005$DAG_est                                                     #estimate DAG for non-renamed matrix
@@ -653,11 +589,7 @@ met_skel_rename_0001<-met_estimates_rename_0001$skel_est                        
 met_DAG_rename_0001<-met_estimates_rename_0001$DAG_est                                                         #estimate DAG for renamed matrix
 met_adj_mat_rename_0001<-met_estimates_rename_0001$adj_matrix                                                  #estimate adjacency matrix for renamed matrix
 
-
-
 #visualisation of skeletons and DAGs?
-
-
 
 #1.) return results (e.g. p-values, etc.) for whole-grain bread:
 
@@ -741,9 +673,6 @@ print.data.frame(net_coupler_in_WGB_0001$conn_comp_1$netin_sum$`1. iteration`)
 # 33     NM8  4.498563e-02 -0.048990880  0.074157872 0.63230833 2.004062e-02    16 rPC_aa_C34_2 -0.048990880 3.644904e-01 4.766413e-01  0     0     1        0     0
 # 34     NM9 -5.777039e-02 -0.128360244 -0.009895959 0.70958472 1.907803e-03     8 rPC_aa_C34_3 -0.128360244 1.672905e-02 7.109847e-02  0     2     1        2     0
 
-
-
-
 #2.) return results (e.g. p-values, etc.) for redmeat:
 
 net_coupler_in_redmeat_005<-amb.met.loop.CC(exp_dat=Exp_data_SC,graph_skel=met_skel_rename_005,dat=met_data_SC_rename,dat_compl=met_data_SC_rename,DE=NULL,glmulti_method = "h",exposure="TMperMJ",met_map=met_mapping,adjust_method="fdr",round_number=1,adjM_norename = met_adj_mat_norename_005,met_group="PC")
@@ -780,9 +709,7 @@ final_netin_redmeat_short_005<-bind_rows(net_coupler_in_redmeat_initial_CC1_005[
 #add connected component membership:
 final_netin_redmeat_short_005<-dplyr::left_join(final_netin_redmeat_short_005,CC_memb_005,by="Metabolite")
 
-
 write.xlsx(final_netin_redmeat_short_005,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/aaPC_redmeat_final_test_ambloop_15_9_2017.xls")
-
 
 net_coupler_in_redmeat_0001<-amb.met.loop.CC(exp_dat=Exp_data_SC,graph_skel=met_skel_rename_0001,dat=met_data_SC_rename,dat_compl=met_data_SC_rename,DE=NULL,glmulti_method = "h",exposure="TMperMJ",met_map=met_mapping,adjust_method="fdr",round_number=1,adjM_norename = met_adj_mat_norename_0001,met_group="PC")
 
@@ -818,13 +745,7 @@ final_netin_redmeat_short_0001<-bind_rows(net_coupler_in_redmeat_initial_CC1_000
 #add connected component membership:
 final_netin_redmeat_short_0001<-dplyr::left_join(final_netin_redmeat_short_0001,CC_memb_0001,by="Metabolite")
 
-
 write.xlsx(final_netin_redmeat_short_0001,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/aaPC_redmeat_final_test_ambloop_0001_15_9_2017.xls")
-
-
-
-
-
 
 #3.) return results (e.g. p-values, etc.) for coffee:
 
@@ -880,7 +801,6 @@ final_netin_coffee_005
 # 33     NM8  0.0194471325 -0.0271564655  0.048865073 0.949482752 7.312927e-02    16 rPC_aa_C34_2  0.003805232 0.9348260977 0.93482610  0     0     1        0     0      FALSE
 # 34     NM9 -0.0642663199 -0.1199641283 -0.008188597 0.764397736 1.785879e-04     8 rPC_aa_C34_3 -0.112367032 0.0150428440 0.12383284  0     0     1        0     0      FALSE
 
-
 net_coupler_in_coffee_0001<-amb.met.loop.CC(exp_dat=Exp_data_SC,graph_skel=met_skel_rename_0001,dat=met_data_SC_rename,dat_compl=met_data_SC_rename,DE=NULL,glmulti_method = "h",exposure="CofCup",met_map=met_mapping,adjust_method="fdr",round_number=1,adjM_norename = met_adj_mat_norename_0001,met_group="PC")
 
 #direct an ambiguous metabolites not in same connected component, stop algorithm
@@ -932,19 +852,4 @@ final_netin_coffee_0001
 # 32     NM7 -0.0067320424 -0.078932477  0.057536808 0.26732240 1.251074e-02    16 rPC_aa_C34_1 -0.078932477 0.0761425279 0.27843283  0     0     1        0     0      FALSE
 # 33     NM8  0.0194471325 -0.027156465  0.048865073 0.94948275 7.312927e-02    16 rPC_aa_C34_2  0.003805232 0.9348260977 0.93482610  0     0     1        0     0      FALSE
 # 34     NM9 -0.0642663199 -0.119964128 -0.008188597 0.76439774 1.785879e-04     8 rPC_aa_C34_3 -0.112367032 0.0150428440 0.12383284  0     0     1        0     0      FALSE
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

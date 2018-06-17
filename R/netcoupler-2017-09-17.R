@@ -3,158 +3,135 @@
 
 rm(list=ls())
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #########################################################Rename feature names in order to avoid clash with glm#######################################
 
 rename.met<-function(dat){
-  
+
   #dat: samples x metabolites data matrix
-  
+
   Ll<-paste("NM",c(1:dim(dat)[2]),sep="")                                #generate shorter metabolite names
-  
+
   names_mapping<-cbind(colnames(dat),Ll)                                 #mapping of old and new metabolite names
   colnames(names_mapping)<-c("Metabolite","Outcome")               
-  
+
   data_renamed<-dat
   colnames(data_renamed)<-Ll                                                #is character!
-  
+
   return(list(data_renamed=data_renamed,names_mapping=names_mapping))                                           
-  
+
 }
-
-
 
 #########################################################Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#########################
 
-
 est.pcor.skel.DAG.adj<-function(dat){
-  
+
   #dat: samples x metabolites data matrix
-  
-  
-  
-  
+
   #check if input data is gaussian
-  
+
   pCor_mat<-ppcor::pcor(dat)$estimate                             #estimate Pearson's partial correlation coefficients
   colnames(pCor_mat)<-colnames(dat)
   rownames(pCor_mat)<-colnames(dat)
-  
+
   n_samples<-nrow(dat)                                            #number of samples
   V_met<-colnames(dat)                                            #labels equal to node names i.e. metabolites
-  
+
   skel_est<-skeleton(suffStat = list(C=cor(dat),n = n_samples),     #estimate order-independent "PC-stable" skeleton of DAG using PC-algorithm
                      indepTest = gaussCItest,                        #test conditional independence of Gaussians via Fisher's Z
                      labels = V_met, method = "stable", alpha = 0.05, fixedGaps = NULL, fixedEdges = NULL, verbose = FALSE)
-  
+
   DAG_est<-pc(suffStat = list(C=cor(dat),n = n_samples),           #estimate equivalence class of DAG using PC-algorithm
               indepTest = gaussCItest, labels = V_met, skel.method = "stable",          #order-independent skeleton
               alpha = 0.05, fixedGaps = NULL, fixedEdges = NULL, verbose = FALSE, maj.rule = FALSE, solve.confl = FALSE)
-  
-  adj_matrix<-get.adjacency(graphNEL2igraph(skel_est@graph))          #return adjacency matrix of DAG skeleton
-  
-  return(list(pCor_mat = pCor_mat, skel_est = skel_est, DAG_est = DAG_est, adj_matrix = adj_matrix))
-  
-}
 
+  adj_matrix<-get.adjacency(graphNEL2igraph(skel_est@graph))          #return adjacency matrix of DAG skeleton
+
+  return(list(pCor_mat = pCor_mat, skel_est = skel_est, DAG_est = DAG_est, adj_matrix = adj_matrix))
+
+}
 
 ###############################################Net Coupler Out function: metabolome -> time-to-type-2-diabetes-incident############################################################
 
 #return: estimate of direct effects of each metabolite on survival time, models are adjusted for all possible combinations of direct neighboring metabolites and all covariates
 
 net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,always_set){
-  
+
   #graph_skel: estimated DAG skeleton of samples x metabolites data matrix
   #dat: renamed samples x metabolites data matrix
   #exp_dat: exposure/phenotype data
   #DE: indicator if direct effects were already identified
   #survival_obj: "survival" object
   #always_set: fixed set of covariates always included in model
-  
+
   cat("*****************************************************************************************************\n")
   cat("This algorithm estimates direct effect of a predefined exposure (network-variable) on time-to-event  \n")
   cat("for all causal models that agree with the input-network: Cox prop. hazards regression models are     \n")
   cat("used to estimate the efect of all network-variables on survival time adjusted for all possible       \n")
   cat("combinations of direct neighbors (adjacency set) -> Output is a multiset of possible direct effects  \n")
   cat("*****************************************************************************************************\n")
-  
+
   model_details_all<-list(NULL)                                   #prepare empty list to store output
   node_names<-colnames(dat)                                      #create vector "nodes" with node names as strings
-  
+
   for(i in seq(along=node_names)){                                #create empty list with slots for each network-variable, i.e. metabolite
-    
+
     model_details<-list(NULL)
     model_details_all[[i]]<-model_details
-    
+
   }
   names(model_details_all)<-node_names  
-  
+
   for(i in node_names){                                          #net.coupler.out loop over all metabolite nodes
-    
+
     ##########################################prepare separate datasets for each metabolite:######################################################## 
-    
+
     met_outcome<-i
-    
+
     #check if met_outcome is character string:
     if(is.character(met_outcome)==FALSE)stop("'met_outcome' is not a character string as required")
-    
+
     #select data on met_outcome within samples x metabolites data matrix, store in "met_out_data":
     met_out_data<-dat[,met_outcome]
-    
+
     #check if met_out_data is numeric:
     if(is.numeric(met_out_data)==FALSE)stop("'met_out_data' is not a numeric vector as required")
-    
+
     #create vector with integers indicating adjacent variables, i.e. metabolites in skeleton:
     edge_list<-slot(graph_skel@graph,"edgeL")                     #extract edge-list from skeleton
     adjset<-c(edge_list[[met_outcome]])                           #extract adjacency set for selected node/metabolite
     adjset<-c(adjset[[1]])                                        #extract indices of adjacency set
-    
+
     #select data on adjacency set, store in "adjset_data":
     adjset_data<-subset(dat_compl,select=c(adjset))
-    
+
     #check if adjset_data is numeric:
     if(is.numeric(adjset_data[1,1])==FALSE)stop("'adjset_data' is not a matrix of numeric variables as required")
-    
+
     #create vector with names of adjacency set as strings:
     adjset_names<-colnames(adjset_data)
-    
+
     print(adjset_names)
     #for loop with already identified direct effects:
     if(is.null(DE)==FALSE){adjset_names<-setdiff(adjset_names,as.vector(DE))
     adjset_data<-adjset_data[,c(adjset_names)]}
     print(adjset_names)
-    
+
     #check if adjset_names is vector of character strings:
     if(is.character(adjset_names)==FALSE)stop("'adjset_names' is not a vector of character strings as required")
-    
+
     #combine data on exposure (including already identified direct effect metabolites), metabolite outcome, and adjacency set, store as dataframe ("modeldata"), input data for glmulti:
     modeldata<-data.frame(cbind(met_out_data,exp_dat,adjset_data))
     colnames(modeldata)[1]<-met_outcome
-    
+
     ###########################################################estimate multimodel coefficients#####################################################
-    
+
     #modify fitting function of coxph so that it always includes one predefined set of variables (here: exposure + covariates), while subsetting adjacent metabolite set:
     coxph.redefined<-function(formula,data,always="",...){
       coxph(as.formula(paste(deparse(formula),always)),data=data,...)
     }
-    
+
     #fit all possible causal models using glmulti: iterate over all possible combinations of adjacent metabolites, fixed exposure + covariates set
-    
+
     glmulti_obj<-glmulti(y=deparse(substitute(survival_obj)),                                      #response variable to be predicted: SURV-object
                          xr=c(adjset_names[1:length(adjset_names)]),            #predictor variables to be tested in iteration
                          data=modeldata,                                        #dataframe containing data
@@ -166,50 +143,48 @@ net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,alway
                          plotty=FALSE,                                          #no progress of the IC profile is plotted
                          report=FALSE                                           #report about progress at run time is given
     )
-    
+
     #output summaries:
-    
+
     glmulti_obj_objects<-glmulti_obj@objects                                    #collect glmulti objects, i.e. all fitted models (?)
-    
+
     nbmds<-c(1:glmulti_obj@nbmods)                                              #number of fitted models of glmulti-function
-    
+
     model_details<-list(NULL)
-    
+
     for(j in seq(along=nbmds)){                                                 #generate list for model details
       model_details[[j]]<-list(NULL)
     }
     names(model_details)<-paste("Model",nbmds,sep="_")
-    
+
     for(j in seq(along=nbmds)){                                                 #collect all model details for different adjacency subsets for specific metabolite
       model_summary<-glmulti_obj_objects[[j]]
       model_details[[j]]<-list(Model=paste("Model",j,"of",length(nbmds)),
                                Model_summary=model_summary)
     }
-    
+
     model_details_all[[met_outcome]]<-list(Model_summaries=model_details,      #collect all model details for different adjacency subsets for specific metabolite in complete model list for all metabolites
                                            Number_of_Models=length(nbmds),
                                            Adj_set=paste(adjset_names,collapse = ", "),
                                            Outcome_metabolite=met_outcome)
-    
+
   }  
-  
+
   return(list(model_details_all=model_details_all,outcome=list(survival_obj=survival_obj,class=class(survival_obj))))
-  
+
 }
-
-
 
 ####################################################Extract exposure coefficients per outcome, i.e. metabolite#######################################################
 
 getExp.coef.permetabolite<-function(object,metabolite){
-  
+
   #object: output of net.coupler.out
   #metabolite: specific metabolite to evaluate
-  
+
   #create vector containing integers from 1 to number of metabolite-specific models:
   nbm<-c(1:length(object$model_details_all[[metabolite]]$Model_summaries))
   Nbmds<-max(nbm)
-  
+
   #define empty dataframes for output:
   mm_coef_temp1<-structure(list(Model=as.character(),
                                 Nbmds=as.numeric(),
@@ -223,7 +198,7 @@ getExp.coef.permetabolite<-function(object,metabolite){
                                 rSE=as.numeric(),
                                 P=as.numeric()),
                            class="data.frame")
-  
+
   mm_coef_temp2<-structure(list(Model=as.character(),
                                 Nbmds=as.numeric(),
                                 Outcome=as.character(),
@@ -236,14 +211,14 @@ getExp.coef.permetabolite<-function(object,metabolite){
                                 rSE=as.numeric(),
                                 P=as.numeric()),
                            class="data.frame")
-  
+
   #loop along number of metabolite-specific models:
   for(i in seq(along=nbm)){
     #get metabolite-effect estimates (hazard-ratio, lower and upper confidence limit, beta, robust SE, and p-value) from single model and write into dataframe
     SUM<-summary(object$model_details_all[[metabolite]]$Model_summaries[[i]]$Model_summary)
     Cov<-rownames(SUM$coefficients)
     #Cov<-dplyr::filter(data.frame(row.names(SUM$coefficients)),row.names(SUM$coefficients)!=exposure)                     #record specific covariates of this model
-    
+
     mm_coef_temp2<-data.frame(Model=as.character(object$model_details_all[[metabolite]]$Model_summaries[[i]]$Model),
                               Nbmds=Nbmds,
                               Outcome=metabolite,
@@ -255,37 +230,32 @@ getExp.coef.permetabolite<-function(object,metabolite){
                               Beta=as.numeric(SUM$coefficients[[metabolite,1]]),
                               rSE=as.numeric(SUM$coefficients[[metabolite,4]]),
                               P=as.numeric(SUM$coefficients[[metabolite,6]]))
-    
+
     #bind information to an outcome-specific dataframe:
     mm_coef_temp1<-bind_rows(mm_coef_temp1,mm_coef_temp2)
-    
+
   }
-  
+
   return(mm_coef_temp1)
-  
+
 }
-
-
-
-
 
 ####################################################Extract exposure coefficients for metabolite(s) on time-to-incidence###############################################
 
 getExp.coef.out<-function(object,metabolite){
-  
+
   #object: output of net.coupler
   #metabolite: specific metabolite to evaluate
-  
+
   cat("*************************************************************************************************** \n")
   cat("This function produces a table of effect estimates of all (some) network-variables on an outcome    \n")
   cat("(time-to-event) for all possibles causal models based on conditional independence criteria encoded  \n")
   cat("in the input-network => MULTISET OF POSSIBLE EFFECTS PER EXPOSURE-OUTCOME PAIR; network-variables   \n")
   cat("of interest are selected by indicating the variable-names as character vector                       \n")
   cat("*************************************************************************************************** \n")
-  
-  
+
   #define empty dataframes for output:
-  
+
   mm_coef<-structure(list(Model=as.character(),
                           Nbmds=as.numeric(),
                           Outcome=as.character(),
@@ -298,7 +268,7 @@ getExp.coef.out<-function(object,metabolite){
                           rSE=as.numeric(),
                           P=as.numeric()),
                      class="data.frame")
-  
+
   mm_coef_temp<-structure(list(Model=as.character(),
                                Nbmds=as.numeric(),
                                Outcome=as.character(),
@@ -311,24 +281,22 @@ getExp.coef.out<-function(object,metabolite){
                                rSE=as.numeric(),
                                P=as.numeric()),
                           class="data.frame")
-  
+
   #for each metabolite: get metabolite coefficients from all possible models and write to table:
-  
+
   for(j in metabolite){
     mm_coef_temp<-data.frame(getExp.coef.permetabolite(object=object,metabolite=j))
     mm_coef<-bind_rows(mm_coef,mm_coef_temp)
   }
-  
-  return(mm_coef)
-  
-}
 
+  return(mm_coef)
+
+}
 
 #####################Summary statistics and multiple testing adjustment for net.coupler.out with survival object############################################################################
 
-
 mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,rule_2 = 5,rule_2_cut = 0.05,rule_3 = 15,rule_4 = 14, ass_rule1=16, round_number){
-  
+
   #sum_netout: output of getExp.coef.out after adding original metabolite names
   #adjust_method: select adjustment method(s), e.g. "fdr" or c("fdr","bonferroni"), see p.adjust.methods for available options
   #rule= "set DE=1 or =2 if ..."
@@ -346,7 +314,7 @@ mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,r
   #default association rule: if(adjusted p<0.1 & bestGuess>0){Assoc=1}
   #                          if(adjusted p<0.1 & bestGuess<0){Assoc=2}else{Assoc=0}
   #round_number: actual round number in ambiguous metabolites loop
-  
+
   #return: for each metabolite: maximum number of models, mean hazard ratio, maximum HR, minimum HR, maximum p-value, minimum p-value, as well as number of covariates, HR and p-value for model with full adjustment:
   sum_netout_sum<-dplyr::left_join(sum_netout%>%dplyr::group_by(Outcome)%>%dplyr::summarise(avgHR=mean(HR),minHR=min(HR),maxHR=max(HR),upperP=max(P),lowerP=min(P),Nbmds=max(Nbmds)),
                                    sum_netout%>%dplyr::group_by(Outcome)%>%dplyr::filter(nchar(Covariables)==max(nchar(Covariables)))%>%dplyr::select(NCov=NCov,Outcome=Outcome,Metabolite=Metabolite,ind_HR=HR,ind_P=P),
@@ -360,13 +328,13 @@ mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,r
   #multiple testing correction:
   p_adjust_M<-p.adjust.methods[p.adjust.methods %in% adjust_method]                            #select multiple testing correction method(s)
   p_adj<-sapply(p_adjust_M,function(meth){p.adjust(sum_netout_sum$ind_P,meth)})            #calculate adjusted p-values for ind_P
-  
+
   sum_netout_sum_adj<-bind_cols(sum_netout_sum,data.frame(p_adj))
   colnames(sum_netout_sum_adj)[12]<-adjust_method
-  
+
   #add beta-coefficients:
   sum_netout_sum_adj<-sum_netout_sum_adj%>%dplyr::mutate(avgEst=log(avgHR),lowEst=log(minHR),highEst=log(maxHR),bestGuess=log(ind_HR))
-  
+
   #is there an effect of specified metabolite on time-to-event?: determine effect-indicator (DE!=0: direct effect of metabolite on time-to-event, DE=0: ambiguous if adjusted ind_p<0.1):
   sum_netout_sum_adj<-mutate(sum_netout_sum_adj,
                              DE=derivedFactor(
@@ -374,8 +342,7 @@ mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,r
                                "2"=(sum_netout_sum_adj[,rule_1]<rule_1_cut & sum_netout_sum_adj[,rule_2]<rule_2_cut & (sign(sum_netout_sum_adj[,rule_3])==sign(sum_netout_sum_adj[,rule_4])) & sum_netout_sum_adj[,rule_4]<0),
                                .method="first",.default=0)
   )
-  
-  
+
   #is there any effect of specified metabolite on time-to-event?: determine association-indicator (Assoc!=0: there is an effect (no differenciation between direct or indirect), Assoc=0: there is no effect)
   sum_netout_sum_adj<-mutate(sum_netout_sum_adj,
                              Assoc=derivedFactor(
@@ -383,28 +350,21 @@ mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,r
                                "2"=(sum_netout_sum_adj[,rule_1]<rule_1_cut & sum_netout_sum_adj[,ass_rule1]<0),
                                .method="first",.default=0)
   )
-  
+
   #collect ambiguous effects:
   amb<-sum_netout_sum_adj%>%filter(Assoc!=0 & DE==0)
-  
+
   #collect direct effects:
   direct<-sum_netout_sum_adj%>%filter(Assoc!=0 & DE!=0)
-  
+
   #collect summary statistics including round information
   sum_netout_sum_adj_FV<-sum_netout_sum_adj%>%dplyr::mutate(round=as.numeric(round_number),Assoc_FV=as.character(Assoc),DE_FV=as.character(DE))
-  
+
   return(list(sum_netout_sum_adj=sum_netout_sum_adj,amb=amb,direct=direct,sum_netout_sum_adj_FV=sum_netout_sum_adj_FV))
-  
+
 }
 
-
-
-
-
-
-
 ####################################################Data import and analysis###########################################################################
-
 
 #load metabolite data (e.g. aaPCs) for complete cohort:
 gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
@@ -439,7 +399,6 @@ Exp_data<-readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
 #[1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
-
 
 met_data_SC_rename<-rename.met(dat=met_data_SC)$data_renamed                               #rename metabolites with short names
 met_mapping_SC<-rename.met(dat=met_data_SC)$names_mapping                                     #mapping information between old and new metabolite names
@@ -513,7 +472,6 @@ netout_direct
 # <chr>    <dbl>    <dbl>    <dbl>       <dbl>        <dbl> <dbl> <dbl>       <fctr>    <dbl>        <dbl>       <dbl>     <dbl>     <dbl>     <dbl>     <dbl> <fctr> <fctr>
 #   1    NM20 1.461412 1.331850 1.539315 0.001463337 2.543242e-07    16    55 rPC_aa_C38_3 1.539315 0.0005648558 0.004801274 0.3794032 0.2865691 0.4313374 0.4313374      1      1
 # 2    NM33 1.305813 1.108655 1.477687 0.045878920 1.160349e-05     8    54 rPC_aa_C42_5 1.477687 0.0001603423 0.001817212 0.2668261 0.1031473 0.3904780 0.3904780      1      1
-
 
 #there are direct and ambiguous effect metabolites on time-to-diabetes-incident:
 
@@ -609,8 +567,6 @@ netout_direct_3
 # ... with 18 variables: Outcome <chr>, avgHR <dbl>, minHR <dbl>, maxHR <dbl>, upperP <dbl>, lowerP <dbl>, Nbmds <dbl>, NCov <dbl>, Metabolite <fctr>, ind_HR <dbl>, ind_P <dbl>, fdr <dbl>, avgEst <dbl>,
 #   lowEst <dbl>, highEst <dbl>, bestGuess <dbl>, DE <fctr>, Assoc <fctr>
 
-
-
 #final results:
 
 netout_sum_2_3<-merge(netout_sum_2,netout_sum_3,by="Metabolite",suffixes=c("_2","_3"))
@@ -625,20 +581,7 @@ colnames(netout_sum_1_2_3)[2:21]<-paste0(colnames(netout_sum_1_2_3)[2:21],sep="_
 
 netout_sum_1_2_3_final<-bind_rows(netout_sum[-which(netout_sum$Outcome %in% netout_sum_1_2_3$Outcome_1),],netout_sum_1_2_3)
 
-
-
 write.xlsx(netout_sum_1_2_3_final,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netout_aaPC_20_7_2017.xls")
-
-
-
-
-
-
-
-
-
-
-
 
 #################################################################################################################################################################################################################################
 #################################################################################################################################################################################################################################
@@ -647,156 +590,133 @@ write.xlsx(netout_sum_1_2_3_final,file="C:/Users/helena.zacharias/Documents/Helm
 
 rm(list=ls())
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #########################################################Rename feature names in order to avoid clash with glm#######################################
 
 rename.met<-function(dat){
-  
+
   #dat: samples x metabolites data matrix
-  
+
   Ll<-paste("NM",c(1:dim(dat)[2]),sep="")                                #generate shorter metabolite names
-  
+
   names_mapping<-cbind(colnames(dat),Ll)                                 #mapping of old and new metabolite names
   colnames(names_mapping)<-c("Metabolite","Outcome")               
-  
+
   data_renamed<-dat
   colnames(data_renamed)<-Ll                                                #is character!
-  
+
   return(list(data_renamed=data_renamed,names_mapping=names_mapping))                                           
-  
+
 }
-
-
 
 #########################################################Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#########################
 
-
 est.pcor.skel.DAG.adj<-function(dat){
-  
+
   #dat: samples x metabolites data matrix
-  
-  
-  
-  
+
   #check if input data is gaussian
-  
+
   pCor_mat<-ppcor::pcor(dat)$estimate                             #estimate Pearson's partial correlation coefficients
   colnames(pCor_mat)<-colnames(dat)
   rownames(pCor_mat)<-colnames(dat)
-  
+
   n_samples<-nrow(dat)                                            #number of samples
   V_met<-colnames(dat)                                            #labels equal to node names i.e. metabolites
-  
+
   skel_est<-skeleton(suffStat = list(C=cor(dat),n = n_samples),     #estimate order-independent "PC-stable" skeleton of DAG using PC-algorithm
                      indepTest = gaussCItest,                        #test conditional independence of Gaussians via Fisher's Z
                      labels = V_met, method = "stable", alpha = 0.05, fixedGaps = NULL, fixedEdges = NULL, verbose = FALSE)
-  
+
   DAG_est<-pc(suffStat = list(C=cor(dat),n = n_samples),           #estimate equivalence class of DAG using PC-algorithm
               indepTest = gaussCItest, labels = V_met, skel.method = "stable",          #order-independent skeleton
               alpha = 0.05, fixedGaps = NULL, fixedEdges = NULL, verbose = FALSE, maj.rule = FALSE, solve.confl = FALSE)
-  
-  adj_matrix<-get.adjacency(graphNEL2igraph(skel_est@graph))          #return adjacency matrix of DAG skeleton
-  
-  return(list(pCor_mat = pCor_mat, skel_est = skel_est, DAG_est = DAG_est, adj_matrix = adj_matrix))
-  
-}
 
+  adj_matrix<-get.adjacency(graphNEL2igraph(skel_est@graph))          #return adjacency matrix of DAG skeleton
+
+  return(list(pCor_mat = pCor_mat, skel_est = skel_est, DAG_est = DAG_est, adj_matrix = adj_matrix))
+
+}
 
 ###############################################Net Coupler Out function: metabolome -> time-to-type-2-diabetes-incident############################################################
 
 #return: estimate of direct effects of each metabolite on survival time, models are adjusted for all possible combinations of direct neighboring metabolites and all covariates
 
 net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,always_set,name_surv_obj){
-  
+
   #graph_skel: estimated DAG skeleton of samples x metabolites data matrix
   #dat: renamed samples x metabolites data matrix
   #exp_dat: exposure/phenotype data
   #DE: indicator if direct effects were already identified
   #survival_obj: "survival" object
   #always_set: fixed set of covariates always included in model
-  
+
   cat("*****************************************************************************************************\n")
   cat("This algorithm estimates direct effect of a predefined exposure (network-variable) on time-to-event  \n")
   cat("for all causal models that agree with the input-network: Cox prop. hazards regression models are     \n")
   cat("used to estimate the efect of all network-variables on survival time adjusted for all possible       \n")
   cat("combinations of direct neighbors (adjacency set) -> Output is a multiset of possible causal effects \n")
   cat("*****************************************************************************************************")
-  
+
   model_details_all<-list(NULL)                                   #prepare empty list to store output
   node_names<-colnames(dat)                                      #create vector "nodes" with node names as strings
-  
+
   for(i in seq(along=node_names)){                                #create empty list with slots for each network-variable, i.e. metabolite
-    
+
     model_details<-list(NULL)
     model_details_all[[i]]<-model_details
-    
+
   }
   names(model_details_all)<-node_names  
-  
+
   for(i in node_names){                                          #net.coupler.out loop over all metabolite nodes
-    
+
     ##########################################prepare separate datasets for each metabolite:######################################################## 
-    
+
     met_outcome<-i
-    
+
     #check if met_outcome is character string:
     if(is.character(met_outcome)==FALSE)stop("'met_outcome' is not a character string as required")
-    
+
     #select data on met_outcome within samples x metabolites data matrix, store in "met_out_data":
     met_out_data<-dat[,met_outcome]
-    
+
     #check if met_out_data is numeric:
     if(is.numeric(met_out_data)==FALSE)stop("'met_out_data' is not a numeric vector as required")
-    
+
     #create vector with integers indicating adjacent variables, i.e. metabolites in skeleton:
     edge_list<-slot(graph_skel@graph,"edgeL")                     #extract edge-list from skeleton
     adjset<-c(edge_list[[met_outcome]])                           #extract adjacency set for selected node/metabolite
     adjset<-c(adjset[[1]])                                        #extract indices of adjacency set
-    
+
     #select data on adjacency set, store in "adjset_data":
     adjset_data<-subset(dat_compl,select=c(adjset))
-    
+
     #check if adjset_data is numeric:
     if(is.numeric(adjset_data[1,1])==FALSE)stop("'adjset_data' is not a matrix of numeric variables as required")
-    
+
     #create vector with names of adjacency set as strings:
     adjset_names<-colnames(adjset_data)
-    
+
     #for loop with already identified direct effects:
     if(is.null(DE)==FALSE){adjset_names<-setdiff(adjset_names,as.vector(DE))
     adjset_data<-adjset_data[,c(adjset_names)]}
-    
+
     #check if adjset_names is vector of character strings:
     if(is.character(adjset_names)==FALSE)stop("'adjset_names' is not a vector of character strings as required")
-    
+
     #combine data on exposure (including already identified direct effect metabolites), metabolite outcome, and adjacency set, store as dataframe ("modeldata"), input data for glmulti:
     modeldata<-data.frame(cbind(met_out_data,exp_dat,adjset_data))
     colnames(modeldata)[1]<-met_outcome
-    
+
     ###########################################################estimate multimodel coefficients#####################################################
-    
+
     #modify fitting function of coxph so that it always includes one predefined set of variables (here: exposure + covariates), while subsetting adjacent metabolite set:
     coxph.redefined<-function(formula,data,always="",...){
       coxph(as.formula(paste(deparse(formula),always)),data=data,...)
     }
-    
+
     #fit all possible causal models using glmulti: iterate over all possible combinations of adjacent metabolites, fixed exposure + covariates set
-    
+
     glmulti_obj<-glmulti(y=name_surv_obj,                                      #response variable to be predicted: SURV-object
                          xr=c(adjset_names[1:length(adjset_names)]),            #predictor variables to be tested in iteration
                          data=modeldata,                                        #dataframe containing data
@@ -808,50 +728,48 @@ net.coupler.out<-function(graph_skel,dat,dat_compl,exp_dat,DE,survival_obj,alway
                          plotty=FALSE,                                          #no progress of the IC profile is plotted
                          report=FALSE                                           #report about progress at run time is given
     )
-    
+
     #output summaries:
-    
+
     glmulti_obj_objects<-glmulti_obj@objects                                    #collect glmulti objects, i.e. all fitted models (?)
-    
+
     nbmds<-c(1:glmulti_obj@nbmods)                                              #number of fitted models of glmulti-function
-    
+
     model_details<-list(NULL)
-    
+
     for(j in seq(along=nbmds)){                                                 #generate list for model details
       model_details[[j]]<-list(NULL)
     }
     names(model_details)<-paste("Model",nbmds,sep="_")
-    
+
     for(j in seq(along=nbmds)){                                                 #collect all model details for different adjacency subsets for specific metabolite
       model_summary<-glmulti_obj_objects[[j]]
       model_details[[j]]<-list(Model=paste("Model",j,"of",length(nbmds)),
                                Model_summary=model_summary)
     }
-    
+
     model_details_all[[met_outcome]]<-list(Model_summaries=model_details,      #collect all model details for different adjacency subsets for specific metabolite in complete model list for all metabolites
                                            Number_of_Models=length(nbmds),
                                            Adj_set=paste(adjset_names,collapse = ", "),
                                            Outcome_metabolite=met_outcome)
-    
+
   }  
-  
+
   return(list(model_details_all=model_details_all,outcome=list(survival_obj=survival_obj,class=class(survival_obj))))
-  
+
 }
-
-
 
 ####################################################Extract exposure coefficients per outcome, i.e. metabolite#######################################################
 
 getExp.coef.permetabolite<-function(object,metabolite){
-  
+
   #object: output of net.coupler.out
   #metabolite: specific metabolite to evaluate
-  
+
   #create vector containing integers from 1 to number of metabolite-specific models:
   nbm<-c(1:length(object$model_details_all[[metabolite]]$Model_summaries))
   Nbmds<-max(nbm)
-  
+
   #define empty dataframes for output:
   mm_coef_temp1<-structure(list(Model=as.character(),
                                 Nbmds=as.numeric(),
@@ -865,7 +783,7 @@ getExp.coef.permetabolite<-function(object,metabolite){
                                 rSE=as.numeric(),
                                 P=as.numeric()),
                                 class="data.frame")
-  
+
   mm_coef_temp2<-structure(list(Model=as.character(),
                                 Nbmds=as.numeric(),
                                 Outcome=as.character(),
@@ -878,14 +796,14 @@ getExp.coef.permetabolite<-function(object,metabolite){
                                 rSE=as.numeric(),
                                 P=as.numeric()),
                                 class="data.frame")
-  
+
   #loop along number of metabolite-specific models:
   for(i in seq(along=nbm)){
     #get metabolite-effect estimates (hazard-ratio, lower and upper confidence limit, beta, robust SE, and p-value) from single model and write into dataframe
     SUM<-summary(object$model_details_all[[metabolite]]$Model_summaries[[i]]$Model_summary)
     Cov<-rownames(SUM$coefficients)
     #Cov<-dplyr::filter(data.frame(row.names(SUM$coefficients)),row.names(SUM$coefficients)!=exposure)                     #record specific covariates of this model
-    
+
     mm_coef_temp2<-data.frame(Model=as.character(object$model_details_all[[metabolite]]$Model_summaries[[i]]$Model),
                               Nbmds=Nbmds,
                               Outcome=metabolite,
@@ -897,37 +815,32 @@ getExp.coef.permetabolite<-function(object,metabolite){
                               Beta=as.numeric(SUM$coefficients[[metabolite,1]]),
                               rSE=as.numeric(SUM$coefficients[[metabolite,4]]),
                               P=as.numeric(SUM$coefficients[[metabolite,6]]))
-    
+
     #bind information to an outcome-specific dataframe:
     mm_coef_temp1<-bind_rows(mm_coef_temp1,mm_coef_temp2)
-    
+
   }
-  
+
   return(mm_coef_temp1)
-  
+
 }
-
-
-
-
 
 ####################################################Extract exposure coefficients for metabolite(s) on time-to-incidence###############################################
 
 getExp.coef.out<-function(object,metabolite){
-  
+
   #object: output of net.coupler
   #metabolite: specific metabolite to evaluate
-  
+
   cat("*************************************************************************************************** \n")
   cat("This function produces a table of effect estimates of all (some) network-variables on an outcome    \n")
   cat("(time-to-event) for all possibles causal models based on conditional independence criteria encoded  \n")
   cat("in the input-network => MULTISET OF POSSIBLE EFFECTS PER EXPOSURE-OUTCOME PAIR; network-variables   \n")
   cat("of interest are selected by indicating the variable-names as character vector                       \n")
   cat("***************************************************************************************************")
-  
-  
+
   #define empty dataframes for output:
-  
+
   mm_coef<-structure(list(Model=as.character(),
                           Nbmds=as.numeric(),
                           Outcome=as.character(),
@@ -940,7 +853,7 @@ getExp.coef.out<-function(object,metabolite){
                           rSE=as.numeric(),
                           P=as.numeric()),
                      class="data.frame")
-  
+
   mm_coef_temp<-structure(list(Model=as.character(),
                                Nbmds=as.numeric(),
                                Outcome=as.character(),
@@ -953,24 +866,22 @@ getExp.coef.out<-function(object,metabolite){
                                rSE=as.numeric(),
                                P=as.numeric()),
                           class="data.frame")
-  
+
   #for each metabolite: get metabolite coefficients from all possible models and write to table:
-  
+
   for(j in metabolite){
     mm_coef_temp<-data.frame(getExp.coef.permetabolite(object=object,metabolite=j))
     mm_coef<-bind_rows(mm_coef,mm_coef_temp)
   }
-  
-  return(mm_coef)
-  
-}
 
+  return(mm_coef)
+
+}
 
 #####################Summary statistics and multiple testing adjustment for net.coupler.out with survival object############################################################################
 
-
 mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,rule_2 = 5,rule_2_cut = 0.05,rule_3 = 15,rule_4 = 14, ass_rule1=16, round_number){
-  
+
   #sum_netout: output of getExp.coef.out after adding original metabolite names
   #adjust_method: select adjustment method(s), e.g. "fdr" or c("fdr","bonferroni"), see p.adjust.methods for available options
   #rule= "set DE=1 or =2 if ..."
@@ -988,22 +899,22 @@ mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,r
   #default association rule: if(adjusted p<0.1 & bestGuess>0){Assoc=1}
   #                          if(adjusted p<0.1 & bestGuess<0){Assoc=2}else{Assoc=0}
   #round_number: actual round number in ambiguous metabolites loop
-  
+
   #return: for each metabolite: maximum number of models, mean hazard ratio, maximum HR, minimum HR, maximum p-value, minimum p-value, as well as number of covariates, HR and p-value for model with full adjustment:
   sum_netout_sum<-dplyr::left_join(sum_netout%>%dplyr::group_by(Outcome)%>%dplyr::summarise(avgHR=mean(HR),minHR=min(HR),maxHR=max(HR),upperP=max(P),lowerP=min(P),Nbmds=max(Nbmds)),
                                    sum_netout%>%dplyr::group_by(Outcome)%>%dplyr::filter(nchar(Covariables)==max(nchar(Covariables)))%>%dplyr::select(NCov=NCov,Outcome=Outcome,Metabolite=Metabolite,ind_HR=HR,ind_P=P),
                                    by="Outcome")
-  
+
   #multiple testing correction:
   p_adjust_M<-p.adjust.methods[p.adjust.methods %in% adjust_method]                            #select multiple testing correction method(s)
   p_adj<-sapply(p_adjust_M,function(meth){p.adjust(sum_netout_sum$ind_P,meth)})            #calculate adjusted p-values for ind_P
-  
+
   sum_netout_sum_adj<-bind_cols(sum_netout_sum,data.frame(p_adj))
   colnames(sum_netout_sum_adj)[12]<-adjust_method
-  
+
   #add beta-coefficients:
   sum_netout_sum_adj<-sum_netout_sum_adj%>%dplyr::mutate(avgEst=log(avgHR),lowEst=log(minHR),highEst=log(maxHR),bestGuess=log(ind_HR))
-  
+
   #is there an effect of specified metabolite on time-to-event?: determine effect-indicator (DE!=0: direct effect of metabolite on time-to-event, DE=0: ambiguous if adjusted ind_p<0.1):
   sum_netout_sum_adj<-mutate(sum_netout_sum_adj,
                              DE=derivedFactor(
@@ -1011,8 +922,7 @@ mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,r
                                "2"=(sum_netout_sum_adj[,rule_1]<rule_1_cut & sum_netout_sum_adj[,rule_2]<rule_2_cut & (sign(sum_netout_sum_adj[,rule_3])==sign(sum_netout_sum_adj[,rule_4])) & sum_netout_sum_adj[,rule_4]<0),
                                .method="first",.default=0)
   )
-  
-  
+
   #is there any effect of specified metabolite on time-to-event?: determine association-indicator (Assoc!=0: there is an effect (no differenciation between direct or indirect), Assoc=0: there is no effect)
   sum_netout_sum_adj<-mutate(sum_netout_sum_adj,
                              Assoc=derivedFactor(
@@ -1020,28 +930,24 @@ mult.stat.surv<-function(sum_netout,adjust_method,rule_1 = 12,rule_1_cut = 0.1,r
                                "2"=(sum_netout_sum_adj[,rule_1]<rule_1_cut & sum_netout_sum_adj[,ass_rule1]<0),
                                .method="first",.default=0)
   )
-  
+
   #collect ambiguous effects:
   amb<-sum_netout_sum_adj%>%filter(Assoc!=0 & DE==0)
-  
+
   #collect direct effects:
   direct<-sum_netout_sum_adj%>%filter(Assoc!=0 & DE!=0)
-  
+
   #collect summary statistics including round information
   sum_netout_sum_adj_FV<-sum_netout_sum_adj%>%dplyr::mutate(round=as.numeric(round_number),Assoc_FV=as.character(Assoc),DE_FV=as.character(DE))
-  
+
   return(list(sum_netout_sum_adj=sum_netout_sum_adj,amb=amb,direct=direct,sum_netout_sum_adj_FV=sum_netout_sum_adj_FV))
-  
+
 }
-
-
 
 ################################################ambiguous metabolites loop for net.coupler.out. survival analysis###############################################################################################################
 
-
-
 amb.met.loop.out.surv<-function(exp_dat,graph_skel,dat,dat_compl,DE,survival_obj,always_set,met_map,adjust_method,round_number){
-  
+
   #exp_dat: exposure/phenotype data
   #graph_skel: estimated DAG skeleton of samples x metabolites data matrix
   #dat: renamed samples x metabolites data matrix
@@ -1052,81 +958,74 @@ amb.met.loop.out.surv<-function(exp_dat,graph_skel,dat,dat_compl,DE,survival_obj
   #met_map: mapping information between old and new metabolite names
   #adjust_method: select adjustment method(s), e.g. "fdr" or c("fdr","bonferroni"), see p.adjust.methods for available options
   #round_number: actual round number in ambiguous metabolites loop, initiate with round_number=1
-  
+
   netout_amb<-list()
   netout_direct<-list()
   netout_sum<-list()
-  
+
   repeat{
-    
+
     print(paste(round_number,". iteration",sep=""))
-    
+
     #estimate direct effects of metabolites on time-to-diabetes-incident: models are adjusted for all possible combinations of direct neighbors (==variables in adjacency set) -> Output is multiset of possible effects:
     net_coupler_out<-net.coupler.out(graph_skel=graph_skel,dat=dat,dat_compl = dat_compl,exp_dat = exp_dat,DE=DE,survival_obj = survival_obj,always_set = always_set,name_surv_obj=deparse(substitute(survival_obj)))       
-    
+
     #return results:
     sum_netout<-getExp.coef.out(object=net_coupler_out,metabolite=colnames(dat))
-    
+
     #get original metabolite names back:
     sum_netout<-merge(sum_netout,as.data.frame(met_map),by="Outcome")
-    
+
     sum_stat_netout<-mult.stat.surv(sum_netout=sum_netout,adjust_method = adjust_method,round_number = round_number)       #calculate summary statistics and determine direct and ambiguous effects
-    
+
     netout_amb[[length(netout_amb)+1]]<-sum_stat_netout$amb                    #summary statistics for metabolites which have ambiguous effect on time-to-diabetes-incident
     netout_direct[[length(netout_direct)+1]]<-sum_stat_netout$direct              #summary statistics for metabolites which have direct effect on time-to-diabetes-incident
     netout_sum[[length(netout_sum)+1]]<-sum_stat_netout$sum_netout_sum_adj_FV   #summary statistics for meatbolites including round-number information
     names(netout_amb)[length(netout_amb)]<-paste0(round_number,". iteration")
     names(netout_direct)[length(netout_direct)]<-paste0(round_number,". iteration")
     names(netout_sum)[length(netout_sum)]<-paste0(round_number,". iteration")
-    
+
     numb_DE<-dim(netout_direct[[length(netout_direct)]])[1]
     numb_AMB<-dim(netout_amb[[length(netout_amb)]])[1]
-    
+
     #check if direct effects!=0 and/or ambiguous effects!=0, otherwise quit:
     if(numb_DE==0 | numb_AMB==0){cat(paste("\n ***no direct and/or ambiguous effects identified -> stop algorithm after ",round_number,". iteration*** \n",sep="")); break}
-    
+
     #if there are direct and ambiguous effects of metabolites on time-to-diabetes-incident -> continue:
-    
+
     #names of direct effect metabolites:
     DE<-c(DE,netout_direct[[length(netout_direct)]]$Outcome)
     DE_1<-netout_direct[[length(netout_direct)]]$Outcome
-    
+
     print("here1")
-    
+
     #define new metabolite data matrix only including ambiguous effect metabolites:
     dat<-as.matrix(dat[,c(which(colnames(dat) %in% netout_amb[[length(netout_amb)]]$Outcome)),drop=FALSE])
-    
+
     print("here2")
     print(colnames(exp_dat))
-    
+
     #add direct effect metabolite data to exp_dat:
     exp_dat<-cbind(dat_compl[,c(which(colnames(dat_compl) %in% DE_1))],exp_dat)
     colnames(exp_dat)[1:length(DE_1)]<-DE_1
-    
+
     print(colnames(exp_dat))
-    
+
     #add direct effect metabolites to always set:
     always_set<-paste0(paste0(DE_1,collapse = " + "),sep=" + ",always_set)
-    
+
     print(always_set)
-    
+
     round_number<-round_number+1
-    
+
   }
-  
+
   return(list(netout_direct=netout_direct,netout_amb=netout_amb,netout_sum=netout_sum))
-  
+
 }
-
-
-
 
 ###########################################################################################################################################################
 ####################################################Data import and analysis aaPC###########################################################################
-
-
-
-
 
 #load metabolite data (e.g. aaPCs) for complete cohort:
 gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
@@ -1163,7 +1062,6 @@ Exp_data<-readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 dim(Exp_data)
 #[1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
 
-
 met_data_SC_rename<-rename.met(dat=met_data_SC)$data_renamed                               #rename metabolites with short names
 met_mapping_SC<-rename.met(dat=met_data_SC)$names_mapping                                     #mapping information between old and new metabolite names
 
@@ -1199,8 +1097,6 @@ t2d_surv<-Surv(T2D_data$sta_time,T2D_data$sto_time,T2D_data$fall)
 always_set<-paste0(colnames(Exp_data)[-(which(colnames(Exp_data) %in% c("SEX","subcohort","ID","age","age_years")))],collapse = " + ")
 always_set<-paste0(always_set," + cluster(ID) + strata(age_years)")                                   #cluster(ID) specific for case-cohort design, strata(age_years) stratification of baseline risk according to age in years
 
-
-
 #estimate direct effects of metabolites on time-to-diabetes-incident:
 tic()
 amb_met_loop_out<-amb.met.loop.out.surv(exp_dat=Exp_data,graph_skel=met_SC_skel_rename,dat=met_data_rename,dat_compl=met_data_rename,DE=NULL,survival_obj=t2d_surv,always_set=always_set,met_map=met_mapping,adjust_method="fdr",round_number=1)
@@ -1218,8 +1114,6 @@ net_coupler_out_iteration2<-amb_met_loop_out$netout_sum$`2. iteration`
 net_coupler_out_iteration3<-amb_met_loop_out$netout_sum$`3. iteration`
 
 netout_sum_1_2_3_final<-Reduce(function(x,y,z)merge(x,y,all=TRUE,by="Outcome"),list(net_coupler_out_iteration1,net_coupler_out_iteration2,net_coupler_out_iteration3))
-
-
 
 write.xlsx(netout_sum_1_2_3_final,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netout_aaPC_ambloop_20_7_2017.xls")
 
@@ -1249,7 +1143,6 @@ amb_met_loop_out$netout_amb$`3. iteration`
 # 3    NM25 0.8159863 0.7386868 0.9051769 0.2450431 0.005109764     8    59 rPC_aa_C40_3 0.7405413 0.005569742 0.02975238 -0.2033578 -0.30288131 -0.09962484 -0.3003738      0      2
 # 4    NM29 0.8289516 0.8009908 0.8703262 0.1695697 0.036505825     8    59 rPC_aa_C42_0 0.8152448 0.056753682 0.06810442 -0.1875935 -0.22190579 -0.13888723 -0.2042669      0      2
 # 5    NM31 0.8471528 0.7909966 0.9189214 0.3306723 0.014083141    32    61 rPC_aa_C42_2 0.8036937 0.023134249 0.03470137 -0.1658742 -0.23446156 -0.08455471 -0.2185371      0      2
-
 
 ###########################################################################################################################################################
 ####################################################Data import and analysis aePC #########################################################################
@@ -1288,7 +1181,6 @@ Exp_data<-readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 dim(Exp_data)
 #[1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
 
-
 met_data_SC_rename<-rename.met(dat=met_data_SC)$data_renamed                               #rename metabolites with short names
 met_mapping_SC<-rename.met(dat=met_data_SC)$names_mapping                                     #mapping information between old and new metabolite names
 
@@ -1323,8 +1215,6 @@ t2d_surv<-Surv(T2D_data$sta_time,T2D_data$sto_time,T2D_data$fall)
 #define "always"-set:
 always_set<-paste0(colnames(Exp_data)[-(which(colnames(Exp_data) %in% c("SEX","subcohort","ID","age","age_years")))],collapse = " + ")
 always_set<-paste0(always_set," + cluster(ID) + strata(age_years)")                                   #cluster(ID) specific for case-cohort design, strata(age_years) stratification of baseline risk according to age in years
-
-
 
 #estimate direct effects of metabolites on time-to-diabetes-incident:
 tic()
@@ -1373,7 +1263,6 @@ net_coupler_out_direct_final
 #8     NM5 0.7050690 0.5942439 0.8039314 2.628646e-02 3.686835e-05     4    58 rPC_ae_C32_2 0.5942439 3.686835e-05 9.217087e-05 -0.3494596
 #9    NM21 0.5739178 0.5452295 0.5991737 2.065733e-03 1.354187e-03     8    62 rPC_ae_C38_5 0.5459374 2.065733e-03 4.131467e-03 -0.5552690
 
-
 #all final ambiguous effects:
 amb_met_loop_out$netout_amb$`5. iteration`
 # A tibble: 5 x 18
@@ -1385,13 +1274,8 @@ amb_met_loop_out$netout_amb$`5. iteration`
 # 4    NM29 0.8289516 0.8009908 0.8703262 0.1695697 0.036505825     8    59 rPC_aa_C42_0 0.8152448 0.056753682 0.06810442 -0.1875935 -0.22190579 -0.13888723 -0.2042669      0      2
 # 5    NM31 0.8471528 0.7909966 0.9189214 0.3306723 0.014083141    32    61 rPC_aa_C42_2 0.8036937 0.023134249 0.03470137 -0.1658742 -0.23446156 -0.08455471 -0.2185371      0      2
 
-
 ###########################################################################################################################################################
 ####################################################Data import and analysis LPC ###########################################################################
-
-
-
-
 
 #load metabolite data (e.g. aaPCs) for complete cohort:
 gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
@@ -1428,7 +1312,6 @@ Exp_data<-readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 dim(Exp_data)
 #[1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
 
-
 met_data_SC_rename<-rename.met(dat=met_data_SC)$data_renamed                               #rename metabolites with short names
 met_mapping_SC<-rename.met(dat=met_data_SC)$names_mapping                                     #mapping information between old and new metabolite names
 
@@ -1463,8 +1346,6 @@ t2d_surv<-Surv(T2D_data$sta_time,T2D_data$sto_time,T2D_data$fall)
 #define "always"-set:
 always_set<-paste0(colnames(Exp_data)[-(which(colnames(Exp_data) %in% c("SEX","subcohort","ID","age","age_years")))],collapse = " + ")
 always_set<-paste0(always_set," + cluster(ID) + strata(age_years)")                                   #cluster(ID) specific for case-cohort design, strata(age_years) stratification of baseline risk according to age in years
-
-
 
 #estimate direct effects of metabolites on time-to-diabetes-incident:
 tic()
@@ -1507,16 +1388,12 @@ net_coupler_out_direct_final
 #5     NM2 1.4097342 1.3268233 1.4968709 0.0231577793 2.140039e-04     8    58 rlysoPC_a_C16_0 1.3518532 0.0185875014 0.018587501  0.3434012  0.2827876  0.4033769  0.3014764      1      1
 #6     NM8 1.3050557 1.2778340 1.3346314 0.0041922748 2.255868e-03     4    57 rlysoPC_a_C20_3 1.3346314 0.0024833248 0.004966650  0.2662458  0.2451665  0.2886552  0.2886552      1      1
 
-
 #all final ambiguous effects:
 amb_met_loop_out$netout_amb$`3. iteration`
 #NONE
 
-
 ###########################################################################################################################################################
 ####################################################Data import and analysis AA ###########################################################################
-
-
 
 #load metabolite data (AA) for complete cohort:
 met_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_AA.rds")
@@ -1549,7 +1426,6 @@ Exp_data<-readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
 #[1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
-
 
 met_data_SC_rename<-rename.met(dat=met_data_SC)$data_renamed                               #rename metabolites with short names
 met_mapping_SC<-rename.met(dat=met_data_SC)$names_mapping                                     #mapping information between old and new metabolite names
@@ -1585,8 +1461,6 @@ t2d_surv<-Surv(T2D_data$sta_time,T2D_data$sto_time,T2D_data$fall)
 #define "always"-set:
 always_set<-paste0(colnames(Exp_data)[-(which(colnames(Exp_data) %in% c("SEX","subcohort","ID","age","age_years")))],collapse = " + ")
 always_set<-paste0(always_set," + cluster(ID) + strata(age_years)")                                   #cluster(ID) specific for case-cohort design, strata(age_years) stratification of baseline risk according to age in years
-
-
 
 #estimate direct effects of metabolites on time-to-diabetes-incident:
 tic()
@@ -1626,7 +1500,6 @@ net_coupler_out_direct_final
 #3     NM7 1.3695542 1.179399 1.6562472 0.036173800 7.127632e-14    64    57       rPhe 1.3521457 4.882705e-04 1.708947e-03  0.3144853  0.1650051  0.5045543  0.3016927      1      1
 #4     NM2 0.7740924 0.718889 0.8280543 0.013853901 6.752374e-06    32    59       rGln 0.7760410 1.953911e-03 5.861732e-03 -0.2560641 -0.3300483 -0.1886765 -0.2535500      2      2
 
-
 #all final ambiguous effects:
 amb_met_loop_out$netout_amb$`3. iteration`
 #Source: local data frame [1 x 18]
@@ -1635,12 +1508,8 @@ amb_met_loop_out$netout_amb$`3. iteration`
 #(chr)    (dbl)    (dbl)    (dbl)    (dbl)      (dbl) (dbl) (dbl)     (fctr)    (dbl)      (dbl)      (dbl)     (dbl)     (dbl)     (dbl)     (dbl) (fctr) (fctr)
 #1    NM11 1.180499 1.130403 1.217358 0.159311 0.03429691     4    57       rTrp 1.217358 0.03429691 0.03429691 0.1659374 0.1225741 0.1966828 0.1966828      0      1
 
-
 ###########################################################################################################################################################
 #################################################### Data import and analysis AC ##########################################################################
-
-
-
 
 #load metabolite data (AC) for complete cohort:
 met_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_AC.rds")
@@ -1673,7 +1542,6 @@ Exp_data<-readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
 #[1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
-
 
 met_data_SC_rename<-rename.met(dat=met_data_SC)$data_renamed                               #rename metabolites with short names
 met_mapping_SC<-rename.met(dat=met_data_SC)$names_mapping                                     #mapping information between old and new metabolite names
@@ -1710,8 +1578,6 @@ t2d_surv<-Surv(T2D_data$sta_time,T2D_data$sto_time,T2D_data$fall)
 always_set<-paste0(colnames(Exp_data)[-(which(colnames(Exp_data) %in% c("SEX","subcohort","ID","age","age_years")))],collapse = " + ")
 always_set<-paste0(always_set," + cluster(ID) + strata(age_years)")                                   #cluster(ID) specific for case-cohort design, strata(age_years) stratification of baseline risk according to age in years
 
-
-
 #estimate direct effects of metabolites on time-to-diabetes-incident:
 tic()
 amb_met_loop_out<-amb.met.loop.out.surv(exp_dat=Exp_data,graph_skel=met_SC_skel_rename,dat=met_data_rename,dat_compl=met_data_rename,DE=NULL,survival_obj=t2d_surv,always_set=always_set,met_map=met_mapping,adjust_method="fdr",round_number=1)
@@ -1725,8 +1591,6 @@ toc()
 net_coupler_out_iteration1<-amb_met_loop_out$netout_sum$`1. iteration`
 
 net_coupler_out_iteration2<-amb_met_loop_out$netout_sum$`2. iteration`
-
-
 
 netout_sum_1_2_final<-Reduce(function(x,y,z)merge(x,y,all=TRUE,by="Outcome"),list(net_coupler_out_iteration1,net_coupler_out_iteration2))
 
@@ -1757,8 +1621,6 @@ amb_met_loop_out$netout_amb$`2. iteration`
 #  Outcome avgHR    minHR    maxHR    upperP     lowerP Nbmds  NCov     Metabolite   ind_HR      ind_P        fdr   avgEst    lowEst   highEst bestGuess     DE     Assoc
 # (chr)    (dbl)    (dbl)    (dbl)     (dbl)      (dbl) (dbl) (dbl)         (fctr)    (dbl)      (dbl)      (dbl)    (dbl)     (dbl)     (dbl)     (dbl)     (fctr) (fctr)
 #1    NM14 1.174185 1.128595 1.229115 0.1327538 0.00186365    32    60 rC5_DC__C6_OH_ 1.162542 0.07232613 0.07232613 0.160574 0.1209732 0.2062942 0.1506091      0      1
-
-
 
 ###########################################################################################################################################################
 #################################################### Data import and analysis SM ERROR ##########################################################################
@@ -1798,7 +1660,6 @@ Exp_data<-readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 dim(Exp_data)
 #[1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
 
-
 met_data_SC_rename<-rename.met(dat=met_data_SC)$data_renamed                               #rename metabolites with short names
 met_mapping_SC<-rename.met(dat=met_data_SC)$names_mapping                                     #mapping information between old and new metabolite names
 
@@ -1834,8 +1695,6 @@ t2d_surv<-Surv(T2D_data$sta_time,T2D_data$sto_time,T2D_data$fall)
 always_set<-paste0(colnames(Exp_data)[-(which(colnames(Exp_data) %in% c("SEX","subcohort","ID","age","age_years")))],collapse = " + ")
 always_set<-paste0(always_set," + cluster(ID) + strata(age_years)")                                   #cluster(ID) specific for case-cohort design, strata(age_years) stratification of baseline risk according to age in years
 
-
-
 #estimate direct effects of metabolites on time-to-diabetes-incident:
 tic()
 amb_met_loop_out<-amb.met.loop.out.surv(exp_dat=Exp_data,graph_skel=met_SC_skel_rename,dat=met_data_rename,dat_compl=met_data_rename,DE=NULL,survival_obj=t2d_surv,always_set=always_set,met_map=met_mapping,adjust_method="fdr",round_number=1)
@@ -1854,8 +1713,6 @@ net_coupler_out_iteration3<-amb_met_loop_out$netout_sum$`3. iteration`
 
 netout_sum_1_2_3_final<-Reduce(function(x,y,z)merge(x,y,all=TRUE,by="Outcome"),list(net_coupler_out_iteration1,net_coupler_out_iteration2,net_coupler_out_iteration3))
 
-
-
 write.xlsx(netout_sum_1_2_3_final,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netout_aaPC_ambloop_20_7_2017.xls")
 
 #all direct effects:
@@ -1868,5 +1725,4 @@ net_coupler_out_direct_final
 
 #all final ambiguous effects:
 amb_met_loop_out$netout_amb$`3. iteration`
-
 
