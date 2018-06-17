@@ -7,24 +7,24 @@ source("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/
 met_data_SC <- readRDS("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/R_data/STR_GPL_SC.rds")
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   95
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # filter out metabolites containing "_aa_":
 met_data_SC <- dplyr::select(met_data_SC, contains("_aa_"))
 
 dim(met_data_SC)
-# [1] 2092   34
+
 
 Exp_data_SC <- readRDS("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/R_data/EXP_SC.rds") # phenotype data for 2092 patients, including diet information, lifestyle, etc.
 
 is.numeric(as.matrix(Exp_data_SC))
-# [1] TRUE
+
 
 dim(Exp_data_SC)
-# [1] 2092   53                #phenotype data for 2092 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
@@ -533,7 +533,7 @@ names_COFFEECC_1_0001 <- COFFEECC_0001[which(COFFEECC_0001[, 2] == TRUE), 1] # m
 DE1_coffee_CC1_0001 <- intersect(as.character(unlist(names_COFFEECC_1_0001)), as.character(netin_coffee_direct_0001$Metabolite))
 
 DE1_coffee_CC1_0001
-# [1] "rPC_aa_C32_1"
+
 
 #
 # shorter analysis version#
@@ -543,24 +543,24 @@ source("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/
 met_data_SC <- readRDS("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/R_data/STR_GPL_SC.rds")
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   95
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # filter out metabolites containing "_aa_":
 met_data_SC <- dplyr::select(met_data_SC, contains("_aa_"))
 
 dim(met_data_SC)
-# [1] 2092   34
+
 
 Exp_data_SC <- readRDS("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/R_data/EXP_SC.rds") # phenotype data for 2092 patients, including diet information, lifestyle, etc.
 
 is.numeric(as.matrix(Exp_data_SC))
-# [1] TRUE
+
 
 dim(Exp_data_SC)
-# [1] 2092   53                #phenotype data for 2092 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names

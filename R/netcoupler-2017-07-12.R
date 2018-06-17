@@ -447,24 +447,24 @@ get.con.comp <- function(exposure_names, exposure_list, adjM_norename, met_group
 met_data_SC <- readRDS("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/R_data/STR_GPL_SC.rds")
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   95
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # filter out metabolites containing "_aa_":
 met_data_SC <- dplyr::select(met_data_SC, contains("_aa_"))
 
 dim(met_data_SC)
-# [1] 2092   34
+
 
 Exp_data_SC <- readRDS("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/R_data/EXP_SC.rds") # phenotype data for 2092 patients, including diet information, lifestyle, etc.
 
 is.numeric(as.matrix(Exp_data_SC))
-# [1] TRUE
+
 
 dim(Exp_data_SC)
-# [1] 2092   53                #phenotype data for 2092 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
@@ -1344,24 +1344,24 @@ amb.met.loop.CC <- function(exp_dat, graph_skel, dat, dat_compl, DE, exposure, m
 
 met_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   95
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # filter out metabolites containing "_aa_":
 met_data_SC <- dplyr::select(met_data_SC, contains("_aa_"))
 
 dim(met_data_SC)
-# [1] 2092   34
+
 
 Exp_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/EXP_SC.rds") # phenotype data for 2092 patients, including diet information, lifestyle, etc.
 
 is.numeric(as.matrix(Exp_data_SC))
-# [1] TRUE
+
 
 dim(Exp_data_SC)
-# [1] 2092   53                #phenotype data for 2092 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names

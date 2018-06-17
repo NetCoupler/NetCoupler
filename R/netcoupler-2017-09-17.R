@@ -390,7 +390,7 @@ gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
 met_data <- dplyr::select(gpl_data, contains("_aa_"))
 
 dim(met_data) # case-cohort: subcohort + all incident diabetes cases in complete cohort
-# [1] 2731   34
+
 
 # metabolite data (e.g. aaPCs) for subcohort:
 gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
@@ -398,26 +398,26 @@ gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
 met_data_SC <- dplyr::select(gpl_data_SC, contains("_aa_"))
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   34
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # load type-2 diabetes incident times:
 load("H:/Metabolomics/DISS I/R_obj/T2D/T2D_data")
 
 dim(T2D_data)
-# [1] 2731   26                                    #phenotype data including time information for 2731 patients, including diet information, lifestyle, etc.
+
 
 colnames(T2D_data)
-# [1] "subcohort"  "SEX"        "fall"       "Med_Hypert" "Med_HLipid" "sport"      "bike"       "alk_1"      "alk_2"      "alk_3"      "alk_4"      "alk_5"      "alk_6"
-# [14] "sta_time"   "sto_time"   "WGBperMJ"   "TMperMJ"    "age_years"  "smk1"       "smk2"       "smk3"       "educ1"      "educ2"      "educ3"      "CofCup"     "ID"
+
+
 
 # load phenotype data for complete cohort:
 Exp_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
-# [1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping_SC <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
@@ -1071,7 +1071,7 @@ gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
 met_data <- dplyr::select(gpl_data, contains("_aa_"))
 
 dim(met_data) # case-cohort: subcohort + all incident diabetes cases in complete cohort
-# [1] 2731   34
+
 
 # metabolite data (e.g. aaPCs) for subcohort:
 gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
@@ -1079,26 +1079,26 @@ gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
 met_data_SC <- dplyr::select(gpl_data_SC, contains("_aa_"))
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   34
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # load type-2 diabetes incident times:
 load("H:/Metabolomics/DISS I/R_obj/T2D/T2D_data")
 
 dim(T2D_data)
-# [1] 2731   26                                    #phenotype data including time information for 2731 patients, including diet information, lifestyle, etc.
+
 
 colnames(T2D_data)
-# [1] "subcohort"  "SEX"        "fall"       "Med_Hypert" "Med_HLipid" "sport"      "bike"       "alk_1"      "alk_2"      "alk_3"      "alk_4"      "alk_5"      "alk_6"
-# [14] "sta_time"   "sto_time"   "WGBperMJ"   "TMperMJ"    "age_years"  "smk1"       "smk2"       "smk3"       "educ1"      "educ2"      "educ3"      "CofCup"     "ID"
+
+
 
 # load phenotype data for complete cohort:
 Exp_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
-# [1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping_SC <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
@@ -1190,7 +1190,7 @@ gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
 met_data <- dplyr::select(gpl_data, contains("_ae_"))
 
 dim(met_data) # case-cohort: subcohort + all incident diabetes cases in complete cohort
-# [1] 2731   34
+
 
 # metabolite data (e.g. aaPCs) for subcohort:
 gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
@@ -1198,26 +1198,26 @@ gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
 met_data_SC <- dplyr::select(gpl_data_SC, contains("_ae_"))
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   34
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # load type-2 diabetes incident times:
 load("H:/Metabolomics/DISS I/R_obj/T2D/T2D_data")
 
 dim(T2D_data)
-# [1] 2731   26                                    #phenotype data including time information for 2731 patients, including diet information, lifestyle, etc.
+
 
 colnames(T2D_data)
-# [1] "subcohort"  "SEX"        "fall"       "Med_Hypert" "Med_HLipid" "sport"      "bike"       "alk_1"      "alk_2"      "alk_3"      "alk_4"      "alk_5"      "alk_6"
-# [14] "sta_time"   "sto_time"   "WGBperMJ"   "TMperMJ"    "age_years"  "smk1"       "smk2"       "smk3"       "educ1"      "educ2"      "educ3"      "CofCup"     "ID"
+
+
 
 # load phenotype data for complete cohort:
 Exp_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
-# [1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping_SC <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
@@ -1321,7 +1321,7 @@ gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
 met_data <- dplyr::select(gpl_data, contains("_a_"))
 
 dim(met_data) # case-cohort: subcohort + all incident diabetes cases in complete cohort
-# [1] 2731   34
+
 
 # metabolite data (e.g. aaPCs) for subcohort:
 gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
@@ -1329,26 +1329,26 @@ gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
 met_data_SC <- dplyr::select(gpl_data_SC, contains("_a_"))
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   34
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # load type-2 diabetes incident times:
 load("H:/Metabolomics/DISS I/R_obj/T2D/T2D_data")
 
 dim(T2D_data)
-# [1] 2731   26                                    #phenotype data including time information for 2731 patients, including diet information, lifestyle, etc.
+
 
 colnames(T2D_data)
-# [1] "subcohort"  "SEX"        "fall"       "Med_Hypert" "Med_HLipid" "sport"      "bike"       "alk_1"      "alk_2"      "alk_3"      "alk_4"      "alk_5"      "alk_6"
-# [14] "sta_time"   "sto_time"   "WGBperMJ"   "TMperMJ"    "age_years"  "smk1"       "smk2"       "smk3"       "educ1"      "educ2"      "educ3"      "CofCup"     "ID"
+
+
 
 # load phenotype data for complete cohort:
 Exp_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
-# [1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping_SC <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
@@ -1437,33 +1437,33 @@ amb_met_loop_out$netout_amb$`3. iteration`
 met_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_AA.rds")
 
 dim(met_data) # case-cohort: subcohort + all incident diabetes cases in complete cohort
-# [1] 2731   34
+
 
 # metabolite data (AA) for subcohort:
 
 met_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/AA/STR_AA_SC.rds")
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   14
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # load type-2 diabetes incident times:
 load("H:/Metabolomics/DISS I/R_obj/T2D/T2D_data")
 
 dim(T2D_data)
-# [1] 2731   26                                    #phenotype data including time information for 2731 patients, including diet information, lifestyle, etc.
+
 
 colnames(T2D_data)
-# [1] "subcohort"  "SEX"        "fall"       "Med_Hypert" "Med_HLipid" "sport"      "bike"       "alk_1"      "alk_2"      "alk_3"      "alk_4"      "alk_5"      "alk_6"
-# [14] "sta_time"   "sto_time"   "WGBperMJ"   "TMperMJ"    "age_years"  "smk1"       "smk2"       "smk3"       "educ1"      "educ2"      "educ3"      "CofCup"     "ID"
+
+
 
 # load phenotype data for complete cohort:
 Exp_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
-# [1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping_SC <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
@@ -1553,33 +1553,33 @@ amb_met_loop_out$netout_amb$`3. iteration`
 met_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_AC.rds")
 
 dim(met_data) # case-cohort: subcohort + all incident diabetes cases in complete cohort
-# [1] 2731   17
+
 
 # metabolite data (AA) for subcohort:
 
 met_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/AC/STR_AC_SC.rds")
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   17
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # load type-2 diabetes incident times:
 load("H:/Metabolomics/DISS I/R_obj/T2D/T2D_data")
 
 dim(T2D_data)
-# [1] 2731   26                                    #phenotype data including time information for 2731 patients, including diet information, lifestyle, etc.
+
 
 colnames(T2D_data)
-# [1] "subcohort"  "SEX"        "fall"       "Med_Hypert" "Med_HLipid" "sport"      "bike"       "alk_1"      "alk_2"      "alk_3"      "alk_4"      "alk_5"      "alk_6"
-# [14] "sta_time"   "sto_time"   "WGBperMJ"   "TMperMJ"    "age_years"  "smk1"       "smk2"       "smk3"       "educ1"      "educ2"      "educ3"      "CofCup"     "ID"
+
+
 
 # load phenotype data for complete cohort:
 Exp_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
-# [1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping_SC <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
@@ -1669,7 +1669,7 @@ gpl_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/STR_GPL.rds")
 met_data <- dplyr::select(gpl_data, contains("SM"))
 
 dim(met_data) # case-cohort: subcohort + all incident diabetes cases in complete cohort
-# [1] 2731   14
+
 
 # metabolite data (e.g. aaPCs) for subcohort:
 gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
@@ -1677,26 +1677,26 @@ gpl_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
 met_data_SC <- dplyr::select(gpl_data_SC, contains("SM"))
 
 dim(met_data_SC) # metabolite data with rows=patients and columns=metabolites
-# [1] 2092   14
+
 
 is.numeric(as.matrix(met_data_SC))
-# [1] TRUE
+
 
 # load type-2 diabetes incident times:
 load("H:/Metabolomics/DISS I/R_obj/T2D/T2D_data")
 
 dim(T2D_data)
-# [1] 2731   26                                    #phenotype data including time information for 2731 patients, including diet information, lifestyle, etc.
+
 
 colnames(T2D_data)
-# [1] "subcohort"  "SEX"        "fall"       "Med_Hypert" "Med_HLipid" "sport"      "bike"       "alk_1"      "alk_2"      "alk_3"      "alk_4"      "alk_5"      "alk_6"
-# [14] "sta_time"   "sto_time"   "WGBperMJ"   "TMperMJ"    "age_years"  "smk1"       "smk2"       "smk3"       "educ1"      "educ2"      "educ3"      "CofCup"     "ID"
+
+
 
 # load phenotype data for complete cohort:
 Exp_data <- readRDS("H:/Metabolomics/DISS I/R_obj/T2D/EXP_DATA.rds")
 
 dim(Exp_data)
-# [1] 2731   56                                   #phenotype data for 2731 patients, including diet information, lifestyle, etc.
+
 
 met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
 met_mapping_SC <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
