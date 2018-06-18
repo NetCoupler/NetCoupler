@@ -1,22 +1,6 @@
 # HZ MGM Netcoupler out Clemens Wittenbecher#
 # aaPCs#
 
-# Rename feature names in order to avoid clash with glm#
-
-rename.met <- function(dat) {
-
-  # dat: samples x metabolites data matrix
-
-  Ll <- paste("NM", c(1:dim(dat)[2]), sep = "") # generate shorter metabolite names
-
-  names_mapping <- cbind(colnames(dat), Ll) # mapping of old and new metabolite names
-  colnames(names_mapping) <- c("Metabolite", "Outcome")
-
-  data_renamed <- dat
-  colnames(data_renamed) <- Ll # is character!
-
-  return(list(data_renamed = data_renamed, names_mapping = names_mapping))
-}
 
 # Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#
 
@@ -606,23 +590,6 @@ write.xlsx(netout_sum_1_2_3_final, file = "C:/Users/helena.zacharias/Documents/H
 #
 # shorter analysis version with loop for ambiguous metabolites#
 #
-
-# Rename feature names in order to avoid clash with glm#
-
-rename.met <- function(dat) {
-
-  # dat: samples x metabolites data matrix
-
-  Ll <- paste("NM", c(1:dim(dat)[2]), sep = "") # generate shorter metabolite names
-
-  names_mapping <- cbind(colnames(dat), Ll) # mapping of old and new metabolite names
-  colnames(names_mapping) <- c("Metabolite", "Outcome")
-
-  data_renamed <- dat
-  colnames(data_renamed) <- Ll # is character!
-
-  return(list(data_renamed = data_renamed, names_mapping = names_mapping))
-}
 
 # Obtain partial correlation matrix, DAG skeleton, DAG and adjacency matrix for DAG skeleton#
 
