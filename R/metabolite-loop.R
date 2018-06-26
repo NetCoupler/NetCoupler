@@ -1,9 +1,3 @@
-# NETcoupler general R-commands#
-
-# longer analysis version#
-
-# Net Coupler IN function: exposure -> metabolome#
-
 
 # Ambiguous metabolites loop#
 
