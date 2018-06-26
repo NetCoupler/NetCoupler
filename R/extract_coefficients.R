@@ -100,7 +100,8 @@ getExp.coef <- function(object, outcome, exposure) {
 #   mm_coef
 # }
 
-getExp.coef <- function(object, exposure) {
+# old?
+getExp.coef_old <- function(object, exposure) {
   SUM <- data.frame(NULL)
   for (j in 1:length(names(object$Outcomes)))
   {
@@ -124,4 +125,3 @@ getExp.coef <- function(object, exposure) {
   }
   SUM
 }
-
