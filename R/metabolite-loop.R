@@ -149,3 +149,83 @@ amb.met.loop.CC <- function(exp_dat, graph_skel, dat, dat_compl, DE, glmulti_met
 
   return(amb_met_loop)
 }
+
+# ambiguous metabolites loop for net.coupler.out. survival analysis#
+
+amb.met.loop.out.surv <- function(exp_dat, graph_skel, dat, dat_compl, DE, survival_obj, always_set, met_map, adjust_method, round_number) {
+
+  # exp_dat: exposure/phenotype data
+  # graph_skel: estimated DAG skeleton of samples x metabolites data matrix
+  # dat: renamed samples x metabolites data matrix
+  # dat_compl: renamed samples x metabolites data matrix (typically same as dat)
+  # DE: indicator if direct effects were already identified, here set to NA
+  # survival_obj: "survival" object
+  # always_set: fixed set of covariates always included in model
+  # met_map: mapping information between old and new metabolite names
+  # adjust_method: select adjustment method(s), e.g. "fdr" or c("fdr","bonferroni"), see p.adjust.methods for available options
+  # round_number: actual round number in ambiguous metabolites loop, initiate with round_number=1
+
+  netout_amb <- list()
+  netout_direct <- list()
+  netout_sum <- list()
+
+  repeat{
+    print(paste(round_number, ". iteration", sep = ""))
+
+    # estimate direct effects of metabolites on time-to-diabetes-incident: models are adjusted for all possible combinations of direct neighbors (==variables in adjacency set) -> Output is multiset of possible effects:
+    net_coupler_out <- net.coupler.out(graph_skel = graph_skel, dat = dat, dat_compl = dat_compl, exp_dat = exp_dat, DE = DE, survival_obj = survival_obj, always_set = always_set, name_surv_obj = deparse(substitute(survival_obj)))
+
+    # return results:
+    sum_netout <- getExp.coef.out(object = net_coupler_out, metabolite = colnames(dat))
+
+    # get original metabolite names back:
+    sum_netout <- merge(sum_netout, as.data.frame(met_map), by = "Outcome")
+
+    sum_stat_netout <- mult.stat.surv(sum_netout = sum_netout, adjust_method = adjust_method, round_number = round_number) # calculate summary statistics and determine direct and ambiguous effects
+
+    netout_amb[[length(netout_amb) + 1]] <- sum_stat_netout$amb # summary statistics for metabolites which have ambiguous effect on time-to-diabetes-incident
+    netout_direct[[length(netout_direct) + 1]] <- sum_stat_netout$direct # summary statistics for metabolites which have direct effect on time-to-diabetes-incident
+    netout_sum[[length(netout_sum) + 1]] <- sum_stat_netout$sum_netout_sum_adj_FV # summary statistics for meatbolites including round-number information
+    names(netout_amb)[length(netout_amb)] <- paste0(round_number, ". iteration")
+    names(netout_direct)[length(netout_direct)] <- paste0(round_number, ". iteration")
+    names(netout_sum)[length(netout_sum)] <- paste0(round_number, ". iteration")
+
+    numb_DE <- dim(netout_direct[[length(netout_direct)]])[1]
+    numb_AMB <- dim(netout_amb[[length(netout_amb)]])[1]
+
+    # check if direct effects!=0 and/or ambiguous effects!=0, otherwise quit:
+    if (numb_DE == 0 | numb_AMB == 0) {
+      cat(paste("\n ***no direct and/or ambiguous effects identified -> stop algorithm after ", round_number, ". iteration*** \n", sep = ""))
+      break
+    }
+
+    # if there are direct and ambiguous effects of metabolites on time-to-diabetes-incident -> continue:
+
+    # names of direct effect metabolites:
+    DE <- c(DE, netout_direct[[length(netout_direct)]]$Outcome)
+    DE_1 <- netout_direct[[length(netout_direct)]]$Outcome
+
+    print("here1")
+
+    # define new metabolite data matrix only including ambiguous effect metabolites:
+    dat <- as.matrix(dat[, c(which(colnames(dat) %in% netout_amb[[length(netout_amb)]]$Outcome)), drop = FALSE])
+
+    print("here2")
+    print(colnames(exp_dat))
+
+    # add direct effect metabolite data to exp_dat:
+    exp_dat <- cbind(dat_compl[, c(which(colnames(dat_compl) %in% DE_1))], exp_dat)
+    colnames(exp_dat)[1:length(DE_1)] <- DE_1
+
+    print(colnames(exp_dat))
+
+    # add direct effect metabolites to always set:
+    always_set <- paste0(paste0(DE_1, collapse = " + "), sep = " + ", always_set)
+
+    print(always_set)
+
+    round_number <- round_number + 1
+  }
+
+  return(list(netout_direct = netout_direct, netout_amb = netout_amb, netout_sum = netout_sum))
+}
