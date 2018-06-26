@@ -17,50 +17,190 @@ knitr::opts_chunk$set(
 )
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+# Code usage (from original scripts)
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+Need to go through and organize this code.
 
-## Vignette Info
+```{r}
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+# metabolite data (e.g. phosphatidylcholines) data for subcohort:
 
-## Styles
+met_data_SC <- readRDS("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/R_data/STR_GPL_SC.rds")
+Exp_data_SC <- readRDS("C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/R_data/EXP_SC.rds") # phenotype data for 2092 patients, including diet information, lifestyle, etc.
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
+met_mapping <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
 
-## Figures
+met_estimates_norename_005 <- est.pcor.skel.DAG.adj(dat = met_data_SC, alpha_val = 0.05)
+met_skel_norename_005 <- met_estimates_norename_005$skel_est # estimate DAG skeleton for non-renamed matrix
+met_DAG_norename_005 <- met_estimates_norename_005$DAG_est # estimate DAG for non-renamed matrix
+met_adj_mat_norename_005 <- met_estimates_norename_005$adj_matrix # estimate adjacency matrix for non-renamed matrix
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+# estimate direct effects of predefined exposure on each network-variable, causal models that agree with the input-network: models are adjusted for all possible combinations of direct neighbors (==variables in adjacency set) -> Output is multiset of possible effects:
+net_coupler_in_PC_005 <- net.coupler.in(graph_skel = met_skel_rename_005, dat = met_data_SC_rename, dat_compl = met_data_SC_rename, exp_dat = Exp_data_SC, DE = NULL, glmulti_method = "h")
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+# 1.) return results (e.g. p-values, etc.) for whole-grain bread:
+sum_netin_WGB_005 <- getExp.coef(object = net_coupler_in_PC_005, outcome = colnames(met_data_SC_rename), exposure = "WGBperMJ")
+
+# get original metabolite names back:
+sum_netin_WGB_005 <- merge(sum_netin_WGB_005, as.data.frame(met_mapping), by = "Outcome")
+sum_stat_netin_WGB_005 <- mult.stat(sum_netin = sum_netin_WGB_005, MinMod = MinMod_exp, adjust_method = "fdr", round_number = 1) # calculate summary statistics and determine direct and ambiguous effects
+
+netin_WGB_amb_005 <- sum_stat_netin_WGB_005$amb # summary statistics for metabolites on which WGB has ambiguous effect
+netin_WGB_direct_005 <- sum_stat_netin_WGB_005$direct # summary statistics for metabolites on which WGB has direct effect
+netin_WGB_sum_005 <- sum_stat_netin_WGB_005$sum_netin_sum_adj_FV # summary statistics for all metabolites including round-number information
+# 2.) return results (e.g. p-values, etc.) for redmeat:
+sum_netin_redmeat_005 <- getExp.coef(object = net_coupler_in_PC_005, outcome = colnames(met_data_SC_rename), exposure = "TMperMJ")
+# get original metabolite names back:
+sum_netin_redmeat_005 <- merge(sum_netin_redmeat_005, as.data.frame(met_mapping), by = "Outcome")
+sum_stat_netin_redmeat_005 <- mult.stat(sum_netin = sum_netin_redmeat_005, MinMod = MinMod_exp, adjust_method = "fdr", round_number = 1) # calculate summary statistics and determine direct and ambiguous effects
+netin_redmeat_amb_005 <- sum_stat_netin_redmeat_005$amb # summary statistics for metabolites on which redmeat has ambiguous effect
+netin_redmeat_direct_005 <- sum_stat_netin_redmeat_005$direct # summary statistics for metabolites on which redmeat has direct effect
+netin_redmeat_sum_005 <- sum_stat_netin_redmeat_005$sum_netin_sum_adj_FV # summary statistics for meatbolites including round-number information
+
+# there are direct effects of redmeat on metabolites -> extract connected components:
+
+# extract connected components for direct effects for redmeat:
+con_comp_redmeat_005 <- get.con.comp(exposure_names = c("Redmeat"), exposure_list = list(Redmeat = netin_redmeat_sum_005), adjM_norename = met_adj_mat_norename_005, met_group = "PC")
+
+con_comp_redmeat_0001 <- get.con.comp(exposure_names = c("Redmeat"), exposure_list = list(Redmeat = netin_redmeat_sum_0001), adjM_norename = met_adj_mat_norename_0001, met_group = "PC")
+
+
+# repeat net.coupler.in with new set of fixed variables ("always"-set consists now of all exposures, all covariates, and all connected components direct effects):
+net_coupler_in_PC_redmeat_CC2_005 <- net.coupler.in(graph_skel = met_skel_rename_005, dat = met_data_SC_rename_AMB1_redmeat_CC2_005, dat_compl = met_data_SC_rename, exp_dat = Exp_data_SC_DE1_redmeat_CC2_005, DE = DE1_redmeat_CC2_005_rename, glmulti_method = "h")
+# return results (e.g. p-values, etc.) for redmeat for second net.coupler.in round for CC2:
+sum_netin_redmeat_CC2_005 <- getExp.coef(object = net_coupler_in_PC_redmeat_CC2_005, outcome = colnames(met_data_SC_rename_AMB1_redmeat_CC2_005), exposure = "TMperMJ")
+
+sum_stat_netin_redmeat_CC2_005 <- mult.stat(sum_netin = sum_netin_redmeat_CC2_005, MinMod = MinMod_exp_DE1_redmeat_CC2_005, adjust_method = "fdr", round_number = 2) # calculate summary statistics and determine direct and ambiguous effects
+
+
+# repeat net.coupler.in with new set of fixed variables ("always"-set consists now of all exposures, all covariates, and all connected components direct effects):
+net_coupler_in_PC_redmeat_CC3_005 <- net.coupler.in(graph_skel = met_skel_rename_005, dat = met_data_SC_rename_AMB1_redmeat_CC3_005, dat_compl = met_data_SC_rename, exp_dat = Exp_data_SC_DE1_redmeat_CC3_005, DE = DE1_redmeat_CC3_005_rename, glmulti_method = "h")
+
+
+# return results (e.g. p-values, etc.) for redmeat for second net.coupler.in round for CC3:
+sum_netin_redmeat_CC3_005 <- getExp.coef(object = net_coupler_in_PC_redmeat_CC3_005, outcome = colnames(met_data_SC_rename_AMB1_redmeat_CC3_005), exposure = "TMperMJ")
+
+sum_stat_netin_redmeat_CC3_005 <- mult.stat(sum_netin = sum_netin_redmeat_CC3_005, MinMod = MinMod_exp_DE1_redmeat_CC3_005, adjust_method = "fdr", round_number = 2) # calculate summary statistics and determine direct and ambiguous effects
+
+# 3.) return results (e.g. p-values, etc.) for coffee:
+sum_netin_coffee_005 <- getExp.coef(object = net_coupler_in_PC_005, outcome = colnames(met_data_SC_rename), exposure = "CofCup")
+sum_stat_netin_coffee_005 <- mult.stat(sum_netin = sum_netin_coffee_005, MinMod = MinMod_exp, adjust_method = "fdr", round_number = 1) # calculate summary statistics and determine direct and ambiguous effects
+
+# there are direct effects of coffee on metabolites -> extract connected components:
+
+# extract connected components for direct effects for coffee:
+con_comp_coffee_005 <- get.con.comp(exposure_names = c("Coffee"), exposure_list = list(Coffee = netin_coffee_sum_005), adjM_norename = met_adj_mat_norename_005, met_group = "PC")
+
+# visualisation of skeletons and DAGs?
+
+# 1.) return results (e.g. p-values, etc.) for whole-grain bread:
+
+net_coupler_in_WGB_005 <- amb.met.loop.CC(exp_dat = Exp_data_SC, graph_skel = met_skel_rename_005, dat = met_data_SC_rename, dat_compl = met_data_SC_rename, DE = NULL, glmulti_method = "h", exposure = "WGBperMJ", met_map = met_mapping, adjust_method = "fdr", round_number = 1, adjM_norename = met_adj_mat_norename_005, met_group = "PC")
+# no direct effect of WGB on metabolites -> ambiguous effects still classified as ambiguous
+
+net_coupler_in_WGB_0001 <- amb.met.loop.CC(exp_dat = Exp_data_SC, graph_skel = met_skel_rename_0001, dat = met_data_SC_rename, dat_compl = met_data_SC_rename, DE = NULL, glmulti_method = "h", exposure = "WGBperMJ", met_map = met_mapping, adjust_method = "fdr", round_number = 1, adjM_norename = met_adj_mat_norename_0001, met_group = "PC")
+# 2.) return results (e.g. p-values, etc.) for redmeat:
+
+net_coupler_in_redmeat_005 <- amb.met.loop.CC(exp_dat = Exp_data_SC, graph_skel = met_skel_rename_005, dat = met_data_SC_rename, dat_compl = met_data_SC_rename, DE = NULL, glmulti_method = "h", exposure = "TMperMJ", met_map = met_mapping, adjust_method = "fdr", round_number = 1, adjM_norename = met_adj_mat_norename_005, met_group = "PC")
+
+met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
+met_mapping <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
+
+met_estimates_norename <- est.pcor.skel.DAG.adj(dat = met_data_SC)
+met_skel_norename <- met_estimates_norename$skel_est # estimate DAG skeleton for non-renamed matrix
+met_DAG_norename <- met_estimates_norename$DAG_est # estimate DAG for non-renamed matrix
+met_adj_mat_norename <- met_estimates_norename$adj_matrix # estimate adjacency matrix for non-renamed matrix
+
+met_estimates_rename <- est.pcor.skel.DAG.adj(dat = met_data_SC_rename)
+met_skel_rename <- met_estimates_rename$skel_est # estimate DAG skeleton for renamed matrix
+met_DAG_rename <- met_estimates_rename$DAG_est # estimate DAG for renamed matrix
+met_adj_mat_rename <- met_estimates_rename$adj_matrix # estimate adjacency matrix for renamed matrix
+
+# visualisation of skeletons and DAGs?
+
+# longer analysis version#
+
+MinMod_exp <- c(paste(colnames(Exp_data_SC), collapse = ", ")) # record covariates for minimal model without any adjacency set
+
+# estimate direct effects of predefined exposure on each network-variable, causal models that agree with the input-network: models are adjusted for all possible combinations of direct neighbors (==variables in adjacency set) -> Output is multiset of possible effects:
+net_coupler_in_PC <- net.coupler.in(graph_skel = met_skel_rename, dat = met_data_SC_rename, dat_compl = met_data_SC_rename, exp_dat = Exp_data_SC, DE = NA)
+
+# 1.) return results (e.g. p-values, etc.) for whole-grain bread:
+sum_netin_WGB <- getExp.coef(object = net_coupler_in_PC, outcome = colnames(met_data_SC_rename), exposure = "WGBperMJ")
+
+# get original metabolite names back:
+sum_netin_WGB <- merge(sum_netin_WGB, as.data.frame(met_mapping), by = "Outcome")
+
+sum_stat_netin_WGB <- mult.stat(sum_netin = sum_netin_WGB, MinMod = MinMod_exp, adjust_method = "fdr", round_number = 1) # calculate summary statistics and determine direct and ambiguous effects
+
+
+# extract connected components for direct effects for redmeat:
+con_comp_redmeat <- get.con.comp(exposure_names = c("Redmeat"), exposure_list = list(Redmeat = netin_redmeat_sum), adjM_norename = met_adj_mat_norename, met_group = "PC")
+
+# no direct effect of WGB on metabolites -> ambiguous effects still classified as ambiguous
+
+# 2.) return results (e.g. p-values, etc.) for redmeat:
+
+net_coupler_in_redmeat <- amb.met.loop.CC(exp_dat = Exp_data_SC, graph_skel = met_skel_rename, dat = met_data_SC_rename, dat_compl = met_data_SC_rename, DE = NULL, exposure = "TMperMJ", met_map = met_mapping, adjust_method = "fdr", round_number = 1, adjM_norename = met_adj_mat_norename, met_group = "PC")
+
+met_data_SC_rename <- rename.met(dat = met_data_SC)$data_renamed # rename metabolites with short names
+met_mapping_SC <- rename.met(dat = met_data_SC)$names_mapping # mapping information between old and new metabolite names
+
+met_data_rename <- rename.met(dat = met_data)$data_renamed # rename metabolites with short names
+met_mapping <- rename.met(dat = met_data)$names_mapping # mapping information between old and new metabolite names
+
+# skeleton estimation for metabolite matrix subcohort:
+met_SC_estimates_norename <- est.pcor.skel.DAG.adj(dat = met_data_SC)
+met_SC_skel_norename <- met_SC_estimates_norename$skel_est # estimate DAG skeleton for non-renamed matrix
+met_SC_DAG_norename <- met_SC_estimates_norename$DAG_est # estimate DAG for non-renamed matrix
+met_SC_adj_mat_norename <- met_SC_estimates_norename$adj_matrix # estimate adjacency matrix for non-renamed matrix
+
+met_SC_estimates_rename <- est.pcor.skel.DAG.adj(dat = met_data_SC_rename)
+met_SC_skel_rename <- met_SC_estimates_rename$skel_est # estimate DAG skeleton for renamed matrix
+met_SC_DAG_rename <- met_SC_estimates_rename$DAG_est # estimate DAG for renamed matrix
+met_SC_adj_mat_rename <- met_SC_estimates_rename$adj_matrix # estimate adjacency matrix for renamed matrix
+
+# skeleton estimation for complete cohort metabolite matrix:
+met_estimates_norename <- est.pcor.skel.DAG.adj(dat = met_data)
+met_skel_norename <- met_estimates_norename$skel_est # estimate DAG skeleton for non-renamed matrix
+met_DAG_norename <- met_estimates_norename$DAG_est # estimate DAG for non-renamed matrix
+met_adj_mat_norename <- met_estimates_norename$adj_matrix # estimate adjacency matrix for non-renamed matrix
+
+met_estimates_rename <- est.pcor.skel.DAG.adj(dat = met_data_rename)
+met_skel_rename <- met_estimates_rename$skel_est # estimate DAG skeleton for renamed matrix
+met_DAG_rename <- met_estimates_rename$DAG_est # estimate DAG for renamed matrix
+met_adj_mat_rename <- met_estimates_rename$adj_matrix # estimate adjacency matrix for renamed matrix
+
+# create "survival" object:
+t2d_surv <- Surv(T2D_data$sta_time, T2D_data$sto_time, T2D_data$fall)
+
+
+# initial net.coupler.out run:
+net_coupler_out_1 <- net.coupler.out(graph_skel = met_SC_skel_rename, dat = met_data_rename, dat_compl = met_data_rename, exp_dat = Exp_data, DE = NULL, survival_obj = t2d_surv, always_set = always_set)
+
+# return results:
+sum_netout <- getExp.coef.out(object = net_coupler_out_1, metabolite = colnames(met_data_rename))
+
+# get original metabolite names back:
+sum_netout <- merge(sum_netout, as.data.frame(met_mapping), by = "Outcome")
+
+# summary statistics:
+sum_netout_stat <- mult.stat.surv(sum_netout = sum_netout, adjust_method = "fdr", round_number = 1)
+
+
+# repeat net.coupler.out with new input and new always set now including all metabolites previously identified as direct effect metabolites:
+net_coupler_out_2 <- net.coupler.out(graph_skel = met_SC_skel_rename, dat = met_data_rename_amb1_netout, dat_compl = met_data_rename, exp_dat = Exp_data_DE1_netout, DE = DE, survival_obj = t2d_surv, always_set = always_set_DE1)
+
+sum_netout_2 <- getExp.coef.out(object = net_coupler_out_2, metabolite = colnames(met_data_rename_amb1_netout))
+
+# get original metabolite names back:
+sum_netout_2 <- merge(sum_netout_2, as.data.frame(met_mapping), by = "Outcome")
+
+# summary statistics:
+sum_netout_stat_2 <- mult.stat.surv(sum_netout = sum_netout_2, adjust_method = "fdr", round_number = 2)
+
+
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
