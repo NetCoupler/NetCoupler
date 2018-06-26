@@ -235,16 +235,6 @@ net.coupler.in <- function(graph_skel, dat, dat_compl, exp_dat, DE, glmulti_meth
   return(model_details_all)
 }
 
-# Get rownames as variable in dplyr#
-
-draw.rownames <- function(dat) {
-  dat %>% do(mutate(., Metabolite = rownames(.)))
-}
-
-draw.rownames.out <- function(dat) {
-  dat %>% do(mutate(., Metabolite = as.factor(rownames(.))))
-}
-
 # Get connected components per exposure#
 
 get.con.comp <- function(exposure_names, exposure_list, adjM_norename, met_group) {

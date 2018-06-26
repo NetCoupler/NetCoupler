@@ -38,16 +38,6 @@ est.pcor.skel.DAG.adj <- function(dat) {
 
 # Summary statistics and multiple testing adjustment#
 
-# Get rownames as variable in dplyr#
-
-draw.rownames <- function(dat) {
-  dat %>% do(mutate(., Metabolite = rownames(.)))
-}
-
-draw.rownames.out <- function(dat) {
-  dat %>% do(mutate(., Metabolite = as.factor(rownames(.))))
-}
-
 # Get connected components per exposure#
 
 get.con.comp <- function(exposure_names, exposure_list, adjM_norename, met_group) {
@@ -454,16 +444,6 @@ est.pcor.skel.DAG.adj <- function(dat) {
 }
 
 # Net Coupler IN function: exposure -> metabolome#
-
-# Get rownames as variable in dplyr#
-
-draw.rownames <- function(dat) {
-  dat %>% do(mutate(., Metabolite = rownames(.)))
-}
-
-draw.rownames.out <- function(dat) {
-  dat %>% do(mutate(., Metabolite = as.factor(rownames(.))))
-}
 
 # Get connected components per exposure#
 

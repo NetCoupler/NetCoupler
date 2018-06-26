@@ -176,21 +176,6 @@ PC_DAG <- pc(
 # saveRDS(PC_skel,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/aaPC/FV/Results/Networks/PC_skel.rds")
 # saveRDS(PC_DAG,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/aaPC/FV/Results/Networks/PC_DAG.rds")
 
-# 1.4.1 Round numeric columns in dataframes
-round_df <- function(x, digits) {
-  # round all numeric variables
-  # x: data frame
-  # digits: number of digits to round
-  numeric_columns <- sapply(x, class) == "numeric"
-  x[numeric_columns] <- round(x[numeric_columns], digits)
-  x
-}
-
-# 1.4.2 get object-names as string-variables
-name.as.string <- function(v1) {
-  deparse(substitute(v1))
-}
-
 MinMod <- c(paste(colnames(Exp_data_SC), collapse = ", "))
 # saveRDS(MinMod,"Covs.rds")
 print(MinMod)
@@ -353,9 +338,6 @@ memory.limit(size = 250000)
 
 #
 # define function to get rownames as variable in dplyr
-draw_rownames <- function(.data) .data %>% do(mutate(., Metabolite = rownames(.)))
-draw_rownames_out <- function(.data) .data %>% do(mutate(., Metabolite = as.factor(rownames(.))))
-
 #
 # import multi-model estimates for Exposure effects on Acylcarnitines:
 GPL_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
@@ -627,9 +609,6 @@ memory.limit(size = 250000)
 #
 # load("H:/Metabolomics/DISS I/R_obj/PC/MULTI_PC_IN")
 # show(CHECK_IN)
-draw_rownames_Exp <- function(.data) .data %>% do(mutate(., Exp = rownames(.)))
-draw_rownames <- function(.data) .data %>% do(mutate(., Outcome = rownames(.)))
-draw_rownames_out <- function(.data) .data %>% do(mutate(., Metabolite = as.factor(rownames(.))))
 #
 # Write multi-model summaries into named list for looped data-processing:
 # PC_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/PC/STR_PC_SC.rds")
@@ -677,10 +656,6 @@ for (i in Exp)
 # print(MinMod)
 # PC_IN_CC2<-net.coupler(Graph=PC_skel , Graph_data=PC_data_SC , Exp_data_SC=Exp_data_SC ,exposure="TMperMJ")
 #
-# 1.4.2 get object-names as string-variables
-name.as.string <- function(v1) {
-  deparse(substitute(v1))
-}
 #
 #   Connected Component 1
 #
