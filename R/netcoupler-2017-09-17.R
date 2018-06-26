@@ -108,64 +108,6 @@ getExp.coef.permetabolite <- function(object, metabolite) {
   return(mm_coef_temp1)
 }
 
-# Extract exposure coefficients for metabolite(s) on time-to-incidence#
-
-getExp.coef.out <- function(object, metabolite) {
-
-  # object: output of net.coupler
-  # metabolite: specific metabolite to evaluate
-
-  cat("*************************************************************************************************** \n")
-  cat("This function produces a table of effect estimates of all (some) network-variables on an outcome    \n")
-  cat("(time-to-event) for all possibles causal models based on conditional independence criteria encoded  \n")
-  cat("in the input-network => MULTISET OF POSSIBLE EFFECTS PER EXPOSURE-OUTCOME PAIR; network-variables   \n")
-  cat("of interest are selected by indicating the variable-names as character vector                       \n")
-  cat("*************************************************************************************************** \n")
-
-  # define empty dataframes for output:
-
-  mm_coef <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Covariables = as.character(),
-    NCov = as.numeric(),
-    HR = as.numeric(),
-    LCL = as.numeric(),
-    UCL = as.numeric(),
-    Beta = as.numeric(),
-    rSE = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-
-  mm_coef_temp <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Covariables = as.character(),
-    NCov = as.numeric(),
-    HR = as.numeric(),
-    LCL = as.numeric(),
-    UCL = as.numeric(),
-    Beta = as.numeric(),
-    rSE = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-
-  # for each metabolite: get metabolite coefficients from all possible models and write to table:
-
-  for (j in metabolite) {
-    mm_coef_temp <- data.frame(getExp.coef.permetabolite(object = object, metabolite = j))
-    mm_coef <- bind_rows(mm_coef, mm_coef_temp)
-  }
-
-  return(mm_coef)
-}
-
 # Summary statistics and multiple testing adjustment for net.coupler.out with survival object#
 
 mult.stat.surv <- function(sum_netout, adjust_method, rule_1 = 12, rule_1_cut = 0.1, rule_2 = 5, rule_2_cut = 0.05, rule_3 = 15, rule_4 = 14, ass_rule1=16, round_number) {
@@ -569,64 +511,6 @@ getExp.coef.permetabolite <- function(object, metabolite) {
   }
 
   return(mm_coef_temp1)
-}
-
-# Extract exposure coefficients for metabolite(s) on time-to-incidence#
-
-getExp.coef.out <- function(object, metabolite) {
-
-  # object: output of net.coupler
-  # metabolite: specific metabolite to evaluate
-
-  cat("*************************************************************************************************** \n")
-  cat("This function produces a table of effect estimates of all (some) network-variables on an outcome    \n")
-  cat("(time-to-event) for all possibles causal models based on conditional independence criteria encoded  \n")
-  cat("in the input-network => MULTISET OF POSSIBLE EFFECTS PER EXPOSURE-OUTCOME PAIR; network-variables   \n")
-  cat("of interest are selected by indicating the variable-names as character vector                       \n")
-  cat("***************************************************************************************************")
-
-  # define empty dataframes for output:
-
-  mm_coef <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Covariables = as.character(),
-    NCov = as.numeric(),
-    HR = as.numeric(),
-    LCL = as.numeric(),
-    UCL = as.numeric(),
-    Beta = as.numeric(),
-    rSE = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-
-  mm_coef_temp <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Covariables = as.character(),
-    NCov = as.numeric(),
-    HR = as.numeric(),
-    LCL = as.numeric(),
-    UCL = as.numeric(),
-    Beta = as.numeric(),
-    rSE = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-
-  # for each metabolite: get metabolite coefficients from all possible models and write to table:
-
-  for (j in metabolite) {
-    mm_coef_temp <- data.frame(getExp.coef.permetabolite(object = object, metabolite = j))
-    mm_coef <- bind_rows(mm_coef, mm_coef_temp)
-  }
-
-  return(mm_coef)
 }
 
 # Summary statistics and multiple testing adjustment for net.coupler.out with survival object#
