@@ -176,64 +176,6 @@ PC_DAG <- pc(
 # saveRDS(PC_skel,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/aaPC/FV/Results/Networks/PC_skel.rds")
 # saveRDS(PC_DAG,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/aaPC/FV/Results/Networks/PC_DAG.rds")
 
-getExp.coef.peroutcome <- function(object, outcome, exposure) {
-
-  # Create a vector containing integers from 1 to number of outcome-specific models
-  nbm <- c(1:length(object$Outcomes[[outcome]]$Model_summaries))
-  Nbmds <- max(nbm)
-  exposure <- exposure
-  # Create emty data-frames for the output
-  mm_coef_temp1 <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    Estimate = as.numeric(),
-    SE = as.numeric(),
-    tval = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-  mm_coef_temp2 <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    Estimate = as.numeric(),
-    SE = as.numeric(),
-    tval = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-
-  # loop along number of outcome-specific models
-  for (i in seq(along = nbm))
-  { # get exposure-effect estimates (beta coefficient, SE, t-value, p-value) from single model and write into a dataframe
-    SUM <- summary(object$Outcomes[[outcome]]$Model_summaries[[i]]$Model_summary)
-    Cov <- (dplyr::filter(data.frame(row.names(SUM$coefficients)), row.names(SUM$coefficients) != "exp"))
-
-    mm_coef_temp2 <- data.frame(
-      Model = as.character(object$Outcomes[[outcome]]$Model_summaries[[i]]$Model),
-      Nbmds = Nbmds,
-      Outcome = as.character(object$Outcomes[[outcome]]$Outcome),
-      Exposure = exposure,
-      Covariables = as.character(paste(Cov[, 1], collapse = ", ")),
-      Estimate = as.numeric(SUM$coefficients[paste(exposure), 1]),
-      SE = as.numeric(SUM$coefficients[paste(exposure), 2]),
-      tval = as.numeric(SUM$coefficients[paste(exposure), 3]),
-      P = as.numeric(SUM$coefficients[paste(exposure), 4])
-    )
-
-    # bind information to a outcome-specific dataframe
-    mm_coef_temp1 <- bind_rows(mm_coef_temp1, mm_coef_temp2)
-  }
-  mm_coef_temp1
-}
-
 # 1.4.1 Round numeric columns in dataframes
 round_df <- function(x, digits) {
   # round all numeric variables
