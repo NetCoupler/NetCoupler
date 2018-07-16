@@ -1,0 +1,53 @@
+---
+title: "Introduction to NetCoupler"
+author: 
+    - "Clemens Wittenbecher"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to NetCoupler}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The *NetCoupler*-algorithm operates by taking the following steps:
+
+1. The implementation of the PC-algorithm [1] in the pcalg package [2] is
+applied to estimate the skeleton of the underlying directed acyclic graph (DAG)
+that generated the complex exposure data (e.g., metabolomics data).
+1. For each network variable (e.g., metabolite), the adjacency set (all direct
+neighbors) is extracted from this undirected network. Assuming complete coverage
+of the measurements, the Markov parents of the network variable are necessarily
+a subset of its direct network neighbors. Adjustment for the Markov parents is
+sufficient to block all confounding influences by other network-variables
+(d-separation). Adjusting for descendants should be avoided because it can
+potentially introduce collider bias.
+1. A multi-model procedure is applied. The relation of each network variable
+with time-to-the event of interest is adjusted for every possible subset of
+direct neighbors. Thereby, a confidence set of estimates is generated, which
+necessarily contains the valid direct effect estimate.
+1. Network variables are classified based on the bounds of this confidence set
+of possible direct effects. As default, network variables are classified as
+directly affecting the outcome only if the confidence set of possible direct
+effects contains exclusively significant and consistent effect estimates.
+1. The multi-model procedure is looped with adjusting all models for the
+previously identified direct effects (because these are potential confounders
+but cannot be colliders) until no further direct effects are identified.
+
+A similar procedure is provided to identify direct influences of external
+factors on network variables.
+
+1 *Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse Causal Graphs.
+Social Science Computer Review 1991;9:62-72.*
+2 *Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis, Peter
+Buehlmann (2012). Causal Inference Using Graphical Models with the R Package
+pcalg. Journal of Statistical Software, 47(11), 1-26. URL
+http://www.jstatsoft.org/v47/i11/.*
+
