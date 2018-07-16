@@ -24,3 +24,19 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Imports: 
+    dplyr,
+    rlist,
+    glmulti,
+    pcalg,
+    plyr,
+    RBGL,
+    survival,
+    mgcv,
+    gRbase,
+    mosaic,
+    igraph,
+    RCy3,
+    ppcor,
+    xlsx,
+    tictoc

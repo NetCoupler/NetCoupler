@@ -3,20 +3,20 @@
 
 rm(list=ls())
 
-require(rlist)
-require(glmulti)
-require(pcalg)
-require(plyr)
-require(dplyr)
-require(RBGL)
-require(survival)
-require(mgcv)
-require(gRbase)
-require(rlist)
-require(mosaic)
-library("igraph")
-library('RCy3')
-library(ppcor)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #########################################################Rename feature names in order to avoid clash with glm#######################################
@@ -46,8 +46,8 @@ est.pcor.skel.DAG.adj<-function(dat){
   
   #dat: samples x metabolites data matrix
   
-  library(ppcor)
-  library(pcalg)
+  
+  
   
   #check if input data is gaussian
   
@@ -626,7 +626,7 @@ colnames(netout_sum_1_2_3)[2:21]<-paste0(colnames(netout_sum_1_2_3)[2:21],sep="_
 
 netout_sum_1_2_3_final<-bind_rows(netout_sum[-which(netout_sum$Outcome %in% netout_sum_1_2_3$Outcome_1),],netout_sum_1_2_3)
 
-library(xlsx)
+
 
 write.xlsx(netout_sum_1_2_3_final,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netout_aaPC_20_7_2017.xls")
 
@@ -648,20 +648,20 @@ write.xlsx(netout_sum_1_2_3_final,file="C:/Users/helena.zacharias/Documents/Helm
 
 rm(list=ls())
 
-require(rlist)
-require(glmulti)
-require(pcalg)
-require(plyr)
-require(dplyr)
-require(RBGL)
-require(survival)
-require(mgcv)
-require(gRbase)
-require(rlist)
-require(mosaic)
-library("igraph")
-library('RCy3')
-library(ppcor)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #########################################################Rename feature names in order to avoid clash with glm#######################################
@@ -691,8 +691,8 @@ est.pcor.skel.DAG.adj<-function(dat){
   
   #dat: samples x metabolites data matrix
   
-  library(ppcor)
-  library(pcalg)
+  
+  
   
   #check if input data is gaussian
   
@@ -1197,7 +1197,7 @@ t2d_surv<-Surv(T2D_data$sta_time,T2D_data$sto_time,T2D_data$fall)
 always_set<-paste0(colnames(Exp_data)[-(which(colnames(Exp_data) %in% c("SEX","subcohort","ID","age","age_years")))],collapse = " + ")
 always_set<-paste0(always_set," + cluster(ID) + strata(age_years)")                                   #cluster(ID) specific for case-cohort design, strata(age_years) stratification of baseline risk according to age in years
 
-library(tictoc)
+
 
 #estimate direct effects of metabolites on time-to-diabetes-incident:
 tic()
@@ -1217,7 +1217,7 @@ net_coupler_out_iteration3<-amb_met_loop_out$netout_sum$`3. iteration`
 
 netout_sum_1_2_3_final<-Reduce(function(x,y,z)merge(x,y,all=TRUE,by="Outcome"),list(net_coupler_out_iteration1,net_coupler_out_iteration2,net_coupler_out_iteration3))
 
-library(xlsx)
+
 
 write.xlsx(netout_sum_1_2_3_final,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netout_aaPC_ambloop_20_7_2017.xls")
 

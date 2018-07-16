@@ -81,7 +81,7 @@ t2d_surv<-Surv(T2D_data$sta_time,T2D_data$sto_time,T2D_data$fall)
 always_set<-paste0(colnames(Exp_data)[-(which(colnames(Exp_data) %in% c("SEX","subcohort","ID","age","age_years")))],collapse = " + ")
 always_set<-paste0(always_set," + cluster(ID) + strata(age_years)")                                   #cluster(ID) specific for case-cohort design, strata(age_years) stratification of baseline risk according to age in years
 
-library(tictoc)
+
 
 #estimate direct effects of metabolites on time-to-diabetes-incident:
 tic()
@@ -99,7 +99,7 @@ net_coupler_out_iteration3_005<-amb_met_loop_out_005$netout_sum$`3. iteration`
 
 netout_sum_1_2_3_final_005<-Reduce(function(x,y,z)merge(x,y,all=TRUE,by="Outcome"),list(net_coupler_out_iteration1_005,net_coupler_out_iteration2_005,net_coupler_out_iteration3_005))
 
-library(xlsx)
+
 
 #write.xlsx(netout_sum_1_2_3_final_005,file="C:/Users/helena.zacharias/Documents/Helmholtz/KORA_stress/data_analysis/Clemens_netcoupler/HZ_netout_SM_ambloop_005_18_9_2017.xls")
 

@@ -6,20 +6,20 @@
 
 rm(list=ls())
 
-require(rlist)
-require(glmulti)
-require(pcalg)
-require(plyr)
-require(dplyr)
-require(RBGL)
-require(survival)
-require(mgcv)
-require(gRbase)
-require(rlist)
-require(mosaic)
-library("igraph")
-library('RCy3')
-library(ppcor)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #########################################################Rename feature names in order to avoid clash with glm#######################################
@@ -49,8 +49,8 @@ est.pcor.skel.DAG.adj<-function(dat,alpha_val){
   
   #dat: samples x metabolites data matrix
   
-  library(ppcor)
-  library(pcalg)
+  
+  
   
   #check if input data is gaussian
   
