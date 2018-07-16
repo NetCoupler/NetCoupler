@@ -69,220 +69,6 @@ PC_skel <- skeleton(
 )
 # saveRDS(PC_skel,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/PC_skel.rds")
 
-net.coupler.out <- function(Graph, data) {
-  cat("*****************************************************************************************************\n")
-  cat("This algorithm estimates direct effect of a predefined exposure (network-variable) on time-to-event  \n")
-  cat("for all causal models that agree with the input-network: Cox prop. hazards regression models are     \n")
-  cat("used to estimate the efect of all network-variables on survival time adjusted for all possible       \n")
-  cat("combinations of direct neighbors (adjecency set) -> Output ist a multiset of possible causal effects \n")
-  cat("*****************************************************************************************************")
-  mod_coeff_q_new <- c()
-  mod_coeff_q <- c()
-  Nodes <- c()
-  i <- c()
-
-  Model_details_all <- list(NULL)
-  Nodes <- as.character(Graph@graph@nodes) # Create vector "Nodes" with node names as strings
-  for (i in seq(along = Nodes)) # Create an empty list with slots each network-variable
-  {
-    Model_details <- list(NULL)
-    Model_details_all[[i]] <- Model_details
-  }
-  names(Model_details_all) <- Nodes
-
-  # Modify the fitting function to Cox phreg + always include one set of variables while shuffling another set
-  coxph.redefined <- function(formula, data, always="", ...) {
-    coxph(as.formula(paste(deparse(formula), always)), data = data, ...)
-  }
-  # PREPARE AN EMPTY LIST TO STORE THE OUTPUT
-
-  for (i in seq(along = Nodes))
-  {
-    Model_details <- list(NULL)
-    Model_details_all[[i]] <- Model_details
-  }
-
-  names(Model_details_all) <- Nodes
-
-  # ST<-Surv(time = data[["fup_time"]], event=data[["cens"]])
-  Nodes <- as.character(Graph@graph@nodes) # Create vector "Nodes" with node names as strings
-  for (i in Nodes)
-  {
-
-    # PREPARE DATASETS
-    exposure <- i
-    edgeList <- slot(Graph@graph, "edgeL")
-    adjset <- c(edgeList[[i]])
-    adjset <- c(adjset[[1]])
-
-    # Create vector with names of adjecency set as strings
-    adjset_char <- array(Nodes[adjset])
-
-    glmulti_obj <- glmulti(
-      y = "SURV",
-      xr = c(adjset_char[1:length(adjset_char)]),
-      data = data,
-      level = 1,
-      confsetsize = 512,
-      method = "h",
-      fitfunc = coxph.redefined,
-      always = paste0(paste0("+", i, collapse = ""), sep = " + ", "WGBperMJ + TMperMJ + CofCup + g2perMJ + g4perMJ + g5perMJ + g6perMJ + g9perMJ +
-                                       g10perMJ + g12perMJ + g13perMJ + g15perMJ + g16perMJ + g17perMJ + g18perMJ + g19perMJ  +  g20perMJ + g22perMJ + g24perMJ +
-                                       g25perMJ + g26perMJ +  g27perMJ +  g28perMJ + g31perMJ + g34perMJ + g36perMJ + g39perMJ +   g40perMJ + g41perMJ +
-                                       g42perMJ + g43perMJ + g45perMJ + g49perMJ +   fasting + GJ_c + bike + sport + alk_1 + alk_2 + alk_3 + alk_4 + alk_5 + alk_6 +
-                                       smk1 + smk2 + smk3  +  educ1 +  educ2 +  educ3 + Med_HLipid + Med_Hypert + cluster(ID) + strata(age_years)"),
-      plotty = FALSE,
-      includeobjects = TRUE
-    )
-
-    # OUTPUT SUMMARIES
-    coffee <- glmulti_obj@objects
-
-    Nbmds <- c(1:glmulti_obj@nbmods)
-    Model_details <- list(NULL)
-    for (j in seq(along = Nbmds))
-    {
-      Model_details[[j]] <- list(NULL)
-    }
-    names(Model_details) <- paste("Model", Nbmds, sep = "_")
-    for (j in seq(along = Nbmds))
-    {
-      model_summary <- coffee[[j]]
-      Model_details[[j]] <- list(
-        Model = paste("Model", j, "of", length(Nbmds)),
-        Model_summary = model_summary
-      )
-    }
-
-    Model_details_all[[exposure]] <- list(
-      Model_summaries = Model_details,
-      Number_of_Models = length(Nbmds),
-      Adj_set = paste(adjset_char, collapse = ", "),
-      Exposure = exposure
-    )
-  }
-
-  OUT1 <- list(Exposures = Model_details_all, Outcome = Outcome <- list(data = SURV, class = class(SURV)))
-  OUT1
-}
-
-#
-# 1.3 GETTERS (OUTPUT SUMMARY FUNCTIONS)
-# 1.3.1 For specified exposure-outcome pairs: Get Exposure coefficients from all possible models
-# A. Get exposure coefficients for a single outcome
-getExp.coef.perexposure <- function(object, exposure) {
-  # Create a vector containing integers from 1 to number of exposure-specific models
-  nbm <- c(1:length(object$Exposures[[exposure]]$Model_summaries))
-  Nbmds <- max(nbm)
-
-  # Create emty data-frames for the output
-  mm_coef_temp1 <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    HR = as.numeric(),
-    LCL = as.numeric(),
-    UCL = as.numeric(),
-    Beta = as.numeric(),
-    rSE = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-
-  mm_coef_temp2 <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    NCov = as.numeric(),
-    HR = as.numeric(),
-    LCL = as.numeric(),
-    UCL = as.numeric(),
-    Beta = as.numeric(),
-    rSE = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-  # loop along number of exposure-specific models
-
-  for (i in seq(along = nbm))
-  {
-    SUM <- summary(object$Exposures[[exposure]]$Model_summaries[[i]]$Model_summary)
-    Cov <- (dplyr::filter(data.frame(row.names(SUM$coefficients)), row.names(SUM$coefficients) != exposure))
-
-    mm_coef_temp2 <- data.frame(
-      Model = as.character(object$Exposures[[exposure]]$Model_summaries[[i]]$Model),
-      Nbmds = Nbmds,
-      Exposure = as.character(exposure),
-      Covariables = as.character(paste(Cov[, 1], collapse = ", ")),
-      NCov = max(unlist(object$Exposures[[exposure]]$Model_summaries[[i]]$Model_summary$assign)) - 1,
-      HR = as.numeric(SUM$conf.int[[exposure, 1]]),
-      LCL = as.numeric(SUM$conf.int[[exposure, 3]]),
-      UCL = as.numeric(SUM$conf.int[[exposure, 4]]),
-      Beta = as.numeric(SUM$coefficients[[exposure, 1]]),
-      rSE = as.numeric(SUM$coefficients[[exposure, 4]]),
-      P = as.numeric(SUM$coefficients[[exposure, 6]])
-    )
-
-    # bind information to a exposure-specific dataframe
-    mm_coef_temp1 <- bind_rows(mm_coef_temp1, mm_coef_temp2)
-  }
-  mm_coef_temp1
-}
-
-# B. Get exposure coefficients for a a group of exposures (e.g. all network-variables)  on time-to-incidence
-getExp.coef.out <- function(object, exposure) {
-  cat("*************************************************************************************************** \n")
-  cat("This function produces a table of effect estimates of all (some) network-variables on an outcome    \n")
-  cat("(time-to-event) for all possibles causal models based on conditional independence criteria encoded  \n")
-  cat("in the input-network => MULTISET OF POSSIBLE EFFECTS PER EXPOSURE-OUTCOME PAIR; network-variables   \n")
-  cat("of interest are selected by indicating the variable-names as character vector                       \n")
-  cat("***************************************************************************************************")
-
-  # Define empty dataframes
-  mm_coef <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    NCov = as.numeric(),
-    HR = as.numeric(),
-    LCL = as.numeric(),
-    UCL = as.numeric(),
-    Beta = as.numeric(),
-    rSE = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-  mm_coef_temp <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    NCov = as.numeric(),
-    HR = as.numeric(),
-    LCL = as.numeric(),
-    UCL = as.numeric(),
-    Beta = as.numeric(),
-    rSE = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-  # For each exposure-outcome pair: Get Exposure coefficients from all possible models and write to a table
-  for (j in exposure)
-  {
-    mm_coef_temp <- data.frame(getExp.coef.perexposure(object = object, exposure = j))
-    mm_coef <- bind_rows(mm_coef, mm_coef_temp)
-  }
-  # Merge result tables for all exposure-outcome pairs
-  mm_coef
-}
-
 #
 #
 # 2.          MULTIMODEL INFERENCE
@@ -341,7 +127,7 @@ DE1_PC_Diab <- PC_T2Dsum %>% filter(Assoc != 0 & DE != 0)
 #
 # Exposure
 #
-# 
+#
 # PC
 memory.limit(size = 250000)
 Ll <- dplyr::bind_cols(LA, l_abcd) %>% dplyr::transmute(Ll = paste0(Let, l))
@@ -389,244 +175,6 @@ PC_DAG <- pc(
 
 # saveRDS(PC_skel,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/aaPC/FV/Results/Networks/PC_skel.rds")
 # saveRDS(PC_DAG,"L:/!MEP/Projekte/EPIC-Potsdam/Diabetes/Metabolomic traits/Simulation/PC/aaPC/FV/Results/Networks/PC_DAG.rds")
-
-net.coupler <- function(Graph, Graph_data, Exp_data_SC, exposure) {
-  cat("*************************************************************************************************** \n")
-  cat("This algorithm estimates direct effects of a predefined exposure on each network-variable for all   \n")
-  cat("causal models that agree with the input-network: models are adjusted for all possible combinations  \n")
-  cat("of direct neighbors (==variables in the adjecency set) -> Output ist a multiset of possible effects \n")
-  cat("***************************************************************************************************")
-
-  mod_coeff_q_new <- c()
-  mod_coeff_q <- c()
-  Nodes <- c()
-  i <- c()
-  EXP <- colnames(Exp_data_SC)
-  # print(EXP)
-  # MinMod<-paste(EXP, collapse=", ")
-  # print(MinMod)
-  # PREPARE AN EMPTY LIST TO STORE THE OUTPUT
-  Model_details_all <- list(NULL)
-  Nodes <- as.character(Graph@graph@nodes) # Create vector "Nodes" with node names as strings
-  for (i in seq(along = Nodes)) # Create an empty list with slots each network-variable
-  {
-    Model_details <- list(NULL)
-    Model_details_all[[i]] <- Model_details
-  }
-  names(Model_details_all) <- Nodes
-
-  for (i in Nodes)
-  {
-    # PREPARE DATASETS
-    outcome <- i
-    if (is.character(outcome) == FALSE) {
-      stop("'outcome' is not a character string as required")
-    }
-
-    # Select data on Outcome within network, store in "out"
-    out <- Graph_data[, outcome]
-    if (is.numeric(out) == FALSE) {
-      stop("'out' is not a numeric vector as required")
-    }
-
-    # create vector with integers indicating adjecent variables
-    edgeList <- slot(Graph@graph, "edgeL")
-    adjset <- c(edgeList[[outcome]])
-    adjset <- c(adjset[[1]])
-
-    adjdata <- subset(Graph_data, select = c(adjset)) # Select data on adjecency set, store in adjdata
-    if (is.numeric(out) == FALSE) stop("'adjdata' is not a matrix of numeric variables as required")
-
-    # Create vector with names of adjecency set as strings
-    adjset_char <- array(Nodes[adjset])
-    if (is.character(adjset_char) == FALSE) {
-      stop("'adjset_char' is not a is not a vector of character strings as required")
-    }
-
-    # Combine data on Exposure, Outcome and Adjacency set, store as dataframe (modeldata)
-    modeldata <- data.frame(cbind(out, Exp_data_SC, adjdata))
-    # print(modeldata[1:10,])
-    # modeldata<-rename(modeldata,exp=Exp_data_SC)
-    # print(modeldata[1:10,])
-    # if(is.(modeldata)==FALSE)
-    #  stop("'modeldata' is not a df of numeric variables as required")
-
-    # ESTIMATE MULTIMODEL COEFFICIENTS
-    # Modify the fitting function to always include one set of variables while shuffling another set
-    glm.redefined <- function(formula, data, always="", ...) {
-      glm(as.formula(paste(deparse(formula), always)), data = data, ...)
-    }
-    # Fit all possible causal models using glmulti
-    glmulti_obj <- glmulti(
-      y = "out",
-      xr = c(adjset_char[1:length(adjset_char)]),
-      data = modeldata,
-      level = 1,
-      confsetsize = 512,
-      fitfunc = glm.redefined,
-      always = paste0("+", paste0(EXP, collapse = "+ ")),
-      includeobjects = TRUE,
-      intercept = FALSE,
-      plotty = F,
-      report = T
-    )
-
-    # OUTPUT SUMMARIES
-    # avg_coef<-as.data.frame(coef.glmulti(glmulti_obj, icmethod="Lukacs", alphaIC=0.05));mm_coef<-tbl_df(mm_coef)
-    coffee <- glmulti_obj@objects
-    Nbmds <- c(1:glmulti_obj@nbmods)
-    Model_details <- list(NULL)
-    for (j in seq(along = Nbmds))
-    {
-      Model_details[[j]] <- list(NULL)
-    }
-    names(Model_details) <- paste("Model", Nbmds, sep = "_")
-    for (j in seq(along = Nbmds))
-    {
-      model_summary <- coffee[[j]]
-      Model_details[[j]] <- list(
-        Model = paste("Model", j, "of", length(Nbmds)),
-        Model_summary = model_summary
-      )
-      # Model_details[[j]]$Model_summary$data<-NULL
-      # Model_details[[j]]$Model_summary$qr$qr<-NULL
-      # Model_details[[j]]$Model_summary$model<-NULL
-      # Model_details[[j]]$Model_summary$residuals<-NULL
-      # Model_details[[j]]$Model_summary$fitted.values<-NULL
-      # Model_details[[j]]$Model_summary$effects<-NULL
-      # Model_details[[j]]$Model_summary$linear.predictors<-NULL
-      # Model_details[[j]]$Model_summary$weights<-NULL
-      # Model_details[[j]]$Model_summary$prior.weights<-NULL
-      # Model_details[[j]]$Model_summary$y<-NULL
-    }
-    Model_details_all[[outcome]] <- list(
-      Model_summaries = Model_details,
-      Number_of_Models = length(Nbmds),
-      Adj_set = paste(adjset_char, collapse = ", "),
-      Outcome = outcome
-    )
-  }
-  OUT1 <- list(Outcomes = Model_details_all, Exposure = exposure) # list(Model_details_all,mmcf)
-  OUT1
-}
-
-getExp.coef.peroutcome <- function(object, outcome, exposure) {
-
-  # Create a vector containing integers from 1 to number of outcome-specific models
-  nbm <- c(1:length(object$Outcomes[[outcome]]$Model_summaries))
-  Nbmds <- max(nbm)
-  exposure <- exposure
-  # Create emty data-frames for the output
-  mm_coef_temp1 <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    Estimate = as.numeric(),
-    SE = as.numeric(),
-    tval = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-  mm_coef_temp2 <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    Estimate = as.numeric(),
-    SE = as.numeric(),
-    tval = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-
-  # loop along number of outcome-specific models
-  for (i in seq(along = nbm))
-  { # get exposure-effect estimates (beta coefficient, SE, t-value, p-value) from single model and write into a dataframe
-    SUM <- summary(object$Outcomes[[outcome]]$Model_summaries[[i]]$Model_summary)
-    Cov <- (dplyr::filter(data.frame(row.names(SUM$coefficients)), row.names(SUM$coefficients) != "exp"))
-
-    mm_coef_temp2 <- data.frame(
-      Model = as.character(object$Outcomes[[outcome]]$Model_summaries[[i]]$Model),
-      Nbmds = Nbmds,
-      Outcome = as.character(object$Outcomes[[outcome]]$Outcome),
-      Exposure = exposure,
-      Covariables = as.character(paste(Cov[, 1], collapse = ", ")),
-      Estimate = as.numeric(SUM$coefficients[paste(exposure), 1]),
-      SE = as.numeric(SUM$coefficients[paste(exposure), 2]),
-      tval = as.numeric(SUM$coefficients[paste(exposure), 3]),
-      P = as.numeric(SUM$coefficients[paste(exposure), 4])
-    )
-
-    # bind information to a outcome-specific dataframe
-    mm_coef_temp1 <- bind_rows(mm_coef_temp1, mm_coef_temp2)
-  }
-  mm_coef_temp1
-}
-
-# B. Get exposure coefficients for a a group of outcomes: e.g. all network-variables
-getExp.coef <- function(object, outcome, exposure) {
-  cat("*************************************************************************************************** \n")
-  cat("This function produces a table of effect estimates of the exposure (betas, SE, t-value, p-value) on \n")
-  cat("a selected (set of) outcome(s) [specified as character-vector of variable-names] for all possible   \n")
-  cat("causal models based on conditional independence criteria encoded in the input-network => MULTISET OF\n")
-  cat("POSSIBLE EFFECTS PER EXPOSURE-OUTCOME PAIRS: NUMBER OF POSSIBLE EFFECTS ~ SIZE OF THE ADJECENCY SET!\n")
-  cat("***************************************************************************************************")
-  exposure <- exposure
-  # Define empty dataframes
-  mm_coef <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    Estimate = as.numeric(),
-    SE = as.numeric(),
-    tval = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-  mm_coef_temp <- structure(list(
-    Model = as.character(),
-    Nbmds = as.numeric(),
-    Outcome = as.character(),
-    Exposure = as.character(),
-    Covariables = as.character(),
-    Estimate = as.numeric(),
-    SE = as.numeric(),
-    tval = as.numeric(),
-    P = as.numeric()
-  ),
-  class = "data.frame"
-  )
-  # For each exposure-outcome pair: Get Exposure coefficients from all possible models and write to a table
-  for (j in outcome)
-  {
-    mm_coef_temp <- data.frame(getExp.coef.peroutcome(object = object, outcome = j, exposure = exposure))
-    mm_coef <- bind_rows(mm_coef, mm_coef_temp)
-  }
-  # Merge result tables for all exposure-outcome pairs
-  mm_coef
-}
-# 1.4.1 Round numeric columns in dataframes
-round_df <- function(x, digits) {
-  # round all numeric variables
-  # x: data frame
-  # digits: number of digits to round
-  numeric_columns <- sapply(x, class) == "numeric"
-  x[numeric_columns] <- round(x[numeric_columns], digits)
-  x
-}
-
-# 1.4.2 get object-names as string-variables
-name.as.string <- function(v1) {
-  deparse(substitute(v1))
-}
 
 MinMod <- c(paste(colnames(Exp_data_SC), collapse = ", "))
 # saveRDS(MinMod,"Covs.rds")
@@ -781,7 +329,7 @@ rm(PC_IN)
 #
 # Generate ConnectedComponents
 #
-# 
+#
 # deleteAllWindows(CytoscapeConnection())
 memory.limit(size = 250000)
 #
@@ -790,9 +338,6 @@ memory.limit(size = 250000)
 
 #
 # define function to get rownames as variable in dplyr
-draw_rownames <- function(.data) .data %>% do(mutate(., Metabolite = rownames(.)))
-draw_rownames_out <- function(.data) .data %>% do(mutate(., Metabolite = as.factor(rownames(.))))
-
 #
 # import multi-model estimates for Exposure effects on Acylcarnitines:
 GPL_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/GPL/STR_GPL_SC.rds")
@@ -1028,7 +573,7 @@ SC_PCsum_Coffee_FV <- dplyr::left_join(SC_PCsum_Coffee_FV, CoffeeCC, by = "Metab
 SC_PCsum_Coffee_FV <- SC_PCsum_Coffee_FV %>% dplyr::rowwise() %>% dplyr::mutate(Est_range_FV = paste0(formatC(bestGuess, format = "f", digits = 2), " (", formatC(lowEst, format = "f", digits = 2), ", ", formatC(highEst, format = "f", digits = 2), ")"))
 rm(PC_IN)
 
-# 
+#
 # PC
 memory.limit(size = 250000)
 Ll <- dplyr::bind_cols(LA, l_abcd) %>% dplyr::transmute(Ll = paste0(Let, l))
@@ -1058,15 +603,12 @@ RENAME_PC_SC <- dplyr::bind_cols(data.frame(colnames(PC_data_SC)), data.frame(PC
 colnames(RENAME_PC_SC) <- c("Metabolite", "Outcome")
 colnames(PC_data_SC) <- PC_ren_SC
 
-# 
+#
 # deleteAllWindows(CytoscapeConnection())
 memory.limit(size = 250000)
 #
 # load("H:/Metabolomics/DISS I/R_obj/PC/MULTI_PC_IN")
 # show(CHECK_IN)
-draw_rownames_Exp <- function(.data) .data %>% do(mutate(., Exp = rownames(.)))
-draw_rownames <- function(.data) .data %>% do(mutate(., Outcome = rownames(.)))
-draw_rownames_out <- function(.data) .data %>% do(mutate(., Metabolite = as.factor(rownames(.))))
 #
 # Write multi-model summaries into named list for looped data-processing:
 # PC_data_SC <- readRDS("H:/Metabolomics/DISS I/R_Obj/PC/STR_PC_SC.rds")
@@ -1102,131 +644,6 @@ for (i in Exp)
   DE_exp[i] <- assign(paste0("DE1_PC", sep = "_", i), EXP_PC[[i]] %>% dplyr::filter(Assoc != 0 & DE != 0))
 }
 
-net.coupler <- function(Graph, Graph_data, Exp_data_SC, exposure) {
-  cat("*************************************************************************************************** \n")
-  cat("This algorithm estimates direct effects of a predefined exposure on each network-variable for all   \n")
-  cat("causal models that agree with the input-network: models are adjusted for all possible combinations  \n")
-  cat("of direct neighbors (==variables in the adjecency set) -> Output ist a multiset of possible effects \n")
-  cat("***************************************************************************************************")
-
-  mod_coeff_q_new <- c()
-  mod_coeff_q <- c()
-  Nodes <- c()
-  i <- c()
-
-  # PREPARE AN EMPTY LIST TO STORE THE OUTPUT
-  Model_details_all <- list(NULL)
-  Nodes <- as.character(Graph@graph@nodes) # Create vector "Nodes" with node names as strings
-  CC1 <- setdiff(CC$Outcome, DE_exp$Redmeat)
-  DE1 <- intersect(CC$Outcome, DE_exp$Redmeat)
-  EXP <- colnames(Exp_data_SC)
-
-  for (i in 1:length(CC1)) # Create an empty list with slots each network-variable
-  {
-    Model_details <- list(NULL)
-    Model_details_all[[i]] <- Model_details
-  }
-  names(Model_details_all) <- CC1
-
-  for (i in CC1)
-  {
-    # PREPARE DATASETS
-    outcome <- i
-
-    if (is.character(outcome) == FALSE) {
-      stop("'outcome' is not a character string as required")
-    }
-
-    # Select data on Outcome within network, store in "out"
-    out <- Graph_data[, outcome]
-    if (is.numeric(out) == FALSE) {
-      stop("'out' is not a numeric vector as required")
-    }
-
-    # create vector with integers indicating adjecent variables
-    edgeList <- slot(Graph@graph, "edgeL")
-    adjset <- c(edgeList[[outcome]])
-    adjset <- c(adjset[[1]])
-
-    # adjdata1<-subset(Graph_data, select=c(adjset)) #Select data on adjecency set, store in adjdata
-    # adjdata2<-subset(Graph_data, select=adj_plus$Outcome,sep=","))) #Select data on adjecency set, store in adjdata
-    if (is.numeric(out) == FALSE) stop("'adjdata' is not a matrix of numeric variables as required")
-
-    # Create vector with names of adjecency set as strings
-    adjset_char <- array(Nodes[adjset])
-    adjset_char <- setdiff(adjset_char, DE_exp$Redmeat)
-    print(adjset_char)
-    if (is.character(adjset_char) == FALSE) {
-      stop("'adjset_char' is not a is not a vector of character strings as required")
-    }
-
-    # Combine data on Exposure, Outcome and Adjacency set, store as dataframe (modeldata)
-    modeldata <- data.frame(cbind(out, Exp_data_SC, Graph_data))
-    # print(modeldata[1:10,])
-    # modeldata<-rename(modeldata,exp=Exp_data_SC)
-    # print(modeldata[1:10,])
-    # if(is.(modeldata)==FALSE)
-    #  stop("'modeldata' is not a df of numeric variables as required")
-
-    # ESTIMATE MULTIMODEL COEFFICIENTS
-    # Modify the fitting function to always include one set of variables while shuffling another set
-    glm.redefined <- function(formula, data, always="", ...) {
-      glm(as.formula(paste(deparse(formula), always)), data = data, ...)
-    }
-    # Fit all possible causal models using glmulti
-    glmulti_obj <- glmulti(
-      y = "out",
-      xr = c(adjset_char[1:length(adjset_char)]),
-      data = modeldata,
-      level = 1,
-      confsetsize = 512,
-      fitfunc = glm.redefined,
-      always = paste0("+", paste0(DE1, collapse = " + "), "+", paste0(EXP, collapse = "+ ")),
-      includeobjects = TRUE,
-      intercept = FALSE,
-      plotty = F,
-      report = F
-    )
-
-    # OUTPUT SUMMARIES
-    # avg_coef<-as.data.frame(coef.glmulti(glmulti_obj, icmethod="Lukacs", alphaIC=0.05));mm_coef<-tbl_df(mm_coef)
-    coffee <- glmulti_obj@objects
-    Nbmds <- c(1:glmulti_obj@nbmods)
-    Model_details <- list(NULL)
-    for (j in seq(along = Nbmds))
-    {
-      Model_details[[j]] <- list(NULL)
-    }
-    names(Model_details) <- paste("Model", Nbmds, sep = "_")
-    for (j in seq(along = Nbmds))
-    {
-      model_summary <- coffee[[j]]
-      Model_details[[j]] <- list(
-        Model = paste("Model", j, "of", length(Nbmds)),
-        Model_summary = model_summary
-      )
-      # Model_details[[j]]$Model_summary$data<-NULL
-      # Model_details[[j]]$Model_summary$qr$qr<-NULL
-      # Model_details[[j]]$Model_summary$model<-NULL
-      # Model_details[[j]]$Model_summary$residuals<-NULL
-      # Model_details[[j]]$Model_summary$fitted.values<-NULL
-      # Model_details[[j]]$Model_summary$effects<-NULL
-      # Model_details[[j]]$Model_summary$linear.predictors<-NULL
-      # Model_details[[j]]$Model_summary$weights<-NULL
-      # Model_details[[j]]$Model_summary$prior.weights<-NULL
-      # Model_details[[j]]$Model_summary$y<-NULL
-    }
-    Model_details_all[[outcome]] <- list(
-      Model_summaries = Model_details,
-      Number_of_Models = length(Nbmds),
-      Adj_set = paste(adjset_char, collapse = ", "),
-      Outcome = outcome
-    )
-  }
-  OUT1 <- list(Outcomes = Model_details_all, Exposure = exposure) # list(Model_details_all,mmcf)
-  OUT1
-}
-
 # CC<-data.frame()
 # CC<-data.frame(CC_Redmeat_PC[2])%>%draw_rownames_out()%>%filter(CC_Redmeat_PC[[2]]==TRUE)%>%dplyr::select(Metabolite)
 # CC$Metabolite<-as.character(CC$Metabolite)
@@ -1239,30 +656,6 @@ net.coupler <- function(Graph, Graph_data, Exp_data_SC, exposure) {
 # print(MinMod)
 # PC_IN_CC2<-net.coupler(Graph=PC_skel , Graph_data=PC_data_SC , Exp_data_SC=Exp_data_SC ,exposure="TMperMJ")
 #
-getExp.coef <- function(object, exposure) {
-  SUM <- data.frame(NULL)
-  for (j in 1:length(names(object$Outcomes)))
-  {
-    print(j)
-    for (i in 1:PC_IN_CC2$Outcomes[[j]]$Number_of_Models)
-    { # get exposure-effect estimates (beta coefficient, SE, t-value, p-value) from single model and write into a dataframe
-
-      SUM1 <- data.frame(NULL)
-      SUM1 <- data.frame(summary(object$Outcomes[[j]]$Model_summaries[[i]]$Model_summary)[["coefficients"]]) %>%
-        draw_rownames_Exp() %>%
-        dplyr::filter(exposure == Exp) %>%
-        dplyr::rename(SE = Std..Error, tval = t.value, P = Pr...t..) %>%
-        dplyr::mutate(Outcome = outcome[[j]], Nbmds = length(object$Outcomes[[j]]$Model_summaries), Exposure = exposure, Covariables = paste0(row.names(summary(object$Outcomes[[j]]$Model_summaries[[i]]$Model_summary)[["coefficients"]]), collapse = ", "))
-      SUM <- dplyr::bind_rows(SUM, SUM1)
-    }
-  }
-  SUM
-}
-
-# 1.4.2 get object-names as string-variables
-name.as.string <- function(v1) {
-  deparse(substitute(v1))
-}
 #
 #   Connected Component 1
 #
@@ -1280,25 +673,6 @@ MinMod <- paste0(EXP, collapse = ", ")
 print(MinMod)
 PC_IN_CC1 <- net.coupler(Graph = PC_skel, Graph_data = PC_data_SC, Exp_data_SC = Exp_data_SC, exposure = "TMperMJ")
 
-getExp.coef <- function(object, exposure) {
-  SUM <- data.frame(NULL)
-  for (j in 1:length(names(object$Outcomes)))
-  {
-    print(j)
-    for (i in 1:PC_IN_CC1$Outcomes[[j]]$Number_of_Models)
-    { # get exposure-effect estimates (beta coefficient, SE, t-value, p-value) from single model and write into a dataframe
-
-      SUM1 <- data.frame(NULL)
-      SUM1 <- data.frame(summary(object$Outcomes[[j]]$Model_summaries[[i]]$Model_summary)[["coefficients"]]) %>%
-        draw_rownames_Exp() %>%
-        dplyr::filter(exposure == Exp) %>%
-        dplyr::rename(SE = Std..Error, tval = t.value, P = Pr...t..) %>%
-        dplyr::mutate(Outcome = PC_IN_CC1$Outcomes[[j]]$Outcome, Nbmds = length(object$Outcomes[[j]]$Model_summaries), Exposure = exposure, Covariables = paste0(row.names(summary(object$Outcomes[[j]]$Model_summaries[[i]]$Model_summary)[["coefficients"]]), collapse = ", "))
-      SUM <- dplyr::bind_rows(SUM, SUM1)
-    }
-  }
-  SUM
-}
 SC_PC_Redmeat_CC1 <- getExp.coef(object = PC_IN_CC1, exposure = "TMperMJ")
 # SC_PC_Redmeat$Outcome<-as.character(SC_PC_Redmeat$Outcome)
 
@@ -1360,25 +734,6 @@ MinMod <- paste0(paste0(DE1, collapse = ", "), ", ", paste0(EXP, collapse = ", "
 print(MinMod)
 PC_IN_CC2 <- net.coupler(Graph = PC_skel, Graph_data = PC_data_SC, Exp_data_SC = Exp_data_SC, exposure = "TMperMJ")
 # saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
-getExp.coef <- function(object, exposure) {
-  SUM <- data.frame(NULL)
-  for (j in 1:length(names(object$Outcomes)))
-  {
-    print(j)
-    for (i in 1:PC_IN_CC2$Outcomes[[j]]$Number_of_Models)
-    { # get exposure-effect estimates (beta coefficient, SE, t-value, p-value) from single model and write into a dataframe
-
-      SUM1 <- data.frame(NULL)
-      SUM1 <- data.frame(summary(object$Outcomes[[j]]$Model_summaries[[i]]$Model_summary)[["coefficients"]]) %>%
-        draw_rownames_Exp() %>%
-        dplyr::filter(exposure == Exp) %>%
-        dplyr::rename(SE = Std..Error, tval = t.value, P = Pr...t..) %>%
-        dplyr::mutate(Outcome = PC_IN_CC2$Outcomes[[j]]$Outcome, Nbmds = length(object$Outcomes[[j]]$Model_summaries), Exposure = exposure, Covariables = paste0(row.names(summary(object$Outcomes[[j]]$Model_summaries[[i]]$Model_summary)[["coefficients"]]), collapse = ", "))
-      SUM <- dplyr::bind_rows(SUM, SUM1)
-    }
-  }
-  SUM
-}
 SC_PC_Redmeat_CC2 <- getExp.coef(object = PC_IN_CC2, exposure = "TMperMJ")
 # SC_PC_Redmeat$Outcome<-as.character(SC_PC_Redmeat$Outcome)
 
@@ -1445,25 +800,6 @@ MinMod <- paste0(paste0(DE1, collapse = ", "), ", ", paste0(EXP, collapse = ", "
 print(MinMod)
 PC_IN_CC3 <- net.coupler(Graph = PC_skel, Graph_data = PC_data_SC, Exp_data_SC = Exp_data_SC, exposure = "TMperMJ")
 # saveRDS(PC_IN,"D:/R_work/Clemens/PC/MULTI_PC_IN.rds")
-getExp.coef <- function(object, exposure) {
-  SUM <- data.frame(NULL)
-  for (j in 1:length(names(object$Outcomes)))
-  {
-    print(j)
-    for (i in 1:PC_IN_CC3$Outcomes[[j]]$Number_of_Models)
-    { # get exposure-effect estimates (beta coefficient, SE, t-value, p-value) from single model and write into a dataframe
-
-      SUM1 <- data.frame(NULL)
-      SUM1 <- data.frame(summary(object$Outcomes[[j]]$Model_summaries[[i]]$Model_summary)[["coefficients"]]) %>%
-        draw_rownames_Exp() %>%
-        dplyr::filter(exposure == Exp) %>%
-        dplyr::rename(SE = Std..Error, tval = t.value, P = Pr...t..) %>%
-        dplyr::mutate(Outcome = PC_IN_CC3$Outcomes[[j]]$Outcome, Nbmds = length(object$Outcomes[[j]]$Model_summaries), Exposure = exposure, Covariables = paste0(row.names(summary(object$Outcomes[[j]]$Model_summaries[[i]]$Model_summary)[["coefficients"]]), collapse = ", "))
-      SUM <- dplyr::bind_rows(SUM, SUM1)
-    }
-  }
-  SUM
-}
 SC_PC_Redmeat_CC3 <- getExp.coef(object = PC_IN_CC3, exposure = "TMperMJ")
 
 SC_PC_Redmeat$Outcome <- as.character(SC_PC_Redmeat$Outcome)
