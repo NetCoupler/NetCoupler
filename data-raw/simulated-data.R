@@ -65,26 +65,32 @@ exp.randomDAG<-function (nVert, prob, lB = 0.1, uB = 1, V = as.character(1:nVert
         weightList <- runif(length(edgeList), min = lB, max = uB)
         edL[[i]] <- list(edges = edgeList, weights = weightList)
     }
+
     listSize <- rbinom(1, 1, prob)
-    if (listSize > 0)
-    {
+    if (listSize > 0) {
         nmbEdges <- nmbEdges + 1
         edgeList <- nVert
         weightList <- runif(1, min = lB, max = uB)
-    }
-    else
-    {
+    } else {
         edgeList <- integer(0)
         weightList <- numeric(0)
     }
     edL[[nVert - 1]] <- list(edges = edgeList, weights = weightList)
-    if (nmbEdges > 0)
-    {
+    if (nmbEdges > 0) {
         edL[[nVert]] <- list(edges = integer(0), weights = numeric(0))
-        edL[["EXP1"]] <- list(edges = exp.effects, weights = exp.weights)
-        new("graphNEL", nodes = c(V,"EXP1"), edgeL = edL, edgemode = "directed")
+        edL[["EXP1"]] <-
+            list(edges = exp.effects, weights = exp.weights)
+        new(
+            "graphNEL",
+            nodes = c(V, "EXP1"),
+            edgeL = edL,
+            edgemode = "directed"
+        )
+    } else {
+        new("graphNEL",
+            nodes =  c(V, "EXP1"),
+            edgemode = "directed")
     }
-    else new("graphNEL", nodes =  c(V,"EXP1"), edgemode = "directed")
 }
 
 
