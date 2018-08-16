@@ -13,8 +13,10 @@ library(pcalg)
 library(gRbase)
 library(rlist)
 library(GeneNet)
+library(Rgraphviz)
 # source("https://bioconductor.org/biocLite.R")
 # biocLite("RBGL")
+# biocLite("Rgraphviz")
 
 ################################################################################
 # Modification of the randomDAG function from the pcalg package                #
@@ -116,37 +118,37 @@ xdag <-
         exp.weights = c(0.05 , 0.10, 0.05)
     )
 plot(xdag)
-mat <- graphnel2m(xdag, result = "matrix")
+mat <- graphNEL2M(xdag, result = "matrix")
 mat <-
     mat[order(match(row.names(mat), tsort(xdag))), order(match(colnames(mat), tsort(xdag)))]
-xdag <- m2graphnel(mat)
+xdag <- M2graphNEL(mat)
 
 #Generate random observations; data-generating process defined by the DAG
 dagsample <- rmvDAG(n, xdag, errDist = "normal")
-DAGsample1 <-
-    as.matrix(dplyr::select(data.frame(DAGsample), -EXP1)) #remove exposure variable, matrix  of observations of networkvariables
-DAGsample1 <- scale(DAGsample1)
-EXP1 <-
-    as.matrix(dplyr::select(data.frame(DAGsample), EXP1))        #vector of observations of exposure-levels
-nV <- colnames(DAGsample1)
+dagsample1 <-
+    as.matrix(dplyr::select(data.frame(dagsample), -EXP1)) #remove exposure variable, matrix  of observations of networkvariables
+dagsample1 <- scale(dagsample1)
+exp1 <-
+    as.matrix(dplyr::select(data.frame(dagsample), EXP1))        #vector of observations of exposure-levels
+nv <- colnames(dagsample1)
 
 
 
 ####Estimate an undirected Network: sceleton of a DAG####
-pcDAG_skel <- skeleton(
-    suffStat = list(C = cor(DAGsample1), n = n),
+pcdag_skel <- skeleton(
+    suffStat = list(C = cor(dagsample1), n = n),
     indepTest = gaussCItest,
     method = "stable",
     ## indep.test: partial correlations
     alpha = 0.05,
-    labels = nV,
+    labels = nv,
     fixedGaps = NULL,
     fixedEdges = NULL,
     verbose = FALSE
 )
 
-plot(XDAG)
-plot(pcDAG_skel)
+plot(xdag)
+plot(pcdag_skel)
 
 
 
@@ -199,13 +201,13 @@ survsim.cw <-
         simSurv <- bind_cols(data.frame(fup_time, cens))
     }
 
-ST <- c()
+st <- c()
 dag_surv_exp <- data.frame()
 surv <- c()
 st <-
     data.frame(
         survsim.cw(
-            object = DAGsample1,
+            object = dagsample1,
             IV1 = "D" ,
             IV2 = "J",
             IV3 = "G",
@@ -221,7 +223,7 @@ dag_surv_exp <-
         exp3 = rnorm(20000, mean = 0, sd = 1),
         id = c(1:20000)
     )
-dag_surv_exp_sc <- dag_surv_exp %>% sample_n(2000, replace = false)
+dag_surv_exp_sc <- dag_surv_exp %>% sample_n(2000, replace = FALSE)
 dag_surv_exp_case <-
     dag_surv_exp %>% dplyr::filter(fup_time < max(dag_surv_exp$fup_time))
 dag_surv_exp_extcase <-
@@ -235,12 +237,12 @@ rm(dag_surv_exp_sc)
 rm(dag_surv_exp_case)
 exp <- c("exp1", "exp2", "exp3")
 surv <-
-    surv(time = dag_surv_exp[["fup_time"]], event = dag_surv_exp[["cens"]])
+    Surv(time = dag_surv_exp[["fup_time"]], event = dag_surv_exp[["cens"]])
 fit <- coxph(Surv(fup_time, cens) ~ D + J + G, data = dag_surv_exp)
 summary(fit)
 
 exp_data <- as.matrix(dplyr::select(data.frame(dag_surv_exp), exp3))
 exp_data <-
     as.matrix(dplyr::select(data.frame(dag_surv_exp), one_of(c(
-        "exp1", "exp2", "exp3"
+        "EXP1", "exp2", "exp3"
     ))))
