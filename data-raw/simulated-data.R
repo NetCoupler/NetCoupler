@@ -5,24 +5,6 @@
 ##############################################################
 #  1.1     Simulation: Generate random DAG
 #          and sample DAG-generated DATA
-#install.packages("lattice")
-#install.packages("zoo")
-#install.packages("lmtest")
-#install.packages("vcd")
-#install.packages("gmp")
-#install.packages("pcalg", repos="http://R-Forge.R-project.org")
-#install.packages("sfsmisc", dependencies=T)
-#source("https://bioconductor.org/biocLite.R")
-#biocLite("BioNet" )
-#install.packages("BioNet")
-#install.packages("survival")
-#install.packages("glmulti")
-#install.packages("pcalg")
-#install.packages("plyr")
-#install.packages("Rgraphviz")
-#install.packages("RBGL")
-#install.packages("gRbase")
-#install.packages("rlist")
 
 library(RBGL)
 library(dplyr)
@@ -33,6 +15,7 @@ library(rlist)
 library(GeneNet)
 # source("https://bioconductor.org/biocLite.R")
 # biocLite("RBGL")
+
 ################################################################################
 # Modification of the randomDAG function from the pcalg package                #
 # Function to fully specify a data-generating model (DAG) with one exposure    #
