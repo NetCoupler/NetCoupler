@@ -91,10 +91,10 @@ exp.randomDAG <-
 ##############################################################
 # 2.2         ESTIMATE CPDAG (skeleton) ON DAG-DATA
 
-XDAG <- c()
-Mat <- matrix()
-DAGsample <- matrix()
-DAGsample1 <- matrix()
+xdag <- c()
+mat <- matrix()
+dagsample <- matrix()
+dagsample1 <- matrix()
 #Generate a large sample (<< study sample) as source population
 n <- 20000
 
@@ -105,7 +105,7 @@ set.seed(1221)
 
 #Generate a random DAG (data-generating model for network variables)
 
-XDAG <-
+xdag <-
     exp.randomDAG(
         nVert = 25,
         prob = 0.16,
@@ -115,14 +115,14 @@ XDAG <-
         exp.effects = c(2, 6, 22),
         exp.weights = c(0.05 , 0.10, 0.05)
     )
-plot(XDAG)
-Mat <- graphNEL2M(XDAG, result = "matrix")
-Mat <-
-    Mat[order(match(row.names(Mat), tsort(XDAG))), order(match(colnames(Mat), tsort(XDAG)))]
-XDAG <- M2graphNEL(Mat)
+plot(xdag)
+mat <- graphnel2m(xdag, result = "matrix")
+mat <-
+    mat[order(match(row.names(mat), tsort(xdag))), order(match(colnames(mat), tsort(xdag)))]
+xdag <- m2graphnel(mat)
 
 #Generate random observations; data-generating process defined by the DAG
-DAGsample <- rmvDAG(n, XDAG, errDist = "normal")
+dagsample <- rmvDAG(n, xdag, errDist = "normal")
 DAGsample1 <-
     as.matrix(dplyr::select(data.frame(DAGsample), -EXP1)) #remove exposure variable, matrix  of observations of networkvariables
 DAGsample1 <- scale(DAGsample1)
@@ -173,9 +173,6 @@ survsim.cw <-
         X3 <- object[, IV3]
         RV1 <- rnorm(n, mean = 10, sd = 1)
         RV2 <- rnorm(n, mean = 10, sd = 1)
-        #print(X1[1:10])
-        #print(X2[1:10])
-        #print(X3[1:10])
 
         expBetaX = exp(beta1 * X1 + beta2 * X2 + beta3 * X3 + RV1 + RV2)
 
@@ -190,7 +187,7 @@ survsim.cw <-
         p33 = (sort_time[five] + sort_time[five + 1]) / 2
 
         # calculate censoring variable
-        cens = matrix(0, n, )
+        cens = matrix(0, n)
         for (i in 1:n) {
             if (fup_time[i] < p33) {
                 cens[i] <- 1
@@ -199,17 +196,13 @@ survsim.cw <-
             }
         }
         cens <- as.numeric(cens)
-        #print(mean(fup_time))
-        print(max(fup_time))
-        #print(min(fup_time))
-        print(sum(cens))
         simSurv <- bind_cols(data.frame(fup_time, cens))
     }
 
 ST <- c()
-DAG_SURV_EXP <- data.frame()
-SURV <- c()
-ST <-
+dag_surv_exp <- data.frame()
+surv <- c()
+st <-
     data.frame(
         survsim.cw(
             object = DAGsample1,
@@ -221,33 +214,33 @@ ST <-
             beta3 = -0.5
         )
     )
-DAG_SURV_EXP <- bind_cols(data.frame(DAGsample1), data.frame(EXP1), ST)
-DAG_SURV_EXP <-
-    DAG_SURV_EXP %>% mutate(
-        EXP2 = rnorm(20000, mean = 0, sd = 1) ,
-        EXP3 = rnorm(20000, mean = 0, sd = 1),
-        ID = c(1:20000)
+dag_surv_exp <- bind_cols(data.frame(dagsample1), data.frame(exp1), st)
+dag_surv_exp <-
+    dag_surv_exp %>% mutate(
+        exp2 = rnorm(20000, mean = 0, sd = 1) ,
+        exp3 = rnorm(20000, mean = 0, sd = 1),
+        id = c(1:20000)
     )
-DAG_SURV_EXP_SC <- DAG_SURV_EXP %>% sample_n(2000, replace = FALSE)
-DAG_SURV_EXP_Case <-
-    DAG_SURV_EXP %>% dplyr::filter(fup_time < max(DAG_SURV_EXP$fup_time))
-DAG_SURV_EXP_extCase <-
-    setdiff(DAG_SURV_EXP_Case, DAG_SURV_EXP_SC) %>% mutate(sc = 0,
+dag_surv_exp_sc <- dag_surv_exp %>% sample_n(2000, replace = false)
+dag_surv_exp_case <-
+    dag_surv_exp %>% dplyr::filter(fup_time < max(dag_surv_exp$fup_time))
+dag_surv_exp_extcase <-
+    setdiff(dag_surv_exp_case, dag_surv_exp_sc) %>% mutate(sc = 0,
                                                            start = (fup_time - 0.0005),
                                                            stop_t = fup_time)
-DAG_SURV_EXP_SC <-
-    DAG_SURV_EXP_SC %>% mutate(sc = 1, start = 0, stop_t = fup_time)
-DAG_SURV_EXP_CC <- bind_rows(DAG_SURV_EXP_SC, DAG_SURV_EXP_extCase)
-rm(DAG_SURV_EXP_SC)
-rm(DAG_SURV_EXP_Case)
-EXP <- c("EXP1", "EXP2", "EXP3")
-SURV <-
-    Surv(time = DAG_SURV_EXP[["fup_time"]], event = DAG_SURV_EXP[["cens"]])
-fit <- coxph(Surv(fup_time, cens) ~ D + J + G, data = DAG_SURV_EXP)
+dag_surv_exp_sc <-
+    dag_surv_exp_sc %>% mutate(sc = 1, start = 0, stop_t = fup_time)
+dag_surv_exp_cc <- bind_rows(dag_surv_exp_sc, dag_surv_exp_extcase)
+rm(dag_surv_exp_sc)
+rm(dag_surv_exp_case)
+exp <- c("exp1", "exp2", "exp3")
+surv <-
+    surv(time = dag_surv_exp[["fup_time"]], event = dag_surv_exp[["cens"]])
+fit <- coxph(Surv(fup_time, cens) ~ D + J + G, data = dag_surv_exp)
 summary(fit)
 
-EXP_data <- as.matrix(dplyr::select(data.frame(DAG_SURV_EXP), EXP3))
-EXP_data <-
-    as.matrix(dplyr::select(data.frame(DAG_SURV_EXP), one_of(c(
-        "EXP1", "EXP2", "EXP3"
+exp_data <- as.matrix(dplyr::select(data.frame(dag_surv_exp), exp3))
+exp_data <-
+    as.matrix(dplyr::select(data.frame(dag_surv_exp), one_of(c(
+        "exp1", "exp2", "exp3"
     ))))
