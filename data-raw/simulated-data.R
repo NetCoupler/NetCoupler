@@ -30,17 +30,6 @@ exp.randomDAG <-
              V = as.character(1:nVert),
              exp.effects,
              exp.weights) {
-        stopifnot(
-            #sanity checks
-            nVert >= 2,
-            is.numeric(prob),
-            length(prob) == 1,
-            0 <= prob,
-            prob <= 1,
-            is.numeric(lB),
-            is.numeric(uB),
-            lB <= uB
-        )
 
         edL <- vector("list", nVert + 1)
         names(edL) <- c(V, "EXP1")
@@ -144,12 +133,11 @@ plot(pcdag_skel)
 
 # Based on Gompertz-Distribution
 
-library(survival)
 survsim.cw <-
     function(object,
-             IV1 = X1,
-             IV2 = X2,
-             IV3 = X3,
+             IV1,
+             IV2,
+             IV3,
              beta1,
              beta2,
              beta3) {
@@ -174,7 +162,6 @@ survsim.cw <-
         sort_time = sort(fup_time)
         five <- n / 20
         #p10 = (sort_time[ten]+sort_time[ten+1])/2
-        third <- n / 3
         p33 = (sort_time[five] + sort_time[five + 1]) / 2
 
         # calculate censoring variable
@@ -187,7 +174,7 @@ survsim.cw <-
             }
         }
         cens <- as.numeric(cens)
-        simSurv <- bind_cols(data.frame(fup_time, cens))
+        bind_cols(data.frame(fup_time, cens))
     }
 
 st <- c()
@@ -214,7 +201,7 @@ dag_surv_exp <-
     )
 dag_surv_exp_sc <- dag_surv_exp %>% sample_n(2000, replace = FALSE)
 dag_surv_exp_case <-
-    dag_surv_exp %>% dplyr::filter(fup_time < max(dag_surv_exp$fup_time))
+    dag_surv_exp %>% dplyr::filter(fup_time < max(fup_time))
 dag_surv_exp_extcase <-
     setdiff(dag_surv_exp_case, dag_surv_exp_sc) %>% mutate(sc = 0,
                                                            start = (fup_time - 0.0005),
