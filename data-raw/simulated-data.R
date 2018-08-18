@@ -93,27 +93,22 @@ exp.randomDAG <-
 ##############################################################
 # 2.2         ESTIMATE CPDAG (skeleton) ON DAG-DATA
 
-xdag <- c()
-mat <- matrix()
-dagsample <- matrix()
-dagsample1 <- matrix()
 #Generate a large sample (<< study sample) as source population
 n <- 20000
 
 #Define network size (number of variables in the data-generating model)
 nVert <- 25
-L <- LETTERS[1:nVert]
-set.seed(1221)
 
 #Generate a random DAG (data-generating model for network variables)
 
+set.seed(1221)
 xdag <-
     exp.randomDAG(
         nVert = 25,
         prob = 0.16,
         lB = 0.5,
         uB = 0.8,
-        V = L,
+        V = LETTERS[1:nVert],
         exp.effects = c(2, 6, 22),
         exp.weights = c(0.05 , 0.10, 0.05)
     )
