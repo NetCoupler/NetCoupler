@@ -1,10 +1,5 @@
 
-#############################################################
-#1.1 DEFINE DAG SIMULATION
-
-##############################################################
-#  1.1     Simulation: Generate random DAG
-#          and sample DAG-generated DATA
+# Generate random DAG data ------------------------------------------------
 
 library(RBGL)
 library(dplyr)
@@ -90,8 +85,7 @@ exp.randomDAG <-
 
 
 
-##############################################################
-# 2.2         ESTIMATE CPDAG (skeleton) ON DAG-DATA
+# Estimate CPDAG skeleton -------------------------------------------------
 
 #Generate a large sample (<< study sample) as source population
 n <- 20000
@@ -145,11 +139,10 @@ pcdag_skel <- skeleton(
 plot(xdag)
 plot(pcdag_skel)
 
+# Survival time simulation ------------------------------------------------
 
+# Based on Gompertz-Distribution
 
-#############################################################
-#1.3 DEFINE SURVIVAL TIME SIMULATION
-#     (based on Gompertz-Distribution)
 library(survival)
 survsim.cw <-
     function(object,
