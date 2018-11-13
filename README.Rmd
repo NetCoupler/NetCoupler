@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
 
 # NetCoupler
 
+[![Join the chat at https://gitter.im/NetCoupler/Lobby](https://badges.gitter.im/NetCoupler/Lobby.svg)](https://gitter.im/NetCoupler/Lobby)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build status](https://travis-ci.org/ClemensWittenbecher/NetCoupler.svg?branch=master)](https://travis-ci.org/ClemensWittenbecher/NetCoupler)
 [![Coverage status](https://codecov.io/gh/ClemensWittenbecher/NetCoupler/branch/master/graph/badge.svg)](https://codecov.io/github/ClemensWittenbecher/NetCoupler?branch=master)
@@ -46,3 +47,9 @@ So far there is only the development version.
 # install.packages("remotes")
 remotes::install_github("ClemensWittenbecher/NetCoupler")
 ```
+
+# Questions? Comments?
+
+- Do you have an informal question, interested in contributing/collaborating, or
+want to learn more about NetCoupler? Check out our 
+[Gitter Chat Room](https://gitter.im/NetCoupler/Lobby).
