@@ -47,9 +47,11 @@ but cannot be colliders) until no further direct effects are identified.
 A similar procedure is provided to identify direct influences of external
 factors on network variables.
 
-1 *Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse Causal Graphs.
+<!-- TODO: Put this into a bib file. -->
+
+1. *Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse Causal Graphs.
 Social Science Computer Review 1991;9:62-72.*
-2 *Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis, Peter
+2. *Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis, Peter
 Buehlmann (2012). Causal Inference Using Graphical Models with the R Package
 pcalg. Journal of Statistical Software, 47(11), 1-26. URL
 http://www.jstatsoft.org/v47/i11/.*
