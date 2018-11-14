@@ -54,11 +54,46 @@ Buehlmann (2012). Causal Inference Using Graphical Models with the R Package
 pcalg. Journal of Statistical Software, 47(11), 1-26. URL
 http://www.jstatsoft.org/v47/i11/.*
 
+## Pseudo-code of algorithm
+
+### Input
+
+<!-- TODO: confirm with Clemens that this renders properly -->
+
+> **Input**: DAG-skeleton $G$ (graphical model)  
+Observations on: network variables $M$, exogenous exposure $X$; confounders $C$
+> 
+> **start** $DE = \{ \}$  
+**repeat** *until* no further $M_i$ is classified as $DE$  
+&nbsp;**add** all new direct effects to $DE$  
+&nbsp; **start** $AMB = M$  
+&nbsp; **repeat** *until* all $M_i \in AMB$ have been selected  
+&nbsp;&nbsp; **select** a variable $M_{i} \in AMB$  
+&nbsp;&nbsp; **select** all nodes adjacent to $M_{i}$ in $G$, $adj(G, M_i)$  
+&nbsp; &nbsp; **repeat** *until* no further non-redundant $S$ can be selected from $adj(G, M_i)$  
+&nbsp; &nbsp; &nbsp;**select** a subset $S \in adj(G, M_i)$  
+&nbsp; &nbsp; &nbsp;*estimate* $\hat{M}_i \sim X | S, DE, C$  
+&nbsp; &nbsp; &nbsp;*add* effect estimate $PE$ for $X$ on $M_i$ to $CS_i$  
+&nbsp;&nbsp; **if** (lower bound of $CS_i > 0$ or upper bound $CS_i < 0$) and  
+&nbsp; &nbsp; &nbsp;$sign(pe_1) = sign(pe_2)$ for every pair of estimates in $CS_i$:   
+&nbsp; &nbsp; classify $M_i$ as affected by $X$  
+&nbsp;&nbsp; **else if** (lower bound of $CS_i > 0$ or upper bound $CS_i < 0$) and  
+&nbsp; &nbsp; &nbsp; ($0 \in CS_i$ or $sign(pe_1) \neq sign(pe_2)$ for any pair of estimates in $CS_i$):  
+&nbsp; &nbsp; classify $M_i$ as ambiguous with respect to $X$  
+&nbsp;&nbsp; **else**:
+&nbsp; &nbsp; classify $M_i$ as non-affected by $X$  
+> 
+> **Output**: Confidence set $CS$ for effects of $X$ on $M$ based on $G$  
+classification of every $M_i \in M$ as affected ($X \rightarrow M_i$), non-affected ($X M_i$), or ambiguous ($X - M_i$)  
+> 
+> Symbols: $|$ = conditional on; $adj(G, M_i)$ = set of nodes adjacent to $M_i$ in $G \equiv$ direct neighbours of $M_i$ in $G$.
+
+
 # Code usage (from original scripts)
 
 Need to go through and organize this code.
 
-```{r}
+```{r, eval=FALSE}
 
 # metabolite data (e.g. phosphatidylcholines) data for subcohort:
 
