@@ -24,6 +24,7 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+biocViews:
 Imports: 
     dplyr,
     rlist,
@@ -39,4 +40,5 @@ Imports:
     RCy3,
     ppcor,
     xlsx,
-    tictoc
+    tictoc,
+    stats
