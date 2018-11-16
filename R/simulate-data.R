@@ -38,17 +38,7 @@
 # LABEL <- data.frame(Metabolite = RENAME_PC$Metabolite, Met_label = sapply(strsplit(as.character(RENAME_PC$Metabolite), split = "_", fixed = TRUE), function(x) (paste0(x[3], sep = "/", x[4]))))
 # LABEL$Metabolite <- as.character(LABEL$Metabolite)
 #
-# #
-# # Using Gaussian Data
-# #
-# # Load predefined data
-# n <- nrow(PC_data_SC)
-# V <- colnames(data.frame(PC_data_SC)) # labels aka node names
-# PC_skel <- skeleton(
-#   suffStat = list(C = cor(PC_data_SC), n = n),
-#   indepTest = gaussCItest, labels = V, method = "stable", # indep.test: partial correlations
-#   alpha = 0.05, fixedGaps = NULL, fixedEdges = NULL, verbose = FALSE
-# )
+# PC_skel <- pc_skeleton_estimates(PC_data_SC)
 #
 # # Generate networks: DAG; Skeleton; Adjacency matrix
 # n <- nrow(PC_data_SC)
