@@ -1,5 +1,6 @@
 library(dagitty)
 library(dplyr)
+library(survival)
 ################################################
 # Define data-generazing model (DAG) == g
 # including exposure and network-variables (a-p)
@@ -21,7 +22,7 @@ x <- simulateSEM(g, N=20000)
 ################################################
 # Define simulation function for survival time
 # based on the Gompertz distribution
-library(survival)
+
 survsim.cw <- function(object,IV1=X1,IV2=X2,IV3=X3,beta1,beta2,beta3)
 {
     n<-20000
