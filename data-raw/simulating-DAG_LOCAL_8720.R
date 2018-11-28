@@ -1,5 +1,4 @@
 library(dagitty)
-<<<<<<< HEAD
 library(dplyr)
 library(survival)
 ################################################
@@ -56,36 +55,6 @@ survsim.cw <- function(object,IV1=X1,IV2=X2,IV3=X3,beta1,beta2,beta3)
     # or   third<-n/3 and   p33 = (sort_time[third]+sort_time[third+1])/2
     ten<-n/10
     p10 = (sort_time[ten]+sort_time[ten+1])/2
-=======
-library(glasso)
-library(magrittr)
-
-graph <-
-    dagitty("dag{
-        a -> b[beta=.3]
-        b -> c[beta=.2]
-        c -> d[beta=.5]
-        d -> e[beta=.3]
-        e -> f[beta=.6]
-        b [beta=.2]
-        b -> k [beta=.3]
-        k -> l [beta=.3]
-        l -> m [beta=.5]
-        m -> o [beta=.3]
-        o -> p [beta=.5]
-        a -> v [beta=.2]
-        c -> v [beta=.5]
-        d -> v [beta=.3]
-        e -> m [beta=.5]
-        k -> o [beta=.3]
-        o -> p [beta=.65]
-        }")
-
-simulated_data <- simulateSEM(graph, N = 2500) %>%
-    setNames(paste0("metabolite_", 1:length(.)))
-
-devtools::use_data(simulated_data, overwrite = TRUE)
->>>>>>> 6d0f48698be38b8c1d900db5c10e53eee6b09a3d
 
 
     # calculate censoring variable
