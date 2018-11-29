@@ -124,11 +124,11 @@ x_SurvTime<-bind_cols(x,SurvTime)
 #x_SurvTime_Case<-x_SurvTime%>%dplyr::filter(fup_time<max(x_SurvTime$fup_time))
 ## prepare for Prentice weighted analysis by setting defining a difference between start and stop
 ## close to 0 for external cases and setting an indicator for subcohort membership sc = 0
-#x_SurvTime_extCase<-setdiff(x_SurvTime_Case,x_SurvTime_SC)%>%mutate(sc=0,start=(fup_time-0.0005),stop_t=fup_time)
+#x_SurvTime_extCase<-dplyr::setdiff(x_SurvTime_Case,x_SurvTime_SC)%>%dplyr::mutate(sc=0,start=(fup_time-0.0005),stop_t=fup_time)
 ## ... and the start and end of follow-up as start and stop for all members of the subcohort and  sc = 1
-#x_SurvTime_SC<-x_SurvTime_SC%>%mutate(sc=1,start=0,stop_t=fup_time)
+#x_SurvTime_SC<-x_SurvTime_SC%>%dplyr::mutate(sc=1,start=0,stop_t=fup_time)
 ## merge subcohort and external cases
-#x_SurvTime_CC<-bind_rows(x_SurvTime_SC,x_SurvTime_extCase)
+#x_SurvTime_CC<-dplyr::bind_rows(x_SurvTime_SC,x_SurvTime_extCase)
 #rm(x_SurvTime_Case)
 #rm(x_SurvTime_extCase)
 
