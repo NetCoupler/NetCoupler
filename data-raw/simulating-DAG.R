@@ -28,7 +28,7 @@ dag_graph <- dagitty('dag{
     o -> p [beta=.65]
 }')
 
-simulated_dag_data <- simulateSEM(dag_graph, N = 20000) %>%
+simulated_dag_data <- simulateSEM(dag_graph, N = 2000) %>%
     setNames(c("exposure", paste0("metabolite_", 1:(length(.) - 1))))
 
 #' Survival time simulation.
