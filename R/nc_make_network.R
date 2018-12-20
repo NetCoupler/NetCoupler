@@ -1,4 +1,3 @@
-
 #' Title
 #'
 #' @param .data
@@ -15,7 +14,7 @@ nc_make_network1 <- function(.data,.alpha,.network_variables,.filter_variable,.f
     #Standardize metabolites on exposure, remove all variables that are not metbolites
     filtered_data<- dplyr::filter(.data, UQ(rlang::sym(.filter_variable))== .filter_value)%>%dplyr::filter_at(vars(noquote(.adjustment_variable)), all_vars(!is.na(.)))
 
-    exposureadjusted_simulated_metabolite_data<-filtered_data%>%
+    exposureadjusted_metabolite_data<-filtered_data%>%
         tibble::as_tibble() %>%
         purrr::modify_at(noquote(.network_variables), ~ residuals(lm(.x ~ as.matrix(dplyr::select(filtered_data,noquote(.adjustment_variable)))))) %>%
         dplyr::select(noquote(.network_variables))
@@ -56,12 +55,11 @@ nc_make_network1 <- function(.data,.alpha,.network_variables,.filter_variable,.f
         adj_matrix<-igraph::get.adjacency(igraph.from.graphNEL(skel_est@graph))
 
         w_adj_matrix<-adj_matrix*pCor_mat
-        return(list(pCor_mat = pCor_mat, skel_est = skel_est, DAG_est = DAG_est, adj_matrix = adj_matrix, w_adj_matrix=w_adj_matrix, data=exposureadjusted_simulated_metabolite_data))
+        return(list(pCor_mat = pCor_mat, skel_est = skel_est, DAG_est = DAG_est, adj_matrix = adj_matrix, w_adj_matrix=w_adj_matrix, data=exposureadjusted_metabolite_data))
 
     }
 
-    DAG<-est.pcor.skel.DAG.adj(.dat = exposureadjusted_simulated_metabolite_data, .alpha_val = .alpha, .network_variables = .network_variables)
+    DAG<-est.pcor.skel.DAG.adj(.dat = exposureadjusted_metabolite_data, .alpha_val = .alpha, .network_variables = .network_variables)
 
 }
-
 

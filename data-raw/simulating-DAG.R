@@ -33,7 +33,7 @@ simulated_dag_data <- simulateSEM(dag_graph, N = 2000) %>%
 
 #' Survival time simulation.
 #'
-#' Based on the Gompertz distribution.
+#' Based on the Gompertz distribution. Bender et al. (2003)  http://epub.ub.uni-muenchen.de/
 #'
 #' @param .data The simulated dataset based on the DAG.
 #' @param IV1 Influential variable 1. Used in calculation of survival.
@@ -69,14 +69,14 @@ simulate_survival_time <- function(.data, IV1, IV2, IV3) {
         with(gompertz_distribution_params,
              (1 / alpha) * log(1 - ((alpha * log(width)) /
                                         (lambda_event * exposure_effect_estimates)))
-             )
+        )
 
     sorted_survival_time <- sort(survival_time)
 
     # Simulate case status at specific censoring time
     incidence_cases <- number_observations / 10
     tenth_percentile <- (sorted_survival_time[incidence_cases] +
-               sorted_survival_time[incidence_cases + 1]) / 2
+                             sorted_survival_time[incidence_cases + 1]) / 2
 
     case_status <- rep.int(0, times = number_observations)
 
