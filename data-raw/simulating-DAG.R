@@ -50,10 +50,10 @@ simulate_survival_time <- function(.data, IV1, IV2, IV3) {
         # TODO: Confirm it is width
         # Between 0 and 1
         width = round(runif(1, 0, 1), 2),
-        alpha = 0.5,
+        alpha = 0.7,
         # TODO: Confirm lambda event meaning.
         # Steepness of slope
-        lambda_event = 0.7 * 10 ** (-11)
+        lambda_event = 0.7 * 9 ** (-8)
     )
 
     X1 <- .data[, IV1]
