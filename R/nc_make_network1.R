@@ -1,4 +1,4 @@
-
+#test git workflow
 #' Title
 #'
 #' @param .data
@@ -42,7 +42,7 @@ nc_make_network1 <- function(.data,.alpha) {
   ##################
   ##################
   # pcalg
-  DAG<-est.pcor.skel.DAG.adj(dat=.data,alpha_val=.alpha)
+  DAG<-est.pcor.skel.DAG.adj(dat=.data,alpha_val=.alpha) 
   plot(DAG$skel_est)
 
   ##################
