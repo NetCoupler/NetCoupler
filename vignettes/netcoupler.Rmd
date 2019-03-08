@@ -56,37 +56,215 @@ Buehlmann (2012). Causal Inference Using Graphical Models with the R Package
 pcalg. Journal of Statistical Software, 47(11), 1-26. URL
 http://www.jstatsoft.org/v47/i11/.*
 
-## Pseudo-code of algorithm
+<!-- thesis https://publishup.uni-potsdam.de/frontdoor/index/index/searchtype/collection/id/17105/start/1/rows/10/facetNumber_author_facet/all/doctypefq/doctoralthesis/docId/40459 -->
 
-### Input
+## Workflow
 
-<!-- TODO: confirm with Clemens that this renders properly -->
+The general workflow for using NetCoupler is to:
 
-> **Input**: DAG-skeleton $G$ (graphical model)  
-Observations on: network variables $M$, exogenous exposure $X$; confounders $C$
-> 
-> **start** $DE = \{ \}$  
-**repeat** *until* no further $M_i$ is classified as $DE$  
-&nbsp;**add** all new direct effects to $DE$  
-&nbsp; **start** $AMB = M$  
-&nbsp; **repeat** *until* all $M_i \in AMB$ have been selected  
-&nbsp;&nbsp; **select** a variable $M_{i} \in AMB$  
-&nbsp;&nbsp; **select** all nodes adjacent to $M_{i}$ in $G$, $adj(G, M_i)$  
-&nbsp; &nbsp; **repeat** *until* no further non-redundant $S$ can be selected from $adj(G, M_i)$  
-&nbsp; &nbsp; &nbsp;**select** a subset $S \in adj(G, M_i)$  
-&nbsp; &nbsp; &nbsp;*estimate* $\hat{M}_i \sim X | S, DE, C$  
-&nbsp; &nbsp; &nbsp;*add* effect estimate $PE$ for $X$ on $M_i$ to $CS_i$  
-&nbsp;&nbsp; **if** (lower bound of $CS_i > 0$ or upper bound $CS_i < 0$) and  
-&nbsp; &nbsp; &nbsp;$sign(pe_1) = sign(pe_2)$ for every pair of estimates in $CS_i$:   
-&nbsp; &nbsp; classify $M_i$ as affected by $X$  
-&nbsp;&nbsp; **else if** (lower bound of $CS_i > 0$ or upper bound $CS_i < 0$) and  
-&nbsp; &nbsp; &nbsp; ($0 \in CS_i$ or $sign(pe_1) \neq sign(pe_2)$ for any pair of estimates in $CS_i$):  
-&nbsp; &nbsp; classify $M_i$ as ambiguous with respect to $X$  
-&nbsp;&nbsp; **else**:
-&nbsp; &nbsp; classify $M_i$ as non-affected by $X$  
-> 
-> **Output**: Confidence set $CS$ for effects of $X$ on $M$ based on $G$  
-classification of every $M_i \in M$ as affected ($X \rightarrow M_i$), non-affected ($X M_i$), or ambiguous ($X - M_i$)  
-> 
-> Symbols: $|$ = conditional on; $adj(G, M_i)$ = set of nodes adjacent to $M_i$ in $G \equiv$ direct neighbours of $M_i$ in $G$.
+- Take the metabolomics data and run the PC-alg on it
+- Select a subset of variables or clusters from the PC-alg
+- Then run NetCoupler on that subset
 
+## Data pre-processing
+
+Metabolic variables should be log-transformed and standardized on potential
+confounders {{this the best way?}} by regressing on age, sex, BMI, and prevalence
+of hypertension and using the residual variance in further models. Metabolites were
+then scaled (mean of zero and standard deviation of one). {{both regressed and
+scaled?}} 
+
+## Directed acyclic graph skeleton estimation
+
+The estimate the underlying directed acyclic graph (DAG) skeleton of the
+metabolite network, NetCoupler uses an implementation of the PC-algorithm {{cite
+177, 145, 148, 178}}. Because of this, the assumptions from the PC-algorithm
+apply to NetCoupler. The output of this algorithm is a graphical model (`G`) of
+the underlying network that is used by NetCoupler.
+
+## Confidence ranges based on multi-model procedures
+
+The estimated DAG skeleton ... {{complete later. Not clear about this right now.
+(page 43 of thesis)}}
+
+## Explanation of NetCoupler
+
+Given that 1) an exposure can potentially affect metabolite concentrations
+(`exposure -> metabolomics network`) and that 2) metabolites can potentially
+affect the development of a disease (`metabolomic network -> outcome`), two initial
+algorithms are needed: One for the exposure side (`nc_exposure_network`) and one
+for the disease/outcome (`nc_outcome_network`) side. The explanation and
+description of NetCoupler are taken heavily from Clemens Wittenbecher's PhD
+thesis {{cite}}.
+
+### Exposure-side network effect estimation
+
+The exposure-side network retrieves a range of potential direct effects of
+exogenous {{word?}} factors on the metabolite network. The general algorithm for
+the exposure-side estimation is:
+
+```
+input: DAG-skeleton (G)
+observations on: network variables (M), exogenous exposures (X), confounders (C)
+
+begin with empty direct effect (DE)
+repeat until no further ith M (Mi) is classified as DE
+    add new DE to DE
+    begin where AMB = M
+    repeat until all Mi that are elements of AMB have been selected
+        select a variable Mi from AMB
+        select all nodes adjacent to Mi in G, adj(G, Mi)
+        repeat until no further non-redundant subset (S) can be selected from adj(G, Mi)
+            select a S that is an element of adj(G, Mi)
+            estimate the predicted Mi as a function of (~) {{confirm}} X
+                conditional on S, DE, and C
+            add effect estimate PR for X on Mi to the ith confidence set (CS) {{confirm}}
+        end
+        if the lower bound of CSi > 0 or the upper bound CSi < 0 and
+                sign(pe1) = sign(pe2) {{meaning?}} for every pair of estimates in CSi
+            classify Mi as affected by X
+        else if the lower bound of CSi > 0 or the upper bound of CSi < 0 and 
+                0 is an element of CSi or 
+                the sign(pe1) is not = sign(pe2) for every pair of estimates in CSi
+            classify Mi as ambiguous with respect to X
+        else 
+            classify Mi as non-affected by X
+    end
+end
+
+output: CS for effects of X on M based on G
+            
+classification of every Mi that is an element of M as 
+    affected (X -> Mi)
+    non-affected (X  Mi)
+    ambiguous (X -- Mi)
+```
+
+Where `AMB` is {{meaning?}}, `PE` is {{meaning?}}, `adj(G, Mi)` is the set of
+nodes adjust to `Mi` in `G` that are congruent ($\equiv$) to direct neighbors of
+`Mi` in `G`.
+
+This assumes full source population information. For applications to a sample of
+the population, the following decision rules were applied:
+
+1. Consider the exposure-metabolite pair only if associated at a false discovery
+rate (FDR) controlled p-value <0.01 based on a model *not adjusted* for the adjacent
+metabolites (`S` is empty {{correct?}}, the marginal model).
+2. Consider the effect estimates as zero (0) if the p-value is >0.05.
+
+For a given exposure, a metabolite would be classified as non-affected if the
+FDR-adjusted p-value was non-significant in the marginal model. If there was
+a significant FDR-controlled p-value in the marginal model and all estimates in
+the confidence set (`CS` {{? correct?}}) were significant and consistent, then
+the metabolite would be classified as affected by the exposure. Other metabolites
+would be classified as ambiguous with respect to the exposure.
+
+{{TODO: reduce reliance on p-values or use another metric? Or do some bootstrapping/CV?}}
+
+The outer loop includes identifying directly affected metabolites into the fixed
+model part. Then the procedure was repeated on the still ambiguous metabolites 
+to check whether further unambiguous classification was possible based on the
+additional information. In the applied version of NetCoupler, this was limited
+to metabolites in the same connected components, which are defined as a group of
+two or more directly linked metabolites that were all associated with the
+exposure in the marginal model.
+
+The rationale was that indirect effects could only be mediated by metabolites
+that were themselves (directly or indirectly) affected by the exposure. These
+metabolites were expected to be marginally associated with the exposure.
+In theory, there could be possible scenarios where the incidental cancellation
+of several direct and indirect effects concealed exposure-dependency in the 
+marginal model {{cite 129}}.
+
+Still, high abundance of incidental cancellations are considered unlikely based
+on observed correlation structures and the chance to unambiguously resolve such
+complicated scenarios in the applied modelling approach is low {{proof of
+claim?}}. Therefore, the pragmatic decision was taken to adjust remaining
+ambiguous metabolites only for directly affected metabolites identified within
+the same connected component.
+
+{{TODO: rearrange this}}
+
+Network adjustments were used to resolve indirect effects mediated by another
+network variable (e.g. `exposure -> mediating metabolite -> metabolite`).
+
+### Outcome-side network effect estimation
+
+The outcome-side network retrieves direct effects of network variables on later
+occurring events.
+
+There are similarities to the exposure-side algorithm for the outcome-side
+algorithm, except that the directionality is reversed (`metabolite -> outcome`).
+This change in directionality also has implications on the decision rules.
+There may also be potential network-variable confounders and introduction
+of spurious associations (`metabolite <- confounding metabolite -> outcome`).
+The general algorithm for the outcome-side estimation is:
+
+```
+input: DAG-skeleton G (Graphical model)
+observations on: network variables (M), outcome (O), confounders (C)
+
+begin with empty direct effect (DE)
+repeat until no further ith M (Mi) is classified as DE
+    add new DE to DE
+    begin where AMB = M
+    repeat until all Mi have been selected
+        select a variable Mi from M {{not AMB?}}
+        select all nodes adjacent to Mi in G, adj(G, Mi)
+        repeat until no further non-redundant subset (S) can be selected from adj(G, Mi)
+            select a S from adj(G, Mi)
+            estimate outcome as a function of Mi conditional on S, C
+            add effect estimate PE for Mi on O to confidence set (CSi)
+        end
+        if the lower bound of CSi > 0 or upper bound of CSi < 0 and
+                sign(pe1) = sign(pe2) for every pair of estimates in CSi
+            classify Mi as affecting risk of O
+        else if lower bound of CSi > 0 or upper bound of CSi < 0 and
+                0 is in CSi or 
+                sign(pe1) = sign(pe2) for any pair of estimates in CSi
+            classify Mi as ambiguous with respect to risk of O
+        else
+            classify Mi as non-affecting risk to O
+    end
+end
+
+output: CS for effects of M on O based on G
+
+classification of every Mi from M as 
+    effector on O (Mi -> O)
+    non-effector on O (Mi  O)
+    ambiguous (Mi -- O)
+```
+
+Where `AMB` is {{meaning?}}, `PE` is {{meaning?}}, `adj(G, Mi)` is the set of
+nodes adjust to `Mi` in `G` that are congruent ($\equiv$) to direct neighbors of
+`Mi` in `G`.
+
+An indirect effect, unlike confounding, is not biased. Decision rules were adjusted
+to avoid bias:
+
+1. Consider a metabolite-outcome pair only if significantly associated at a
+FDR-adjusted p-value <0.1 based on a model adjusted for all adjacent metabolites
+(`S = adj(Mi)`)
+1. Consider effect estimates as 0 if p-value is >0.05
+
+Metabolites are classified as affecting the outcome if the FDR-adjusted p-value
+was significant in the model adjusted for the full adjacency set and all estimates
+in the confidence set are significant and consistent. Metabolites are considered
+not directly affecting the outcome if they were not significantly associated in
+the model adjusted for the full adjacency set. All others were considered
+ambiguous.
+
+### Step-wise iteration for full network estimation
+
+1. The DAG skeleton of the metabolite network is estimated
+2. Initial, tentative links are formed with the exposure-side of the network.
+3. Direct effects are estimated between exposure and network.
+4. Repeat identification of links, classifying as unaffected or ambiguous and 
+deleting indirect links.
+5. Initial, tentative links are formed with the outcome-side of the network.
+6. Direct effects are estimated between the network and the outcome.
+7. Repeat link identification, deleting indirect links and classifying others as
+unaffected or ambiguous.
+8. Combine the exposure-side and outcome-side network estimates into a joint 
+graphical model.
