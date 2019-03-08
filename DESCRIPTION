@@ -26,6 +26,7 @@ Suggests:
     glmulti,
     xlsx
 VignetteBuilder: knitr
+biocViews:
 Imports: 
     dplyr,
     rlist,
@@ -39,4 +40,6 @@ Imports:
     igraph,
     RCy3,
     ppcor,
-    tictoc
+    xlsx,
+    tictoc,
+    stats
