@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 The *NetCoupler*-algorithm operates by taking the following steps:
 
-1. The implementation of the PC-algorithm [1] in the pcalg package [2] is
+1. The implementation of the PC-algorithm [1] in the pcalg package [@Kalisch2012] is
 applied to estimate the skeleton of the underlying directed acyclic graph (DAG)
 that generated the complex exposure data (e.g., metabolomics data).
 1. For each network variable (e.g., metabolite), the adjacency set (all direct
@@ -51,10 +51,6 @@ factors on network variables.
 
 1. *Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse Causal Graphs.
 Social Science Computer Review 1991;9:62-72.*
-2. *Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis, Peter
-Buehlmann (2012). Causal Inference Using Graphical Models with the R Package
-pcalg. Journal of Statistical Software, 47(11), 1-26. URL
-http://www.jstatsoft.org/v47/i11/.*
 
 <!-- thesis https://publishup.uni-potsdam.de/frontdoor/index/index/searchtype/collection/id/17105/start/1/rows/10/facetNumber_author_facet/all/doctypefq/doctoralthesis/docId/40459 -->
 
@@ -77,10 +73,11 @@ scaled?}}
 ## Directed acyclic graph skeleton estimation
 
 The estimate the underlying directed acyclic graph (DAG) skeleton of the
-metabolite network, NetCoupler uses an implementation of the PC-algorithm {{cite
-177, 145, 148, 178}}. Because of this, the assumptions from the PC-algorithm
-apply to NetCoupler. The output of this algorithm is a graphical model (`G`) of
-the underlying network that is used by NetCoupler.
+metabolite network, NetCoupler uses an implementation of the PC-algorithm 
+[@Kalisch2012;@Maathuis2010;@Spirtes2001;@Colombo2014]. Because of this, the
+assumptions from the PC-algorithm apply to NetCoupler. The output of this
+algorithm is a graphical model (`G`) of the underlying network that is used by
+NetCoupler.
 
 ## Confidence ranges based on multi-model procedures
 
@@ -95,7 +92,7 @@ affect the development of a disease (`metabolomic network -> outcome`), two init
 algorithms are needed: One for the exposure side (`nc_exposure_network`) and one
 for the disease/outcome (`nc_outcome_network`) side. The explanation and
 description of NetCoupler are taken heavily from Clemens Wittenbecher's PhD
-thesis {{cite}}.
+thesis [@Wittenbecher2017].
 
 ### Exposure-side network effect estimation
 
@@ -174,7 +171,7 @@ that were themselves (directly or indirectly) affected by the exposure. These
 metabolites were expected to be marginally associated with the exposure.
 In theory, there could be possible scenarios where the incidental cancellation
 of several direct and indirect effects concealed exposure-dependency in the 
-marginal model {{cite 129}}.
+marginal model [@Pearl2009]
 
 Still, high abundance of incidental cancellations are considered unlikely based
 on observed correlation structures and the chance to unambiguously resolve such
