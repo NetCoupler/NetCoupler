@@ -20,7 +20,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 Suggests: 
     covr,
-    testthat,
+    testthat (>= 2.1.0),
     knitr,
     rmarkdown,
     glmulti,
@@ -44,4 +44,4 @@ Imports:
     magrittr,
     purrr,
     tibble
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.0

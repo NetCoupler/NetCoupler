@@ -26,7 +26,11 @@ Useful links:
 Authors:
 \itemize{
   \item Luke Johnston \email{lwjohnst@gmail.com}
-  \item Helena Zacharias \email{helena.zacharias@helmholtz-muenchen.de}
+}
+
+Other contributors:
+\itemize{
+  \item Helena Zacharias \email{helena.zacharias@helmholtz-muenchen.de} [contributor]
 }
 
 }

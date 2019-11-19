@@ -85,7 +85,7 @@ nc_make_network <- function(.dataset, .alpha, .network_variables) {
 #' @return Outputs a list of renamed column variables.
 #' @export
 #'
-rename.met <- function(dat) {
+rename_met <- function(dat) {
   # dat: samples x metabolites data matrix
   Ll <- paste("NM", c(1:dim(dat)[2]), sep = "") # generate shorter metabolite names
 
@@ -234,7 +234,7 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
                       exposure_metabolite,
                       " + ",
                       always_set,
-                      " + strata(Age)",
+                      " + survival::strata(Age)",
                       collapse = " + "),
       plotty = FALSE,
       includeobjects = TRUE,
