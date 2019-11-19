@@ -14,6 +14,7 @@
 #' simulated_data %>%
 #' select(contains("metabolite")) %>%
 #' pc_dag_estimates()
+#'
 pc_dag_estimates <- function(.data, .alpha = 0.01) {
     number_samples <- nrow(.data)
     metabolite_names <- colnames(.data)
@@ -35,7 +36,7 @@ pc_dag_estimates <- function(.data, .alpha = 0.01) {
 #' Extract adjacency matrix from a DAG skeleton.
 #'
 #' Is generally a wrapper around calls to [igraph::get.adjacency()] and
-#' [gRbase::graphNEL2igraph()]. Transforms from a GraphNEL object in igraph.
+#' [igraph::igraph.from.graphNEL()]. Transforms from a GraphNEL object in igraph.
 #'
 #' @param .dag_skeleton The PC DAG skeleton object.
 #'
@@ -48,6 +49,7 @@ pc_dag_estimates <- function(.data, .alpha = 0.01) {
 #' pc_skeleton_estimates()
 #'
 #' adjacency_matrix(skeleton_estimate)
+#'
 adjacency_matrix <- function(.dag_skeleton) {
     # TODO: Include a check here that it is a DAG skeleton..?
     igraph::get.adjacency(igraph::igraph.from.graphNEL(.dag_skeleton@graph))
