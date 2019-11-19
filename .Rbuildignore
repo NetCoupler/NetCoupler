@@ -6,3 +6,4 @@
 ^codecov\.yml$
 ^data-raw$
 ^dev$
+^CODE_OF_CONDUCT\.md$
