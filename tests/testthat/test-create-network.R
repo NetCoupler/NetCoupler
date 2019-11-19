@@ -11,7 +11,7 @@ test_that("network is created", {
 
     # Make partial independence network from metabolite data
     metabolite_network <-
-        nc_make_network(renamed_simulated_data, .05, nodes_short_names)
+        nc_create_network(renamed_simulated_data, .05)
 
     expect_type(metabolite_network, "list")
 })

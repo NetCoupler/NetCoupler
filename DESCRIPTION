@@ -35,7 +35,6 @@ Imports:
     RBGL,
     survival,
     mgcv,
-    gRbase,
     mosaic,
     igraph,
     RCy3,

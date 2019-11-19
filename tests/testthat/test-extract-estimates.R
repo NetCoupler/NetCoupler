@@ -9,7 +9,7 @@ test_that("estimates are correctly extracted from outcome side", {
         names()
 
     metabolite_network <-
-        nc_make_network(renamed_simulated_data, .05, nodes_short_names)
+        nc_create_network(renamed_simulated_data, .05)
     survival_object <<-
         survival::Surv(simulated_data$survival_time, simulated_data$case_status)
     net_coupler_case <- suppressMessages(suppressWarnings(NetCoupler::net_coupler_out(
