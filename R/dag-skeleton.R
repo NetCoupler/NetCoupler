@@ -49,8 +49,8 @@ pc_dag_estimates <- function(.data, .alpha = 0.01) {
 #'
 #' adjacency_matrix(skeleton_estimate)
 adjacency_matrix <- function(.dag_skeleton) {
-    # TODO: Include a check here that it is a DAG skeleton.
-    igraph::get.adjacency(gRbase::graphNEL2igraph(.dag_skeleton@graph))
+    # TODO: Include a check here that it is a DAG skeleton..?
+    igraph::get.adjacency(igraph::igraph.from.graphNEL(.dag_skeleton@graph))
 }
 
 #' Estimate order-independent PC-stable skeleton of a DAG.
