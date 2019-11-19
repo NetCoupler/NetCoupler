@@ -234,7 +234,7 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
                       exposure_metabolite,
                       " + ",
                       always_set,
-                      " + strata(Age)",
+                      " + survival::strata(Age)",
                       collapse = " + "),
       plotty = FALSE,
       includeobjects = TRUE,
