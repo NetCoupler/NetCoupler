@@ -3,7 +3,7 @@
 export("%>%")
 export(getExp.coef.out)
 export(getExp.coef.permetabolite)
-export(nc_make_network)
+export(nc_create_network)
 export(net_coupler_out)
 export(rename_met)
 import(dplyr)
