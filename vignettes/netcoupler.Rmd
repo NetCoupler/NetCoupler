@@ -276,6 +276,7 @@ http://www.jstatsoft.org/v47/i11/.*
 
 ```{r}
 # library(dagitty)
+library(NetCoupler)
 library(dplyr)
 library(survival)
 library(glmulti)
