@@ -56,10 +56,10 @@ mult.stat <- function(sum_netin, MinMod, adjust_method, rule_1 = 11, rule_1_cut 
   )
 
   # collect ambiguous effects:
-  amb <- sum_netin_sum_adj %>% filter(Assoc != 0 & DE == 0)
+  amb <- sum_netin_sum_adj %>% dplyr::filter(Assoc != 0 & DE == 0)
 
   # collect direct effects:
-  direct <- sum_netin_sum_adj %>% filter(Assoc != 0 & DE != 0)
+  direct <- sum_netin_sum_adj %>% dplyr::filter(Assoc != 0 & DE != 0)
 
   # collect summary statistics including round information
   sum_netin_sum_adj_FV <- sum_netin_sum_adj %>% dplyr::mutate(round = as.numeric(round_number), Assoc_FV = as.character(Assoc), DE_FV = as.character(DE))
@@ -126,10 +126,10 @@ mult.stat.surv <- function(sum_netout, adjust_method, rule_1 = 12, rule_1_cut = 
   )
 
   # collect ambiguous effects:
-  amb <- sum_netout_sum_adj %>% filter(Assoc != 0 & DE == 0)
+  amb <- sum_netout_sum_adj %>% dplyr::filter(Assoc != 0 & DE == 0)
 
   # collect direct effects:
-  direct <- sum_netout_sum_adj %>% filter(Assoc != 0 & DE != 0)
+  direct <- sum_netout_sum_adj %>% dplyr::filter(Assoc != 0 & DE != 0)
 
   # collect summary statistics including round information
   sum_netout_sum_adj_FV <- sum_netout_sum_adj %>% dplyr::mutate(round = as.numeric(round_number), Assoc_FV = as.character(Assoc), DE_FV = as.character(DE))
