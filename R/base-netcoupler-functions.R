@@ -34,7 +34,7 @@ nc_make_network <- function(.dataset, .alpha, .network_variables) {
     # estimate order-independent "PC-stable" skeleton of DAG using PC-algorithm
     skel_est <- pcalg::skeleton(
       suffStat = list(C = cor(.dat), n = number_observations),
-      indepTest = gaussCItest,
+      indepTest = pcalg::gaussCItest,
       labels = metabolite_names,
       method = "stable",
       alpha = .alpha_val,
@@ -45,7 +45,7 @@ nc_make_network <- function(.dataset, .alpha, .network_variables) {
     # estimate order-independent DAG using PC-algorithm
     DAG_est <- pcalg::pc(
       suffStat = list(C = cor(.dat), n = number_observations),
-      indepTest = gaussCItest,
+      indepTest = pcalg::gaussCItest,
       labels = metabolite_names,
       skel.method = "stable",
       alpha = .alpha_val,
