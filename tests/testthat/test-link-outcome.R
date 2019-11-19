@@ -1,7 +1,7 @@
 context("Networks links with the outcome")
 
 test_that("DAG network estimates with the outcome", {
-    renaming <- rename.met(simulated_data)
+    renaming <- rename_met(simulated_data)
     renamed_simulated_data <- renaming[[1]]
     matching_table_names_newnames <- renaming[[2]]
     nodes_short_names <- renamed_simulated_data %>%

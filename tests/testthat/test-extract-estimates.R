@@ -1,7 +1,7 @@
 context("Extract estimates from model")
 
 test_that("estimates are correctly extracted from outcome side", {
-    renaming <- rename.met(simulated_data)
+    renaming <- rename_met(simulated_data)
     renamed_simulated_data <- renaming[[1]]
     matching_table_names_newnames <- renaming[[2]]
     nodes_short_names <- renamed_simulated_data %>%

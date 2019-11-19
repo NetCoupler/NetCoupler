@@ -85,7 +85,7 @@ nc_make_network <- function(.dataset, .alpha, .network_variables) {
 #' @return Outputs a list of renamed column variables.
 #' @export
 #'
-rename.met <- function(dat) {
+rename_met <- function(dat) {
   # dat: samples x metabolites data matrix
   Ll <- paste("NM", c(1:dim(dat)[2]), sep = "") # generate shorter metabolite names
 
