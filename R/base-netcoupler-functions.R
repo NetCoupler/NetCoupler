@@ -10,17 +10,17 @@
 #' @return Outputs a DAG skeleton.
 #' @export
 #'
-nc_make_network1 <- function(.data, .alpha, .network_variables, .filter_variable, .filter_value, .adjustment_variable) {
+nc_make_network <- function(.dataset, .alpha, .network_variables) {
 
   # Standardize metabolites on exposure, remove all variables that are not metbolites
-  filtered_data <- dplyr::filter(.data, UQ(rlang::sym(.filter_variable)) == .filter_value) %>%
-    dplyr::filter_at(vars(noquote(.adjustment_variable)), all_vars(!is.na(.))) %>%
-    dplyr::filter_at(vars(noquote(.network_variables)), all_vars(!is.na(.)))
-
-  exposureadjusted_metabolite_data <- filtered_data %>%
-    tibble::as_tibble() %>%
-    purrr::modify_at(noquote(.network_variables), ~ stats::residuals(lm(.x ~ as.matrix(dplyr::select(filtered_data, noquote(.adjustment_variable)))))) %>%
-    dplyr::select(noquote(.network_variables))
+  # filtered_data <- dplyr::filter(.data, UQ(rlang::sym(.filter_variable)) == .filter_value) %>%
+  #   dplyr::filter_at(vars(noquote(.adjustment_variable)), all_vars(!is.na(.))) %>%
+  #   dplyr::filter_at(vars(noquote(.network_variables)), all_vars(!is.na(.)))
+  #
+  # exposureadjusted_metabolite_data <- filtered_data %>%
+  #   tibble::as_tibble() %>%
+  #   purrr::modify_at(noquote(.network_variables), ~ stats::residuals(lm(.x ~ as.matrix(dplyr::select(filtered_data, noquote(.adjustment_variable)))))) %>%
+  #   dplyr::select(noquote(.network_variables))
 
   # Estimate the skeleton (family of DAGs without specification of the direction of edges)
   est.pcor.skel.DAG.adj <- function(.dat, .alpha_val, .network_variables) {
