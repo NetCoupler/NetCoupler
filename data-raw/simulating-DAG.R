@@ -102,6 +102,7 @@ simulated_data <-
             IV3 = "metabolite_12"
         ),
         simulated_dag_data
-    )
+    ) %>%
+    as_tibble()
 
 usethis::use_data(simulated_data, overwrite = TRUE)

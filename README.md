@@ -49,3 +49,9 @@ remotes::install_github("ClemensWittenbecher/NetCoupler")
     contributing/collaborating, or want to learn more about NetCoupler?
     Check out our [Gitter Chat
     Room](https://gitter.im/NetCoupler/Lobby).
+
+# Contributing and Code of Conduct
+
+Please note that the ‘NetCoupler’ project is released with a
+[Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to
+this project, you agree to abide by its terms.
