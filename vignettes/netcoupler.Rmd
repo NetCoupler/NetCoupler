@@ -303,6 +303,8 @@ net_coupler_case <- NetCoupler::net_coupler_out(
     survival_obj = "survival_object"
 )
 
-getExp.coef.out(object = net_coupler_case, metabolite = simulated_data %>% 
-                    dplyr::select(contains("metabolite")) %>% names())
+extracted_estimates <- getExp.coef.out(object = net_coupler_case, metabolite = simulated_data %>% 
+                    dplyr::select(contains("metabolite")) %>% names()) %>%
+    as_tibble()
+extracted_estimates
 ```
