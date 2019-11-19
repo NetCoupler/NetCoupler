@@ -42,5 +42,6 @@ Imports:
     ppcor,
     stats,
     magrittr,
-    purrr
+    purrr,
+    tibble
 RoxygenNote: 6.1.1
