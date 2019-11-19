@@ -309,3 +309,7 @@ extracted_estimates <- getExp.coef.out(object = net_coupler_case, metabolite = s
     as_tibble()
 extracted_estimates
 ```
+
+## Comments
+
+Metabolites should be standardized (residuals from lm) on the exposure...?
