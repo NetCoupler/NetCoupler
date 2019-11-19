@@ -1,6 +1,6 @@
 
 # Get connected components per exposure#
-
+#blablabla
 get.con.comp <- function(exposure_names, exposure_list, adjM_norename, met_group) {
 
   # exposure_names: list of investigated exposure names
