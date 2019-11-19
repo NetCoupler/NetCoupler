@@ -40,13 +40,15 @@ rename_met <- function(dat) {
 #' @return Outputs a list with model details and outcome estimates.
 #' @export
 #'
-net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) {
+net_coupler_out <- function(graph_skel, dat, .model_vars, DE, survival_obj) {
+    # TODO: DE is variable given?
 
-  # always_set: fixed set of covariates always included in model
 
   model_details_all <- list(NULL) # prepare empty list to store output
-  node_names <- colnames(dat)[!colnames(dat) %in% c("ident")] # , "ia_subcohort", "fuptime_diab","case_diab_caco" )]  #create vector "node_names" with node names as strings
-  always_set <- paste0(colnames(adjustment_data)[!colnames(adjustment_data) %in% c("ident", "age")], collapse = " + ")
+  # TODO: get metabolic variable names from graph.
+  node_names <- colnames(dat)
+  # always_set: fixed set of covariates always included in model
+  always_set <- paste0(.model_vars, collapse = " + ")
 
   for (i in seq(along = node_names)) { # create empty list with slots for each network-variable, i.e. metabolite
 
