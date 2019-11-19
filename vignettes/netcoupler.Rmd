@@ -281,9 +281,6 @@ library(survival)
 library(glmulti)
 # library(igraph)
 
-simulated_data <- simulated_data %>% 
-    mutate(Age = rnorm(n(), mean = 50, sd = 10))
-
 # glmulti: number of strings that can be processed in the iterative multimodel procudre is restricted
 # rename network variables with short names - this is necessary for later steps
 renaming <- rename.met(simulated_data)

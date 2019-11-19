@@ -103,6 +103,7 @@ simulated_data <-
         ),
         simulated_dag_data
     ) %>%
+    mutate(Age = rnorm(n(), mean = 50, sd = 10))
     as_tibble()
 
 usethis::use_data(simulated_data, overwrite = TRUE)
