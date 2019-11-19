@@ -1,18 +1,8 @@
-# PC_skel <- skeleton(
-#   suffStat = list(C = cor(PC_data_SC), n = n),
-#   indepTest = gaussCItest, labels = V, method = "stable", # indep.test: partial correlations
-#   alpha = 0.05, fixedGaps = NULL, fixedEdges = NULL, verbose = FALSE
-# )
+# PC_skel <- pc_dag_estimates(PC_data_SC)
+# PC_DAG <- pc_skeleton_estimates(PC_data_SC)
+# adjM <- adjacency_matrix(PC_skel)
 #
-# PC_DAG <- pc(
-#   suffStat = list(C = cor(PC_data_SC), n = n),
-#   indepTest = gaussCItest, labels = V, skel.method = "stable", # indep.test: partial correlations
-#   alpha = 0.05, fixedGaps = NULL, fixedEdges = NULL, verbose = FALSE, maj.rule = F, solve.confl = F
-# )
-#
-# # get adjacency matrix (transform GraphNEL in Igraph)
-# adjM_PC <- get.adjacency(graphNEL2igraph(PC_skel@graph))
-#
+# What's this for?
 # NW_PC_EPIC <- PC_DAG@graph
 #
 # # GET CONNECTED COMPONENTS PER EXPOSURE
