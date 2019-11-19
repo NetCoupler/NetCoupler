@@ -47,13 +47,6 @@ but cannot be colliders) until no further direct effects are identified.
 A similar procedure is provided to identify direct influences of external
 factors on network variables.
 
-<!-- TODO: Put this into a bib file. -->
-
-1. *Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse Causal Graphs.
-Social Science Computer Review 1991;9:62-72.*
-
-<!-- thesis https://publishup.uni-potsdam.de/frontdoor/index/index/searchtype/collection/id/17105/start/1/rows/10/facetNumber_author_facet/all/doctypefq/doctoralthesis/docId/40459 -->
-
 ## Workflow
 
 The general workflow for using NetCoupler is to:
@@ -265,3 +258,16 @@ deleting indirect links.
 unaffected or ambiguous.
 8. Combine the exposure-side and outcome-side network estimates into a joint 
 graphical model.
+
+
+<!-- TODO: Put this into a bib file. -->
+
+1. *Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse Causal Graphs.
+Social Science Computer Review 1991;9:62-72.*
+
+<!-- thesis https://publishup.uni-potsdam.de/frontdoor/index/index/searchtype/collection/id/17105/start/1/rows/10/facetNumber_author_facet/all/doctypefq/doctoralthesis/docId/40459 -->
+
+2 *Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis, Peter
+Buehlmann (2012). Causal Inference Using Graphical Models with the R Package
+pcalg. Journal of Statistical Software, 47(11), 1-26. URL
+http://www.jstatsoft.org/v47/i11/.*

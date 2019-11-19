@@ -22,12 +22,14 @@ Suggests:
     covr,
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    glmulti,
+    xlsx
 VignetteBuilder: knitr
+biocViews:
 Imports: 
     dplyr,
     rlist,
-    glmulti,
     pcalg,
     plyr,
     RBGL,
@@ -38,5 +40,7 @@ Imports:
     igraph,
     RCy3,
     ppcor,
-    xlsx,
-    tictoc
+    stats,
+    magrittr,
+    purrr
+RoxygenNote: 6.1.1
