@@ -66,12 +66,12 @@ nc_make_network <- function(.dataset, .alpha, .network_variables) {
         DAG_est = DAG_est,
         adj_matrix = adj_matrix,
         w_adj_matrix = w_adj_matrix,
-        data = exposureadjusted_metabolite_data
+        data = .dat
       )
     )
   }
 
-  est.pcor.skel.DAG.adj(.dat = exposureadjusted_metabolite_data,
+  est.pcor.skel.DAG.adj(.dat = .dataset,
                         .alpha_val = .alpha,
                         .network_variables = .network_variables)
 }
@@ -168,9 +168,9 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
 
     match_nodes <-
       data.frame(Names = c(slot(
-        ALL_ceramides_SC_net_renamed$skel_est@graph, "nodes"
+        graph_skel@graph, "nodes"
       )), Index = c(1:length(
-        slot(ALL_ceramides_SC_net_renamed$skel_est@graph, "nodes")
+        slot(graph_skel@graph, "nodes")
       ))) # extract indices of adjacency set
     adjset <-
       adjset[adjset != as.numeric(match_nodes %>% dplyr::filter(Names == exposure_metabolite) %>% dplyr::select(Index))]
@@ -200,7 +200,7 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
     }
     else {
       message("No direct neighbors left after removing DE")
-      adjset_names <- c("age")
+      adjset_names <- c("Age")
       modeldata <- data.frame(cbind(exposure_metabolite_data, adjustment_data))
       colnames(modeldata)[1] <- exposure_metabolite
     }
@@ -213,8 +213,8 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
       survival::coxph(as.formula(paste(deparse(formula), always)), data = data, method = c("efron"), ...)
     }
 
-    modeldata$age <- round(modeldata$age, digits = 0)
-    modeldata$age
+    modeldata$Age <- round(modeldata$Age, digits = 0)
+    modeldata$Age
     if (!requireNamespace("glmulti", quietly = TRUE)) {
       stop("This function requires glmulti, please install it.")
     }
@@ -234,7 +234,7 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
                       exposure_metabolite,
                       " + ",
                       always_set,
-                      " + cluster(ident)  + strata(age)",
+                      " + strata(Age)",
                       collapse = " + "),
       plotty = FALSE,
       includeobjects = TRUE,
@@ -372,8 +372,8 @@ getExp.coef.permetabolite <- function(object, metabolite, DE = NA) {
       LCL = as.numeric(round(SUM$conf.int[[metabolite, 3]], digits = 2)),
       UCL = as.numeric(round(SUM$conf.int[[metabolite, 4]], digits = 2)),
       Beta = as.numeric(format(SUM$coefficients[[metabolite, 1]], digits = 2, nsmall = 2)),
-      rSE = as.numeric(format(SUM$coefficients[[metabolite, 4]], digits = 2, nsmall = 2)),
-      P = as.numeric(format(SUM$coefficients[[metabolite, 6]], digits = 3, nsmall = 3))
+      rSE = as.numeric(format(SUM$coefficients[[metabolite, 3]], digits = 2, nsmall = 2)),
+      P = as.numeric(format(SUM$coefficients[[metabolite, 5]], digits = 3, nsmall = 3))
     )
 
     # bind information to an Exposure-specific dataframe:
@@ -554,10 +554,10 @@ mult.stat.surv <-
   )
 
   # collect ambiguous effects:
-  amb <- sum_netout_sum_adj %>% filter(Assoc != 0 & DE == 0)
+  amb <- sum_netout_sum_adj %>% dplyr::filter(Assoc != 0 & DE == 0)
 
   # collect direct effects:
-  direct <- sum_netout_sum_adj %>% filter(Assoc != 0 & DE != 0)
+  direct <- sum_netout_sum_adj %>% dplyr::filter(Assoc != 0 & DE != 0)
 
   # collect summary statistics including round information
   sum_netout_sum_adj_FV <-
