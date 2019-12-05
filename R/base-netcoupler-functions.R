@@ -41,18 +41,15 @@ rename_met <- function(dat) {
 #' @export
 #'
 net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) {
+    # TODO: DE is variable given?
 
+
+  # TODO: get metabolic variable names from graph.
+  node_names <- colnames(dat)
   # always_set: fixed set of covariates always included in model
+  always_set <- paste0(names(adjustment_data), collapse = " + ")
 
-  model_details_all <- list(NULL) # prepare empty list to store output
-  node_names <- colnames(dat)[!colnames(dat) %in% c("ident")] # , "ia_subcohort", "fuptime_diab","case_diab_caco" )]  #create vector "node_names" with node names as strings
-  always_set <- paste0(colnames(adjustment_data)[!colnames(adjustment_data) %in% c("ident", "age")], collapse = " + ")
-
-  for (i in seq(along = node_names)) { # create empty list with slots for each network-variable, i.e. metabolite
-
-    model_details <- list(NULL)
-    model_details_all[[i]] <- model_details
-  }
+  model_details_all <- purrr::imap(node_names, ~ NULL)
   names(model_details_all) <- node_names
 
   # for loop with already identified direct effects:
@@ -82,17 +79,15 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
     #   stop("'exposure_metabolite_data' is not a numeric vector as required")
 
     # create vector with integers indicating adjacent variables, i.e. metabolites in skeleton:
-    edge_list <- slot(graph_skel@graph, "edgeL") # extract edge-list from skeleton
+    edge_list <- graph_skel@graph@edgeL # extract edge-list from skeleton
 
-    adjset <- c(edge_list[[exposure_metabolite]]) # extract adjacency set for selected node/metabolite
-    adjset <- c(adjset[[1]])
+    adjset <- edge_list[[exposure_metabolite]][[1]] # extract adjacency set for selected node/metabolite
 
-    match_nodes <-
-      data.frame(Names = c(slot(
-        graph_skel@graph, "nodes"
-      )), Index = c(1:length(
-        slot(graph_skel@graph, "nodes")
-      ))) # extract indices of adjacency set
+    match_nodes <- tibble::tibble(
+        Names = graph_skel@graph@nodes,
+        Index = 1:length(Names)
+    )
+    # extract indices of adjacency set
     adjset <-
       adjset[adjset != as.numeric(match_nodes %>% dplyr::filter(Names == exposure_metabolite) %>% dplyr::select(Index))]
 
@@ -166,7 +161,7 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
     # output summaries:
     glmulti_obj_objects <- glmulti_obj@objects # collect glmulti objects, i.e. all fitted models (?)
 
-    nbmds <- c(1:glmulti_obj@nbmods) # number of fitted models of glmulti-function
+    nbmds <- 1:glmulti_obj@nbmods # number of fitted models of glmulti-function
 
     model_details <- list(NULL)
 
@@ -298,7 +293,7 @@ getExp.coef.permetabolite <- function(object, metabolite, DE = NA) {
     )
 
     # bind information to an Exposure-specific dataframe:
-    mm_coef_temp1 <- bind_rows(mm_coef_temp1, mm_coef_temp2)
+    mm_coef_temp1 <- dplyr::bind_rows(mm_coef_temp1, mm_coef_temp2)
   }
 
   return(mm_coef_temp1)
@@ -364,7 +359,7 @@ getExp.coef.out <- function(object, metabolite, DE = NA) {
 
   for (j in metabolite) {
     mm_coef_temp <- data.frame(getExp.coef.permetabolite(object = object, metabolite = j, DE = DE))
-    mm_coef <- bind_rows(mm_coef, mm_coef_temp)
+    mm_coef <- dplyr::bind_rows(mm_coef, mm_coef_temp)
   }
 
   return(mm_coef)

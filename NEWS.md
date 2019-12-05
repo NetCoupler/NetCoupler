@@ -4,7 +4,12 @@
 
 # NetCoupler 0.0.2.9000 
 
-* Started cleaning up left o, along with ver files.
+* Major revision of underlying code for generating the outcome-network link estimation (#55),
+resulting in created and streamlined `nc_outcome_estimates()` function. Because of
+this streamlining, the code is much faster and with the move to use MuMIn we can 
+remove our dependency on rJava via glmulti.
+* Tidied up `nc_create_network()` function so that only the graph skeleton is output (#55).
+* Started cleaning up, along with leftover files.
 * Updated and generated documentation of `nc_create_network()`.
 * Added unit tests for `nc_create_network()` and the outcome estimation functions.
 Travis and code coverage were added as well.

@@ -1,4 +1,6 @@
-#' @import dplyr stringr
+#' @import stringr
+#' @importFrom dplyr select mutate everything matches
+#' @importFrom purrr map map_dfr map2 imap imap_dfr
 #' @keywords internal
 "_PACKAGE"
 
