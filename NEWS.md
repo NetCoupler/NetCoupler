@@ -1,4 +1,8 @@
-# NetCoupler 0.0.2.9000 (development version)
+# NetCoupler 0.0.3.9000 (development version)
+
+* Add CONTRIBUTING guidelines (#56).
+
+# NetCoupler 0.0.2.9000 
 
 * Major revision of underlying code for generating the outcome-network link estimation (#55),
 resulting in created and streamlined `nc_outcome_estimates()` function. Because of
