@@ -274,40 +274,24 @@ http://www.jstatsoft.org/v47/i11/.*
 
 ## Simple example of use
 
-```{r}
-# library(dagitty)
+```{r example-use}
 library(NetCoupler)
 library(dplyr)
-library(survival)
-library(glmulti)
-# library(igraph)
-
-# glmulti: number of strings that can be processed in the iterative multimodel procudre is restricted
-# rename network variables with short names - this is necessary for later steps
-renaming <- rename_met(simulated_data)
-renamed_simulated_data <- renaming[[1]]
-matching_table_names_newnames <- renaming[[2]]
-nodes_short_names <- renamed_simulated_data %>% 
-    dplyr::select(contains("NM")) %>%
-    names()
 
 # Make partial independence network from metabolite data
-metabolite_network <- nc_create_network(renamed_simulated_data, .05)
-survival_object <- survival::Surv(simulated_data$survival_time, simulated_data$case_status)
-net_coupler_case <- NetCoupler::net_coupler_out(
-    graph_skel = metabolite_network$skel_est,
-    dat = simulated_data %>% 
-        dplyr::select(contains("metabolite"), case_status),
-    DE = NULL,
-    adjustment_data = simulated_data %>% 
-        dplyr::select(Age),
-    survival_obj = "survival_object"
-)
+metabolite_network <- simulated_data %>% 
+    select(matches("metabolite")) %>% 
+    nc_create_network()
 
-extracted_estimates <- getExp.coef.out(object = net_coupler_case, metabolite = simulated_data %>% 
-                    dplyr::select(contains("metabolite")) %>% names()) %>%
-    as_tibble()
-extracted_estimates
+outcome_estimates <- simulated_data %>%
+    nc_outcome_estimates(
+        .graph = metabolite_network,
+        .outcome = "survival::Surv(survival_time, case_status)",
+        .adjustment_vars = "Age",
+        .model_function = survival::coxph
+    )
+
+outcome_estimates
 ```
 
 ## Comments
