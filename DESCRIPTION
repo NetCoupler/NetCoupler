@@ -2,8 +2,8 @@ Package: NetCoupler
 Title: Inference of Causal Links Between Metabolomics and Disease Incidence
 Version: 0.0.2.9000
 Authors@R: c(
-    person("Clemens", "Wittenbecher", email = "Clemens.Wittenbecher@dife.de", role = c("aut", "cre")),
-    person("Luke", "Johnston", email = "lwjohnst@gmail.com", role = "aut"),
+    person("Luke", "Johnston", email = "lwjohnst@gmail.com", role = c("aut", "cre")),
+    person("Clemens", "Wittenbecher", email = "Clemens.Wittenbecher@dife.de", role = "aut"),
     person("Helena", "Zacharias", email = "helena.zacharias@helmholtz-muenchen.de", role = "ctb")
     )
 Description: The NetCoupler algorithm identifies direct effects of correlated, 
@@ -38,3 +38,4 @@ Imports:
     MuMIn,
     ids,
     broom
+RoxygenNote: 7.0.2
