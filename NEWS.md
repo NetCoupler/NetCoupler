@@ -1,4 +1,8 @@
-# NetCoupler 0.0.2.9000 (development version)
+# NetCoupler 0.0.3.9000 (development version)
+
+* Add CONTRIBUTING guidelines (#56).
+
+# NetCoupler 0.0.2.9000 
 
 * Started cleaning up left o, along with ver files.
 * Updated and generated documentation of `nc_create_network()`.
