@@ -15,9 +15,11 @@ coverage](https://codecov.io/gh/NetCoupler/NetCoupler/branch/master/graph/badge.
 <!-- badges: end -->
 
 The goal of NetCoupler is to estimate causal links between metabolomics
-and disease incidence. The *NetCoupler-algorithm* links conditional
-dependency networks with time-to-event data and identifies direct
-effects of correlated, high-dimensional exposures on time-to-event data.
+and disease incidence. The *NetCoupler-algorithm*, which was formulated
+by Clemens Wittenbecher and converted into an R package by Luke
+Johnston, links conditional dependency networks with time-to-event data
+and identifies direct effects of correlated, high-dimensional exposures
+on time-to-event data.
 
 The NetCoupler’s input is multi-layer information from prospective
 studies, including interdependent variables that constitute the central
@@ -43,7 +45,7 @@ So far there is only the development version.
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("ClemensWittenbecher/NetCoupler")
+remotes::install_github("NetCoupler/NetCoupler")
 ```
 
 # Questions? Comments?
