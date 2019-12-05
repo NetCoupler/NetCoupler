@@ -21,11 +21,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Clemens Wittenbecher \email{Clemens.Wittenbecher@dife.de}
+\strong{Maintainer}: Luke Johnston \email{lwjohnst@gmail.com}
 
 Authors:
 \itemize{
-  \item Luke Johnston \email{lwjohnst@gmail.com}
+  \item Clemens Wittenbecher \email{Clemens.Wittenbecher@dife.de}
 }
 
 Other contributors:

@@ -23,24 +23,18 @@ Suggests:
     testthat (>= 2.1.0),
     knitr,
     rmarkdown,
-    glmulti,
-    xlsx
+    survival
 VignetteBuilder: knitr
 biocViews:
 Imports: 
     dplyr,
-    rlist,
     pcalg,
-    plyr,
-    RBGL,
-    survival,
-    mgcv,
-    mosaic,
     igraph,
-    RCy3,
     ppcor,
     stats,
     magrittr,
     purrr,
-    tibble
-RoxygenNote: 7.0.0
+    tibble,
+    MuMIn,
+    ids,
+    broom
