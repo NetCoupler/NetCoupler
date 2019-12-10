@@ -1,4 +1,6 @@
 #' @import stringr
+#' @importFrom assertive.types assert_is_data.frame assert_is_s4
+#'   assert_is_a_string assert_is_character assert_is_function assert_is_number
 #' @importFrom dplyr select mutate everything matches
 #' @importFrom purrr map map_dfr map2 imap imap_dfr
 #' @keywords internal
@@ -6,6 +8,7 @@
 
 ## usethis namespace: start
 #' @importFrom tibble tibble
+#' @importFrom lifecycle deprecate_soft
 ## usethis namespace: end
 NULL
 

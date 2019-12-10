@@ -1,31 +1,29 @@
 Package: NetCoupler
-Title: Inference of Causal Links Between Metabolomics and Disease Incidence
+Title: Inference of Causal Links Between Metabolomics and
+    Disease Incidence
 Version: 0.0.3.9000
-Authors@R: c(
-    person("Luke", "Johnston", email = "lwjohnst@gmail.com", role = c("aut", "cre")),
-    person("Clemens", "Wittenbecher", email = "Clemens.Wittenbecher@dife.de", role = "aut"),
-    person("Helena", "Zacharias", email = "helena.zacharias@helmholtz-muenchen.de", role = "ctb")
-    )
-Description: The NetCoupler algorithm identifies direct effects of correlated, 
-    high-dimensional exposures on time-to-event data. It can also be used with
-    an external exposure that may effect the -omic network (e.g. lifestyle), to
-    be used to identify indirect pathways between the external exposure and an 
-    outcome.
+Authors@R: 
+    c(person(given = "Luke",
+             family = "Johnston",
+             role = c("aut", "cre"),
+             email = "lwjohnst@gmail.com"),
+      person(given = "Clemens",
+             family = "Wittenbecher",
+             role = "aut",
+             email = "Clemens.Wittenbecher@dife.de"),
+      person(given = "Helena",
+             family = "Zacharias",
+             role = "ctb",
+             email = "helena.zacharias@helmholtz-muenchen.de"))
+Description: The NetCoupler algorithm identifies direct effects
+    of correlated, high-dimensional exposures on time-to-event data. It
+    can also be used with an external exposure that may effect the -omic
+    network (e.g. lifestyle), to be used to identify indirect pathways
+    between the external exposure and an outcome.
 License: MIT + file LICENSE
 URL: https://github.com/ClemensWittenbecher/NetCoupler
-BugReports: https://github.com/ClemensWittenbecher/NetCoupler/issues
-ByteCompile: true
-Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
-Suggests: 
-    covr,
-    testthat (>= 2.1.0),
-    knitr,
-    rmarkdown,
-    survival
-VignetteBuilder: knitr
-biocViews:
+BugReports: 
+    https://github.com/ClemensWittenbecher/NetCoupler/issues
 Imports: 
     dplyr,
     pcalg,
@@ -37,5 +35,22 @@ Imports:
     tibble,
     MuMIn,
     ids,
-    broom
+    broom,
+    lifecycle,
+    assertive.types
+Suggests: 
+    covr,
+    testthat (>= 2.1.0),
+    knitr,
+    rmarkdown,
+    survival
+VignetteBuilder: 
+    knitr
+RdMacros: 
+    lifecycle
+biocViews:
+ByteCompile: true
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.2
