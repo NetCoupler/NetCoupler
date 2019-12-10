@@ -18,9 +18,11 @@ coefficient estimates, then adds the variable names to the column and row names.
 }
 \examples{
 
+\dontrun{
 library(dplyr)
 simulated_data \%>\%
 select(contains("metabolite")) \%>\%
-partial_corr_matrix()
+NetCoupler:::partial_corr_matrix()
+}
 
 }

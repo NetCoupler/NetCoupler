@@ -12,6 +12,8 @@ https://gitter.im/NetCoupler/Lobby](https://badges.gitter.im/NetCoupler/Lobby.sv
 status](https://travis-ci.org/NetCoupler/NetCoupler.svg?branch=master)](https://travis-ci.org/NetCoupler/NetCoupler)
 [![Codecov test
 coverage](https://codecov.io/gh/NetCoupler/NetCoupler/branch/master/graph/badge.svg)](https://codecov.io/gh/NetCoupler/NetCoupler?branch=master)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/github/NetCoupler/NetCoupler?branch=master&svg=true)](https://ci.appveyor.com/project/NetCoupler/NetCoupler)
 <!-- badges: end -->
 
 The goal of NetCoupler is to estimate causal links between metabolomics

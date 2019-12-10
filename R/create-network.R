@@ -22,7 +22,7 @@
 #'   nc_create_network()
 nc_create_network <- function(.data, .alpha = 0.05) {
     assert_is_data.frame(.data)
-    assert_is_number(.alpha)
+    assert_is_a_number(.alpha)
 
     # TODO: Determine if this is important.
     # pcor_matrix <- partial_corr_matrix(.data)

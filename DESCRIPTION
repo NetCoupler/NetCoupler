@@ -37,7 +37,8 @@ Imports:
     ids,
     broom,
     lifecycle,
-    assertive.types
+    assertive.types,
+    stringr
 Suggests: 
     covr,
     testthat (>= 2.1.0),

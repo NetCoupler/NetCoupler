@@ -19,9 +19,11 @@ Uses the PC-algorithm and is mostly a wrapper around \code{\link[pcalg:skeleton]
 }
 \examples{
 
+\dontrun{
 library(dplyr)
 simulated_data \%>\%
 select(contains("metabolite")) \%>\%
-pc_skeleton_estimates()
+NetCoupler:::pc_skeleton_estimates()
+}
 
 }

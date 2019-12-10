@@ -1,6 +1,9 @@
 context("Extract estimates from model")
 
+# TODO: Deprecate this in 0.0.4
 test_that("estimates are correctly extracted from outcome side", {
+    skip_if_not_installed("glmulti")
+
     metabolite_network <- simulated_data %>%
         dplyr::select(dplyr::matches("metabolite")) %>%
         nc_create_network()

@@ -4,6 +4,7 @@
 * Add lifecycle badges to functions, soft deprecating `net_coupler_out()`,
 `getExp.coef.permetabolite()`, and `getExp.coef.out()` (#59)
 * Add defensive checks to input arguments with assertive.types (#59).
+* Add AppVeyor to repo. Started Travis to run on repo (#61).
 
 # NetCoupler 0.0.2.9000 
 

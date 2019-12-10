@@ -43,12 +43,15 @@ pc_dag_estimates <- function(.data, .alpha = 0.01) {
 #' @return Outputs an adjacency matrix of the DAG skeleton.
 #'
 #' @examples
+#'
+#' \dontrun{
 #' library(dplyr)
 #' skeleton_estimate <- simulated_data %>%
 #' select(contains("metabolite")) %>%
-#' pc_skeleton_estimates()
+#' NetCoupler:::pc_skeleton_estimates()
 #'
-#' adjacency_matrix(skeleton_estimate)
+#' NetCoupler:::adjacency_matrix(skeleton_estimate)
+#' }
 #'
 adjacency_matrix <- function(.dag_skeleton) {
     # TODO: Include a check here that it is a DAG skeleton..?
@@ -66,10 +69,12 @@ adjacency_matrix <- function(.dag_skeleton) {
 #'
 #' @examples
 #'
+#' \dontrun{
 #' library(dplyr)
 #' simulated_data %>%
 #' select(contains("metabolite")) %>%
-#' pc_skeleton_estimates()
+#' NetCoupler:::pc_skeleton_estimates()
+#' }
 #'
 pc_skeleton_estimates <- function(.data, .alpha = 0.01) {
     number_samples <- nrow(.data)
@@ -100,10 +105,12 @@ pc_skeleton_estimates <- function(.data, .alpha = 0.01) {
 #'
 #' @examples
 #'
+#' \dontrun{
 #' library(dplyr)
 #' simulated_data %>%
 #' select(contains("metabolite")) %>%
-#' partial_corr_matrix()
+#' NetCoupler:::partial_corr_matrix()
+#' }
 #'
 partial_corr_matrix <- function(.data) {
     # TODO: check if input data is gaussian
