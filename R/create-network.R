@@ -3,6 +3,8 @@
 #'
 #' Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
 #'
+#' \lifecycle{experimental}
+#'
 #' Main NetCoupler network creator. Defaults to using the PC algorithm to calculate
 #' possible edges.
 #'
@@ -19,6 +21,8 @@
 #'   select(contains("metabolite")) %>%
 #'   nc_create_network()
 nc_create_network <- function(.data, .alpha = 0.05) {
+    assert_is_data.frame(.data)
+    assert_is_number(.alpha)
 
     # TODO: Determine if this is important.
     # pcor_matrix <- partial_corr_matrix(.data)

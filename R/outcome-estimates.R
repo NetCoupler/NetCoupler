@@ -1,4 +1,6 @@
-#' Estimating pathways to an outcome from a NetCoupler DAG.
+#' Estimating pathways to an outcome from an estimated DAG.
+#'
+#' \lifecycle{experimental}
 #'
 #' This algorithm estimates direct effect of a predefined exposure
 #' (network-variable) on time-to-event for all causal models that agree with the
@@ -7,11 +9,16 @@
 #' combinations of direct neighbors (adjacency set) -> Output is a multiset of
 #' possible causal effects.
 #'
-#' @param .data Renamed samples x metabolites data matrix
-#' @param .graph Estimated DAG skeleton of samples x metabolites data matrix
-#' @param adjustment_data Exposure/phenotype data
+#' @param .data A data.frame that contains the data with the metabolic variables
+#'   and the outcome.
+#' @param .graph The estimated graph skeleton obtained from [nc_create_network()].
+#' @param .outcome Character. The outcome variable of interest.
+#' @param .adjustment_vars Character vector. The variables to adjust for in the model.
+#' @param .model_function A function object. The function to use for the modeling.
+#' @param ... Options to pass to the model function.
 #'
-#' @return Outputs a list with model details and outcome estimates.
+#' @return Outputs a [tibble::tibble()] with all the models computed and their
+#'   estimates.
 #' @export
 #'
 #' @examples
@@ -30,6 +37,12 @@
 #'    )
 #'
 nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .model_function, ...) {
+    assert_is_data.frame(.data)
+    assert_is_s4(.graph)
+    assert_is_a_string(.outcome)
+    assert_is_character(.adjustment_vars)
+    assert_is_function(.model_function)
+
     network_edges <- .graph@graph@edgeL
 
     all_possible_model_formulas <- network_edges %>%

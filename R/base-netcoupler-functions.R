@@ -24,6 +24,8 @@ rename_met <- function(dat) {
 
 #' Estimating the outcome from a NetCoupler DAG.
 #'
+#' \lifecycle{soft-deprecated}
+#'
 #' This algorithm estimates direct effect of a predefined exposure
 #' (network-variable) on time-to-event for all causal models that agree with the
 #' input-network: Cox prop. hazards regression models are used to estimate the
@@ -42,7 +44,7 @@ rename_met <- function(dat) {
 #'
 net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) {
     # TODO: DE is variable given?
-
+    lifecycle::deprecate_soft("0.0.4", "net_coupler_out()", "nc_outcome_estimates()")
 
   # TODO: get metabolic variable names from graph.
   node_names <- colnames(dat)
@@ -197,6 +199,8 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
 
 #' Extract the exposure coefficients per outcome from the netcoupler outcome estimation.
 #'
+#' \lifecycle{soft-deprecated}
+#'
 #' @param object Output of net.coupler.out
 #' @param metabolite Specific metabolite to evaluate
 #' @param DE Direct effect...
@@ -205,6 +209,7 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
 #' @export
 #'
 getExp.coef.permetabolite <- function(object, metabolite, DE = NA) {
+    lifecycle::deprecate_soft("0.0.4", "getExp.coef.permetabolite()", "nc_outcome_estimates()")
 
   # create vector containing integers from 1 to number of metabolite-specific models:
   nbm <- c(1:length(object$model_details_all[[metabolite]]$Model_summaries))
@@ -303,6 +308,8 @@ getExp.coef.permetabolite <- function(object, metabolite, DE = NA) {
 
 #' Extract coefficients of effect estimates for outcomes.
 #'
+#' \lifecycle{soft-deprecated}
+#'
 #' This function produces a table of effect estimates of all (some)
 #' network-variables on an outcome (time-to-event) for all possibles causal
 #' models based on conditional independence criteria encoded in the
@@ -318,6 +325,7 @@ getExp.coef.permetabolite <- function(object, metabolite, DE = NA) {
 #' @export
 #'
 getExp.coef.out <- function(object, metabolite, DE = NA) {
+    lifecycle::deprecate_soft("0.0.4", "getExp.coef.out()", "nc_outcome_estimates()")
 
   # define empty dataframes for output:
 
