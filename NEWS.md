@@ -1,6 +1,9 @@
 # NetCoupler 0.0.3.9000 (development version)
 
 * Add CONTRIBUTING guidelines (#56).
+* Add lifecycle badges to functions, soft deprecating `net_coupler_out()`,
+`getExp.coef.permetabolite()`, and `getExp.coef.out()` (#59)
+* Add defensive checks to input arguments with assertive.types (#59).
 
 # NetCoupler 0.0.2.9000 
 
