@@ -2,7 +2,7 @@
 % Please edit documentation in R/outcome-estimates.R
 \name{nc_outcome_estimates}
 \alias{nc_outcome_estimates}
-\title{Estimating pathways to an outcome from a NetCoupler DAG.}
+\title{Estimating pathways to an outcome from an estimated DAG.}
 \usage{
 nc_outcome_estimates(
   .data,
@@ -14,16 +14,27 @@ nc_outcome_estimates(
 )
 }
 \arguments{
-\item{.data}{Renamed samples x metabolites data matrix}
+\item{.data}{A data.frame that contains the data with the metabolic variables
+and the outcome.}
 
-\item{.graph}{Estimated DAG skeleton of samples x metabolites data matrix}
+\item{.graph}{The estimated graph skeleton obtained from \code{\link[=nc_create_network]{nc_create_network()}}.}
 
-\item{adjustment_data}{Exposure/phenotype data}
+\item{.outcome}{Character. The outcome variable of interest.}
+
+\item{.adjustment_vars}{Character vector. The variables to adjust for in the model.}
+
+\item{.model_function}{A function object. The function to use for the modeling.}
+
+\item{...}{Options to pass to the model function.}
 }
 \value{
-Outputs a list with model details and outcome estimates.
+Outputs a \code{\link[tibble:tibble]{tibble::tibble()}} with all the models computed and their
+estimates.
 }
 \description{
+\lifecycle{experimental}
+}
+\details{
 This algorithm estimates direct effect of a predefined exposure
 (network-variable) on time-to-event for all causal models that agree with the
 input-network: Cox prop. hazards regression models are used to estimate the

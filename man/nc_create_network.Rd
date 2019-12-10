@@ -18,6 +18,8 @@ Outputs a DAG skeleton.
 Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
 }
 \details{
+\lifecycle{experimental}
+
 Main NetCoupler network creator. Defaults to using the PC algorithm to calculate
 possible edges.
 }
