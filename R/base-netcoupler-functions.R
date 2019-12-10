@@ -432,12 +432,12 @@ mult.stat.surv <-
     )
 
   # multiple testing correction:
-  p_adjust_M <- p.adjust.methods[p.adjust.methods %in% adjust_method] # select multiple testing correction method(s)
+  p_adjust_M <- stats::p.adjust.methods[stats::p.adjust.methods %in% adjust_method] # select multiple testing correction method(s)
   p_adj <- sapply(p_adjust_M, function(meth) {
     stats::p.adjust(sum_netout_sum$ind_P, meth)
   }) # calculate adjusted p-values for ind_P
 
-  sum_netout_sum_adj <- bind_cols(sum_netout_sum, data.frame(p_adj))
+  sum_netout_sum_adj <- dplyr::bind_cols(sum_netout_sum, data.frame(p_adj))
   colnames(sum_netout_sum_adj)[12] <- adjust_method
 
   # add beta-coefficients:
@@ -450,6 +450,10 @@ mult.stat.surv <-
     )
 
   # is there an effect of specified metabolite on time-to-event?: determine effect-indicator (DE!=0: direct effect of metabolite on time-to-event, DE=0: ambiguous if adjusted ind_p<0.1):
+  if (!requireNamespace("mosaic")) {
+      stop("Please install the mosaic package to use.")
+  }
+
   sum_netout_sum_adj <- mutate(sum_netout_sum_adj,
                                DE = mosaic::derivedFactor(
                                  "1" = (
@@ -469,6 +473,10 @@ mult.stat.surv <-
                                ))
 
   # is there any effect of specified metabolite on time-to-event?: determine association-indicator (Assoc!=0: there is an effect (no differenciation between direct or indirect), Assoc=0: there is no effect)
+  if (!requireNamespace("mosaic")) {
+      stop("Please install the mosaic package to use.")
+  }
+
   sum_netout_sum_adj <- mutate(sum_netout_sum_adj,
     Assoc = mosaic::derivedFactor(
       "1" = (sum_netout_sum_adj[, rule_1] < rule_1_cut & sum_netout_sum_adj[, ass_rule1] > 0),
