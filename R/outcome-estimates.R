@@ -49,6 +49,9 @@ nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .mod
         imap(~ c(.graph@graph@nodes[.x$edges], .y, .adjustment_vars)) %>%
         map2(.outcome, ~ stats::reformulate(.x, response = .y))
 
+    # The central variable surrounded by neighbour variables in the network.
+    index_node <- names(network_edges)
+
     # TODO: Need to consider missing values.
     all_possible_models <- all_possible_model_formulas %>%
         map(~ .model_function(
@@ -57,7 +60,10 @@ nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .mod
             na.action = "na.fail"
             # TODO: Need to figure out how to pass other options to function
         )) %>%
-        map(~ suppressMessages(MuMIn::dredge(.x)))
+        map2(index_node,
+             ~ suppressMessages(MuMIn::dredge(.x, fixed = c(
+                 .y, .adjustment_vars
+             ))))
 
     all_top_models_tidied <- all_possible_models %>%
         map(~ MuMIn::get.models(.x, subset = delta <= 5)) %>%
