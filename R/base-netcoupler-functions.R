@@ -101,7 +101,7 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
     }
 
     # select data on adjacency set, store in "adjset_data":
-    if (rlang::is_empty(adjset) == FALSE) {
+    if (!length(adjset) == 0) {
       adjset_data <- subset(dat, select = c(adjset))
 
 
