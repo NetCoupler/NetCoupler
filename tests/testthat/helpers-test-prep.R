@@ -1,2 +1,1 @@
-library(glmulti)
 library(survival)
