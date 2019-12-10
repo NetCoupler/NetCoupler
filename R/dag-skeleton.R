@@ -10,10 +10,12 @@
 #'
 #' @examples
 #'
+#' \dontrun{
 #' library(dplyr)
 #' simulated_data %>%
 #' select(contains("metabolite")) %>%
-#' pc_dag_estimates()
+#' NetCoupler:::pc_dag_estimates()
+#' }
 #'
 pc_dag_estimates <- function(.data, .alpha = 0.01) {
     number_samples <- nrow(.data)
