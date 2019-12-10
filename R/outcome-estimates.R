@@ -15,6 +15,9 @@
 #' @param .outcome Character. The outcome variable of interest.
 #' @param .adjustment_vars Character vector. The variables to adjust for in the model.
 #' @param .model_function A function object. The function to use for the modeling.
+#' @param .exponentiate Logical. Default is false. Whether to exponentiate the
+#'   model results output, usually necessary for e.g. logistic regression
+#'   models.
 #' @param ... Options to pass to the model function.
 #'
 #' @return Outputs a [tibble::tibble()] with all the models computed and their
@@ -33,10 +36,12 @@
 #'     .graph = metabolite_network,
 #'     .outcome = "survival::Surv(survival_time, case_status)",
 #'     .adjustment_vars = "Age",
-#'     .model_function = survival::coxph
+#'     .model_function = survival::coxph,
+#'     .exponentiate = TRUE
 #'    )
 #'
-nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .model_function, ...) {
+nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .model_function,
+                                 .exponentiate = FALSE, ...) {
     assert_is_data.frame(.data)
     assert_is_s4(.graph)
     assert_is_a_string(.outcome)
@@ -66,24 +71,11 @@ nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .mod
              ))))
 
     all_top_models_tidied <- all_possible_models %>%
+        # TODO: Have argument for threshold? For choosing number of models?
         map(~ MuMIn::get.models(.x, subset = delta <= 5)) %>%
-        imap_dfr(~ .tidy_all_model_outputs(.x, .y)) %>%
-        mutate(outcome = .outcome)
+        imap_dfr(~ .tidy_all_model_outputs(.x, .y, .exponentiate = .exponentiate)) %>%
+        mutate(outcome = .outcome) %>%
+        select_at(vars("outcome", everything()))
 
     return(all_top_models_tidied)
-}
-
-.tidy_all_model_outputs <- function(.list, .names) {
-    .list %>%
-        map_dfr(.tidy_model_output) %>%
-        mutate(index_node = .names) %>%
-        select(index_node, everything())
-}
-
-.tidy_model_output <- function(.object) {
-    .object %>%
-        broom::tidy(exponentiate = TRUE) %>%
-        # Give a unique id for the model.
-        mutate(model_id = ids::random_id(1, bytes = 8)) %>%
-        select(model_id, everything())
 }
