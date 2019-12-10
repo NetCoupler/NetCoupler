@@ -1,6 +1,10 @@
 context("Networks links with the outcome")
 
+# TODO: Deprecate this in 0.0.4
 test_that("DAG network estimates with the outcome", {
+    skip_on_travis()
+    skip_on_appveyor()
+
     metabolite_network <- simulated_data %>%
         dplyr::select(dplyr::matches("metabolite")) %>%
         nc_create_network()
