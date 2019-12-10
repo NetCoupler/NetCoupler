@@ -17,11 +17,14 @@ Is generally a wrapper around calls to \code{\link[igraph:get.adjacency]{igraph:
 \code{\link[igraph:igraph.from.graphNEL]{igraph::igraph.from.graphNEL()}}. Transforms from a GraphNEL object in igraph.
 }
 \examples{
+
+\dontrun{
 library(dplyr)
 skeleton_estimate <- simulated_data \%>\%
 select(contains("metabolite")) \%>\%
-pc_skeleton_estimates()
+NetCoupler:::pc_skeleton_estimates()
 
-adjacency_matrix(skeleton_estimate)
+NetCoupler:::adjacency_matrix(skeleton_estimate)
+}
 
 }
