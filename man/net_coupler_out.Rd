@@ -21,6 +21,9 @@ net_coupler_out(graph_skel, dat, adjustment_data, DE, survival_obj)
 Outputs a list with model details and outcome estimates.
 }
 \description{
+\lifecycle{soft-deprecated}
+}
+\details{
 This algorithm estimates direct effect of a predefined exposure
 (network-variable) on time-to-event for all causal models that agree with the
 input-network: Cox prop. hazards regression models are used to estimate the

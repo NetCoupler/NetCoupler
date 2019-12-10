@@ -17,5 +17,5 @@ getExp.coef.permetabolite(object, metabolite, DE = NA)
 Outputs a data frame of estimates.
 }
 \description{
-Extract the exposure coefficients per outcome from the netcoupler outcome estimation.
+\lifecycle{soft-deprecated}
 }

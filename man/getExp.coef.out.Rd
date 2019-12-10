@@ -17,6 +17,9 @@ getExp.coef.out(object, metabolite, DE = NA)
 Outputs a data frame of effect estimates.
 }
 \description{
+\lifecycle{soft-deprecated}
+}
+\details{
 This function produces a table of effect estimates of all (some)
 network-variables on an outcome (time-to-event) for all possibles causal
 models based on conditional independence criteria encoded in the
