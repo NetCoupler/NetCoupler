@@ -20,9 +20,11 @@ skeleton.
 }
 \examples{
 
+\dontrun{
 library(dplyr)
 simulated_data \%>\%
 select(contains("metabolite")) \%>\%
-pc_dag_estimates()
+NetCoupler:::pc_dag_estimates()
+}
 
 }

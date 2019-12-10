@@ -1,4 +1,4 @@
-context("Run multiple models and generate model results.")
+context("Outcome-side multiple model computation.")
 
 test_that("model estimation works and results are output", {
     metabolite_network <- simulated_data %>%
@@ -9,19 +9,21 @@ test_that("model estimation works and results are output", {
             .graph = metabolite_network,
             .outcome = "survival::Surv(survival_time, case_status)",
             .adjustment_vars = "Age",
-            .model_function = survival::coxph
+            .model_function = survival::coxph,
+            .exponentiate = TRUE
         )
 
-    expect_equal(ncol(outcome_estimates), 9)
+    expect_equal(ncol(outcome_estimates), 10)
     expect_type(outcome_estimates, "list")
     expect_identical(class(outcome_estimates)[1], "tbl_df")
+})
 
+test_that("assertion checks pass", {
     # for model_function
     expect_error(simulated_data %>%
         nc_outcome_estimates(
             .graph = metabolite_network,
             .outcome = "survival::Surv(survival_time, case_status)",
-            .adjustment_vars = "Age",
             .model_function = "survival::coxph"
         )
     )
@@ -31,8 +33,7 @@ test_that("model estimation works and results are output", {
         nc_outcome_estimates(
             .graph = metabolite_network,
             .outcome = c("survival::Surv(survival_time, case_status)", "SomethingElse"),
-            .adjustment_vars = "Age",
-            .model_function = "survival::coxph"
+            .model_function = survival::coxph
         )
     )
 
@@ -40,9 +41,27 @@ test_that("model estimation works and results are output", {
     expect_error(simulated_data %>%
         nc_outcome_estimates(
             .graph = swiss,
-            .outcome = c("survival::Surv(survival_time, case_status)", "SomethingElse"),
-            .adjustment_vars = "Age",
-            .model_function = "survival::coxph"
+            .outcome = "survival::Surv(survival_time, case_status)",
+            .model_function = survival::coxph
+        )
+    )
+
+    # for adjustment
+    expect_error(simulated_data %>%
+        nc_outcome_estimates(
+            .graph = metabolite_network,
+            .outcome = "survival::Surv(survival_time, case_status)",
+            .adjustment_vars = 1,
+            .model_function = survival::coxph
+        )
+    )
+
+    expect_error(simulated_data %>%
+        nc_outcome_estimates(
+            .graph = metabolite_network,
+            .outcome = "survival::Surv(survival_time, case_status)",
+            .adjustment_vars = swiss,
+            .model_function = survival::coxph
         )
     )
 })
