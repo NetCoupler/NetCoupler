@@ -292,6 +292,16 @@ outcome_estimates <- simulated_data %>%
     )
 
 outcome_estimates
+
+exposure_estimates <- simulated_data %>%
+    nc_exposure_estimates(
+        .graph = metabolite_network,
+        .exposure = "exposure",
+        .adjustment_vars = "Age",
+        .model_function = lm
+    )
+
+exposure_estimates
 ```
 
 ## Comments
