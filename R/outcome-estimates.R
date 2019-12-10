@@ -61,7 +61,8 @@ nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .mod
 
     all_top_models_tidied <- all_possible_models %>%
         map(~ MuMIn::get.models(.x, subset = delta <= 5)) %>%
-        imap_dfr(~ .tidy_all_model_outputs(.x, .y))
+        imap_dfr(~ .tidy_all_model_outputs(.x, .y)) %>%
+        mutate(outcome = .outcome)
 
     return(all_top_models_tidied)
 }
