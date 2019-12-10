@@ -5,6 +5,7 @@
 `getExp.coef.permetabolite()`, and `getExp.coef.out()` (#59)
 * Add defensive checks to input arguments with assertive.types (#59).
 * Add AppVeyor to repo. Started Travis to run on repo (#61).
+* Added function for exposure side estimation: `nc_exposure_estimates()`
 
 # NetCoupler 0.0.2.9000 
 
