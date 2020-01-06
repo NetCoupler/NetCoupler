@@ -23,6 +23,6 @@ nc_standardize <- function(.tbl, .regressed_on = NULL) {
 .log_regress_standardize <- function(x, regressed_on) {
     # TODO: Decide which method to regress by. lm only?
     logged_x <- log(x)
-    residual_x <- stats::residuals(stats::glm.fit(logged_x = regressed_on, y = x))
+    residual_x <- stats::residuals(stats::glm.fit(y = logged_x, x = regressed_on))
     scale(residual_x)
 }
