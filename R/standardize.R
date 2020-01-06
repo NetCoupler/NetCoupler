@@ -17,7 +17,7 @@ nc_standardize <- function(.tbl, .regressed_on = NULL) {
 }
 
 .log_standardize <- function(x) {
-    log(scale(x))
+    scale(log(x))
 }
 
 .log_regress_standardize <- function(x, regressed_on) {
