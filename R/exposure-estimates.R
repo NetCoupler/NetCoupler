@@ -11,7 +11,7 @@
 #' @inheritParams nc_outcome_estimates
 #' @param .exposure Character. The exposure variable of interest.
 #'
-#' @return Outputs a [tibble::tibble()] with all the models computed and their
+#' @return Outputs a [tibble][tibble::tibble-package] with all the models computed and their
 #'   estimates.
 #' @export
 #'
