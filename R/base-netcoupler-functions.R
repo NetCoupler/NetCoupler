@@ -118,7 +118,7 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
     }
     else {
       message("No direct neighbors left after removing DE")
-      adjset_names <- c("Age")
+      adjset_names <- c("age")
       modeldata <- data.frame(cbind(exposure_metabolite_data, adjustment_data))
       colnames(modeldata)[1] <- exposure_metabolite
     }
@@ -131,8 +131,8 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
       survival::coxph(as.formula(paste(deparse(formula), always)), data = data, method = c("efron"), ...)
     }
 
-    modeldata$Age <- round(modeldata$Age, digits = 0)
-    modeldata$Age
+    modeldata$age <- round(modeldata$age, digits = 0)
+    modeldata$age
     if (!requireNamespace("glmulti", quietly = TRUE)) {
       stop("This function requires glmulti, please install it.")
     }
@@ -152,7 +152,7 @@ net_coupler_out <- function(graph_skel, dat, adjustment_data, DE, survival_obj) 
                       exposure_metabolite,
                       " + ",
                       always_set,
-                      " + survival::strata(Age)",
+                      " + survival::strata(age)",
                       collapse = " + "),
       plotty = FALSE,
       includeobjects = TRUE,

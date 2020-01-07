@@ -16,5 +16,5 @@ NULL
 #'
 #' @format The simulated dataset, output as a [tibble][tibble::tibble-package]
 #'   contains two outcome variables (`survival_time` and `case_status`), one
-#'   generic `exposure`, and 12 `metabolite_*` variables.
+#'   generic `exposure`, 12 `metabolite_*` variables, and an `age` variable.
 "simulated_data"
