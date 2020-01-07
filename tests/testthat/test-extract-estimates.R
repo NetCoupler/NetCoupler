@@ -17,7 +17,7 @@ test_that("estimates are correctly extracted from outcome side", {
             dplyr::select(dplyr::contains("metabolite"), case_status),
         DE = NULL,
         adjustment_data = simulated_data %>%
-            dplyr::select(Age),
+            dplyr::select(age),
         survival_obj = "survival_object"
     )))
 
