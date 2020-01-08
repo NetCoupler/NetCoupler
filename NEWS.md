@@ -1,5 +1,7 @@
 # NetCoupler 0.0.3.9000 (development version)
 
+* Add `nc_standardize()` function to standardize the metabolic variables (#73).
+* Export tidyselect functions like `matches()` or `starts_with()` (#73).
 * Add CONTRIBUTING guidelines (#56).
 * Add lifecycle badges to functions, soft deprecating `net_coupler_out()`,
 `getExp.coef.permetabolite()`, and `getExp.coef.out()` (#59)
