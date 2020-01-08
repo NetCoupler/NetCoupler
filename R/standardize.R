@@ -1,6 +1,8 @@
 
 #' Standardize the metabolic variables.
 #'
+#' \lifecycle{experimental}
+#'
 #' Can standardize by either 1) [log()]-transforming and then applying [scale()]
 #' (mean-center and scaled by standard deviation), or 2) if `.regressed_on`
 #' variables are given, then log-transforming, running a linear regression to obtain
