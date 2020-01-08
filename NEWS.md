@@ -1,4 +1,6 @@
-# NetCoupler 0.0.3.9000 (development version)
+# NetCoupler 0.0.4.9000 (development version)
+
+# NetCoupler 0.0.3.9000
 
 * Add `nc_standardize()` function to standardize the metabolic variables (#73).
 * Export tidyselect functions like `matches()` or `starts_with()` (#73).
