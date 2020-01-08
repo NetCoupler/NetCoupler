@@ -29,7 +29,8 @@ dag_graph <- dagitty('dag{
 }')
 
 simulated_dag_data <- simulateSEM(dag_graph, N = 2000) %>%
-    setNames(c("exposure", paste0("metabolite_", 1:(length(.) - 1))))
+    setNames(c("exposure", paste0("metabolite_", 1:(length(.) - 1)))) %>%
+    mutate_at(vars(matches("metabolite_")), ~ . + 6)
 
 #' Survival time simulation.
 #'
@@ -103,7 +104,7 @@ simulated_data <-
         ),
         simulated_dag_data
     ) %>%
-    mutate(Age = rnorm(n(), mean = 50, sd = 10))
+    mutate(age = rnorm(n(), mean = 50, sd = 10))
     as_tibble()
 
 usethis::use_data(simulated_data, overwrite = TRUE)

@@ -20,7 +20,7 @@
 #'   models.
 #' @param ... Options to pass to the model function.
 #'
-#' @return Outputs a [tibble::tibble()] with all the models computed and their
+#' @return Outputs a [tibble][tibble::tibble-package] with all the models computed and their
 #'   estimates.
 #' @export
 #'
@@ -35,7 +35,7 @@
 #'   nc_outcome_estimates(
 #'     .graph = metabolite_network,
 #'     .outcome = "survival::Surv(survival_time, case_status)",
-#'     .adjustment_vars = "Age",
+#'     .adjustment_vars = "age",
 #'     .model_function = survival::coxph,
 #'     .exponentiate = TRUE
 #'    )

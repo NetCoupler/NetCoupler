@@ -17,7 +17,7 @@ test_that("DAG network estimates with the outcome", {
             dplyr::select(dplyr::contains("metabolite"), case_status),
         DE = NULL,
         adjustment_data = simulated_data %>%
-            dplyr::select(Age),
+            dplyr::select(age),
         survival_obj = "survival_object"
     )))
 

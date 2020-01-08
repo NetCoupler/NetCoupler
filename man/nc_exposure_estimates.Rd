@@ -33,7 +33,7 @@ models.}
 \item{...}{Options to pass to the model function.}
 }
 \value{
-Outputs a \code{\link[tibble:tibble]{tibble::tibble()}} with all the models computed and their
+Outputs a \link[tibble:tibble-package]{tibble} with all the models computed and their
 estimates.
 }
 \description{
@@ -57,7 +57,7 @@ simulated_data \%>\%
   nc_exposure_estimates(
     .graph = metabolite_network,
     .exposure = "exposure",
-    .adjustment_vars = "Age",
+    .adjustment_vars = "age",
     .model_function = lm
    )
 

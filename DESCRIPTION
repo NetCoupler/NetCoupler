@@ -38,7 +38,8 @@ Imports:
     broom,
     lifecycle,
     assertive.types,
-    stringr
+    stringr,
+    tidyselect
 Suggests: 
     covr,
     testthat (>= 2.1.0),

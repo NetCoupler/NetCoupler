@@ -8,7 +8,7 @@ test_that("model estimation works and results are output", {
         nc_outcome_estimates(
             .graph = metabolite_network,
             .outcome = "survival::Surv(survival_time, case_status)",
-            .adjustment_vars = "Age",
+            .adjustment_vars = "age",
             .model_function = survival::coxph,
             .exponentiate = TRUE
         )
