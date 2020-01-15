@@ -1,5 +1,9 @@
 # NetCoupler 0.0.4.9000 (development version)
 
+* Removed soft deprecated functions. Using MuMIn over glmulti doesn't change the
+results too much, see #60 for details (#83).
+* Removed stringr dependency (#65, #83).
+
 # NetCoupler 0.0.3.9000
 
 * Add `nc_standardize()` function to standardize the metabolic variables (#73).
