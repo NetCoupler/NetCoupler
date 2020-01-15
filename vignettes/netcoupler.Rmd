@@ -303,7 +303,3 @@ exposure_estimates <- simulated_data %>%
 
 exposure_estimates
 ```
-
-## Comments
-
-Metabolites should be standardized (residuals from lm) on the exposure...?
