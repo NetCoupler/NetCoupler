@@ -38,7 +38,11 @@ Imports:
     broom,
     lifecycle,
     assertive.types,
-    tidyselect
+    tidyselect,
+    ggdag,
+    tidygraph,
+    ggraph,
+    ggplot2
 Suggests: 
     covr,
     testthat (>= 2.1.0),

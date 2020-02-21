@@ -58,13 +58,21 @@ nc_create_network <- function(.data, .alpha = 0.05) {
 }
 
 
-#' Title
+#' Compute the adjacency matrix of the graph with the data.
 #'
-#' @return
-#' @export
+#' @inheritParams nc_plot_network
+#'
+#' @return Outputs an `igraph` object from [igraph::graph.adjacency()].
 #'
 #' @examples
-#' nc_partial_corr_matrix(.data %>% select(starts_with("mtb_")))
+#'
+#' library(dplyr)
+#' metabolite_data <- simulated_data %>%
+#'   select(starts_with("metabolite"))
+#' network <- simulated_data %>%
+#'   select(contains("metabolite")) %>%
+#'   nc_create_network()
+#' nc_adjacency_graph(metabolite_data, network) %>% class()
 nc_adjacency_graph <- function(.data, .graph) {
     weighted_adjacency_matrix <- nc_adjacency_matrix(.graph) *
         nc_partial_corr_matrix(.data)
@@ -73,24 +81,40 @@ nc_adjacency_graph <- function(.data, .graph) {
                             weighted = TRUE, mode = "undirected")
 }
 
-nc_plot_network <- function() {
-    adj_graph %>%
-        as_tbl_graph() %>%
-        mutate(name = tidy_metabolic_names(name)) %>%
-        activate(edges) %>%
-        mutate(weight_label = if_else(abs(weight) < 0.4, "", as.character(round(weight, 2)))) %>%
-        ggraph("stress") +
-        geom_edge_bend(aes(
-            colour = weight,
-            width = abs(weight),
-            label = weight_label
-        ),
-        label_dodge =) +
-        scale_edge_colour_gradient2(mid = "gray80") +
-        scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
-        geom_node_text(aes(label = name), repel = TRUE) +
-        ggraph::theme_graph() +
-        coord_cartesian(xlim = c(-2.1, 2.1))
+#' Plots the network of the metabolic variables.
+#'
+#' @param .data
+#' @param .graph
+#'
+#' @return Outputs a `ggplot2`
+#' @export
+#'
+#' @examples
+#'
+#' library(dplyr)
+#' library(NetCoupler)
+#' metabolite_data <- simulated_data %>%
+#'   select(starts_with("metabolite"))
+#' network <- simulated_data %>%
+#'   select(contains("metabolite")) %>%
+#'   nc_create_network()
+#' nc_plot_network(metabolite_data, network)
+#'
+nc_plot_network <- function(.data, .graph) {
+    .data %>%
+        nc_adjacency_graph(.graph = .graph) %>%
+        tidygraph::as_tbl_graph() %>%
+        # tidygraph::activate(edges) %>%
+        ggraph::ggraph("stress") +
+        ggraph::geom_edge_bend(ggplot2::aes_string(
+            colour = "weight",
+            width = "abs(weight)"
+        )) +
+        ggraph::geom_node_point(size = 2) +
+        ggraph::scale_edge_colour_gradient2(mid = "gray80") +
+        ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
+        ggraph::geom_node_label(ggplot2::aes_string(label = "name"), repel = TRUE) +
+        ggraph::theme_graph()
 }
 
 #' Extract adjacency matrix from a DAG skeleton.

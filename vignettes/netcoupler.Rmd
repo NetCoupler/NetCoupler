@@ -274,7 +274,7 @@ http://www.jstatsoft.org/v47/i11/.*
 
 ## Simple example of use
 
-```{r example-use}
+```{r example-use, cache=TRUE}
 library(NetCoupler)
 library(dplyr)
 
@@ -303,3 +303,15 @@ exposure_estimates <- simulated_data %>%
 
 exposure_estimates
 ```
+
+### Visualizing the network
+
+The see the network of only the metabolic variables, use the function
+`nc_plot_network()`.
+
+```{r visualize-metabolic-network}
+simulated_data %>% 
+    select(matches("metabolite")) %>% 
+    nc_plot_network(metabolite_network)
+```
+
