@@ -24,5 +24,5 @@ metabolite_data <- simulated_data \%>\%
   select(starts_with("metabolite"))
 network <- metabolite_data \%>\%
   nc_create_network()
-nc_adjacency_graph(metabolite_data, network) \%>\% class()
+nc_adjacency_graph(metabolite_data, network)
 }

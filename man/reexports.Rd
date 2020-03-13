@@ -20,6 +20,7 @@
 \alias{vars}
 \alias{scale_edge_width}
 \alias{scale_edge_colour_gradient}
+\alias{guide_edge_colourbar}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -29,7 +30,7 @@ below to see their documentation.
 \describe{
   \item{dplyr}{\code{\link[dplyr]{vars}}}
 
-  \item{ggraph}{\code{\link[ggraph]{scale_edge_colour_gradient}}, \code{\link[ggraph]{scale_edge_width}}}
+  \item{ggraph}{\code{\link[ggraph]{guide_edge_colourbar}}, \code{\link[ggraph]{scale_edge_colour_gradient}}, \code{\link[ggraph]{scale_edge_width}}}
 
   \item{tibble}{\code{\link[tibble]{as_data_frame}}, \code{\link[tibble]{as_tibble}}, \code{\link[tibble]{data_frame}}, \code{\link[tibble]{tibble}}}
 
