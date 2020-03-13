@@ -1,5 +1,10 @@
 # NetCoupler 0.0.4.9000 (development version)
 
+* Add function to plot network graph: `nc_plot_network()` (#89).
+* Added helper functions `nc_adjacency_graph()`,
+`nc_adjacency_matrix()`, and `nc_partial_corr_matrix()` 
+to help create the weights for the network plot.
+(Issue #80, PR #89).
 * Removed soft deprecated functions. Using MuMIn over glmulti doesn't change the
 results too much, see #60 for details (#83).
 * Removed stringr dependency (#65, #83).
