@@ -38,6 +38,7 @@ nc_create_network <- function(.data, .alpha = 0.05) {
 #' @inheritParams nc_plot_network
 #'
 #' @return Outputs an `igraph` object from [igraph::graph.adjacency()].
+#' @export
 #'
 #' @examples
 #'
@@ -46,7 +47,7 @@ nc_create_network <- function(.data, .alpha = 0.05) {
 #'   select(starts_with("metabolite"))
 #' network <- metabolite_data %>%
 #'   nc_create_network()
-#' nc_adjacency_graph(metabolite_data, network) %>% class()
+#' nc_adjacency_graph(metabolite_data, network)
 nc_adjacency_graph <- function(.data, .graph) {
     weighted_adjacency_matrix <- nc_adjacency_matrix(.graph) *
         nc_partial_corr_matrix(.data)
