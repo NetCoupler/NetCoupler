@@ -1,12 +1,13 @@
 
+#' @title
 #' Create an estimate of the metabolic network skeleton.
 #'
-#' Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
-#'
+#' @description
 #' \lifecycle{experimental}
 #'
-#' Main NetCoupler network creator. Defaults to using the PC algorithm to calculate
-#' possible edges.
+#' Main NetCoupler network creator.
+#' Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
+#' Defaults to using the PC algorithm to calculate possible edges.
 #'
 #' @param .data Data of the metabolic variables.
 #' @param .alpha The alpha level to set.
@@ -29,8 +30,10 @@ nc_create_network <- function(.data, .alpha = 0.05) {
     pc_skeleton_estimates(.data, .alpha)
 }
 
-
 #' Compute the adjacency matrix of the graph with the data.
+#'
+#' @description
+#' \lifecycle{experimental}
 #'
 #' @inheritParams nc_plot_network
 #'
@@ -41,8 +44,7 @@ nc_create_network <- function(.data, .alpha = 0.05) {
 #' library(dplyr)
 #' metabolite_data <- simulated_data %>%
 #'   select(starts_with("metabolite"))
-#' network <- simulated_data %>%
-#'   select(contains("metabolite")) %>%
+#' network <- metabolite_data %>%
 #'   nc_create_network()
 #' nc_adjacency_graph(metabolite_data, network) %>% class()
 nc_adjacency_graph <- function(.data, .graph) {
@@ -55,8 +57,11 @@ nc_adjacency_graph <- function(.data, .graph) {
 
 #' Plots the network of the metabolic variables.
 #'
-#' @param .data
-#' @param .graph
+#' @description
+#' \lifecycle{experimental}
+#'
+#' @param .data The data containing only the metabolic variables.
+#' @param .graph The network graph object of the metabolic variable network.
 #'
 #' @return Outputs a `ggplot2`
 #' @export
@@ -64,11 +69,9 @@ nc_adjacency_graph <- function(.data, .graph) {
 #' @examples
 #'
 #' library(dplyr)
-#' library(NetCoupler)
 #' metabolite_data <- simulated_data %>%
 #'   select(starts_with("metabolite"))
-#' network <- simulated_data %>%
-#'   select(contains("metabolite")) %>%
+#' network <- metabolite_data %>%
 #'   nc_create_network()
 #' nc_plot_network(metabolite_data, network)
 #'
@@ -98,6 +101,9 @@ nc_plot_network <- function(.data, .graph) {
 
 #' Extract adjacency matrix from a DAG skeleton.
 #'
+#' @description
+#' \lifecycle{experimental}
+#'
 #' Is generally a wrapper around calls to [igraph::get.adjacency()] and
 #' [igraph::igraph.from.graphNEL()]. Transforms from a GraphNEL object in igraph.
 #'
@@ -121,6 +127,9 @@ nc_adjacency_matrix <- function(.dag_skeleton) {
 }
 
 #' Estimate Pearson's partial correlation coefficients.
+#'
+#' @description
+#' \lifecycle{experimental}
 #'
 #' This function is a wrapper around [ppcor::pcor()] that extracts correlation
 #' coefficient estimates, then adds the variable names to the column and row names.
