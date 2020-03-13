@@ -78,14 +78,21 @@ nc_plot_network <- function(.data, .graph) {
         tidygraph::as_tbl_graph() %>%
         # tidygraph::activate(edges) %>%
         ggraph::ggraph("stress") +
-        ggraph::geom_edge_bend(ggplot2::aes_string(
-            colour = "weight",
-            width = "abs(weight)"
-        )) +
+        ggraph::geom_edge_diagonal(
+            ggplot2::aes_string(
+                label = "round(weight, 2)",
+                colour = "weight",
+                width = "abs(weight)"
+            ),
+            angle_calc = "along",
+            label_dodge = grid::unit(0.2, "cm")
+        ) +
         ggraph::geom_node_point(size = 2) +
         ggraph::scale_edge_colour_gradient2(mid = "gray80") +
         ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
-        ggraph::geom_node_label(ggplot2::aes_string(label = "name"), repel = TRUE) +
+        ggraph::geom_node_text(ggplot2::aes_string(label = "name"),
+                               repel = TRUE,
+                               nudge_x = 0.2) +
         ggraph::theme_graph()
 }
 
