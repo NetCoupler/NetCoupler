@@ -96,7 +96,7 @@ nc_plot_network <- function(.data, .graph) {
         ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
         ggraph::geom_node_text(ggplot2::aes_string(label = "name"),
                                repel = TRUE) +
-        ggraph::theme_graph()
+        ggraph::theme_graph(base_family = 'Helvetica')
 }
 
 #' Extract adjacency matrix from a DAG skeleton.
