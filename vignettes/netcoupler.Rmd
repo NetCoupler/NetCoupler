@@ -309,7 +309,7 @@ exposure_estimates
 To see the network of only the metabolic variables, use the function
 `nc_plot_network()`.
 
-```{r visualize-metabolic-network}
+```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5}
 simulated_data %>% 
     select(matches("metabolite")) %>% 
     nc_plot_network(metabolite_network)
