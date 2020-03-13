@@ -15,13 +15,11 @@ nc_create_network(.data, .alpha = 0.05)
 Outputs a DAG skeleton.
 }
 \description{
-Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
-}
-\details{
 \lifecycle{experimental}
 
-Main NetCoupler network creator. Defaults to using the PC algorithm to calculate
-possible edges.
+Main NetCoupler network creator.
+Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
+Defaults to using the PC algorithm to calculate possible edges.
 }
 \examples{
 
