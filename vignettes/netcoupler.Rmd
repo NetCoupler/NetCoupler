@@ -306,7 +306,7 @@ exposure_estimates
 
 ### Visualizing the network
 
-The see the network of only the metabolic variables, use the function
+To see the network of only the metabolic variables, use the function
 `nc_plot_network()`.
 
 ```{r visualize-metabolic-network}
