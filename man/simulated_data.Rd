@@ -6,7 +6,7 @@
 \title{Simulated dataset with an underlying Directed Graph structure for the metabolites.}
 \format{The simulated dataset, output as a \link[tibble:tibble-package]{tibble}
 contains two outcome variables (\code{survival_time} and \code{case_status}), one
-generic \code{exposure}, and 12 \verb{metabolite_*} variables.}
+generic \code{exposure}, 12 \verb{metabolite_*} variables, and an \code{age} variable.}
 \usage{
 simulated_data
 }

@@ -1,7 +1,7 @@
 Package: NetCoupler
 Title: Inference of Causal Links Between Metabolomics and
     Disease Incidence
-Version: 0.0.3.9000
+Version: 0.0.4.9000
 Authors@R: 
     c(person(given = "Luke",
              family = "Johnston",
@@ -38,7 +38,7 @@ Imports:
     broom,
     lifecycle,
     assertive.types,
-    stringr
+    tidyselect
 Suggests: 
     covr,
     testthat (>= 2.1.0),

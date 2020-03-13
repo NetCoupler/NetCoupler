@@ -11,7 +11,7 @@
 #' @inheritParams nc_outcome_estimates
 #' @param .exposure Character. The exposure variable of interest.
 #'
-#' @return Outputs a [tibble::tibble()] with all the models computed and their
+#' @return Outputs a [tibble][tibble::tibble-package] with all the models computed and their
 #'   estimates.
 #' @export
 #'
@@ -26,7 +26,7 @@
 #'   nc_exposure_estimates(
 #'     .graph = metabolite_network,
 #'     .exposure = "exposure",
-#'     .adjustment_vars = "Age",
+#'     .adjustment_vars = "age",
 #'     .model_function = lm
 #'    )
 #'

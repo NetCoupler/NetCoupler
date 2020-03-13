@@ -20,7 +20,7 @@
 #'   models.
 #' @param ... Options to pass to the model function.
 #'
-#' @return Outputs a [tibble::tibble()] with all the models computed and their
+#' @return Outputs a [tibble][tibble::tibble-package] with all the models computed and their
 #'   estimates.
 #' @export
 #'
@@ -35,7 +35,7 @@
 #'   nc_outcome_estimates(
 #'     .graph = metabolite_network,
 #'     .outcome = "survival::Surv(survival_time, case_status)",
-#'     .adjustment_vars = "Age",
+#'     .adjustment_vars = "age",
 #'     .model_function = survival::coxph,
 #'     .exponentiate = TRUE
 #'    )
@@ -73,6 +73,7 @@ nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .mod
     all_top_models_tidied <- all_possible_models %>%
         # TODO: Have argument for threshold? For choosing number of models?
         map(~ MuMIn::get.models(.x, subset = delta <= 5)) %>%
+        # map(~ MuMIn::get.models(.x, subset = TRUE)) %>%
         imap_dfr(~ .tidy_all_model_outputs(.x, .y, .exponentiate = .exponentiate)) %>%
         mutate(outcome = .outcome) %>%
         select_at(vars("outcome", everything()))

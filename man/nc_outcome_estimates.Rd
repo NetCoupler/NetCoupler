@@ -33,7 +33,7 @@ models.}
 \item{...}{Options to pass to the model function.}
 }
 \value{
-Outputs a \code{\link[tibble:tibble]{tibble::tibble()}} with all the models computed and their
+Outputs a \link[tibble:tibble-package]{tibble} with all the models computed and their
 estimates.
 }
 \description{
@@ -58,7 +58,7 @@ simulated_data \%>\%
   nc_outcome_estimates(
     .graph = metabolite_network,
     .outcome = "survival::Surv(survival_time, case_status)",
-    .adjustment_vars = "Age",
+    .adjustment_vars = "age",
     .model_function = survival::coxph,
     .exponentiate = TRUE
    )

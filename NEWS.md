@@ -1,5 +1,18 @@
-# NetCoupler 0.0.3.9000 (development version)
+# NetCoupler 0.0.4.9000 (development version)
 
+* Add function to plot network graph: `nc_plot_network()` (#89).
+* Added helper functions `nc_adjacency_graph()`,
+`nc_adjacency_matrix()`, and `nc_partial_corr_matrix()` 
+to help create the weights for the network plot.
+(Issue #80, PR #89).
+* Removed soft deprecated functions. Using MuMIn over glmulti doesn't change the
+results too much, see #60 for details (#83).
+* Removed stringr dependency (#65, #83).
+
+# NetCoupler 0.0.3.9000
+
+* Add `nc_standardize()` function to standardize the metabolic variables (#73).
+* Export tidyselect functions like `matches()` or `starts_with()` (#73).
 * Add CONTRIBUTING guidelines (#56).
 * Add lifecycle badges to functions, soft deprecating `net_coupler_out()`,
 `getExp.coef.permetabolite()`, and `getExp.coef.out()` (#59)

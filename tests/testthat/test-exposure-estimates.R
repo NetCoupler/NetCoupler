@@ -8,7 +8,7 @@ test_that("model estimation works and results are output", {
         nc_exposure_estimates(
             .graph = metabolite_network,
             .exposure = "exposure",
-            .adjustment_vars = "Age",
+            .adjustment_vars = "age",
             .model_function = lm
         )
 
