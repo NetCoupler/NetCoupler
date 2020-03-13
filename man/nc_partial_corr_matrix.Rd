@@ -13,6 +13,8 @@ nc_partial_corr_matrix(.data)
 Outputs a matrix of partial correlation coefficients.
 }
 \description{
+\lifecycle{experimental}
+
 This function is a wrapper around \code{\link[ppcor:pcor]{ppcor::pcor()}} that extracts correlation
 coefficient estimates, then adds the variable names to the column and row names.
 }

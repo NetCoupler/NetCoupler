@@ -2,24 +2,27 @@
 % Please edit documentation in R/create-network.R
 \name{nc_plot_network}
 \alias{nc_plot_network}
-\title{Title}
+\title{Plots the network of the metabolic variables.}
 \usage{
 nc_plot_network(.data, .graph)
 }
-\value{
+\arguments{
+\item{.data}{The data containing only the metabolic variables.}
 
+\item{.graph}{The network graph object of the metabolic variable network.}
+}
+\value{
+Outputs a \code{ggplot2}
 }
 \description{
-Title
+\lifecycle{experimental}
 }
 \examples{
 
 library(dplyr)
-library(NetCoupler)
 metabolite_data <- simulated_data \%>\%
   select(starts_with("metabolite"))
-network <- simulated_data \%>\%
-  select(contains("metabolite")) \%>\%
+network <- metabolite_data \%>\%
   nc_create_network()
 nc_plot_network(metabolite_data, network)
 

@@ -2,26 +2,27 @@
 % Please edit documentation in R/create-network.R
 \name{nc_adjacency_graph}
 \alias{nc_adjacency_graph}
-\title{Title}
+\title{Compute the adjacency matrix of the graph with the data.}
 \usage{
 nc_adjacency_graph(.data, .graph)
 }
 \arguments{
-\item{.graph}{}
+\item{.data}{The data containing only the metabolic variables.}
+
+\item{.graph}{The network graph object of the metabolic variable network.}
 }
 \value{
-
+Outputs an \code{igraph} object from \code{\link[igraph:graph.adjacency]{igraph::graph.adjacency()}}.
 }
 \description{
-Title
+\lifecycle{experimental}
 }
 \examples{
 
 library(dplyr)
 metabolite_data <- simulated_data \%>\%
   select(starts_with("metabolite"))
-network <- simulated_data \%>\%
-  select(contains("metabolite")) \%>\%
+network <- metabolite_data \%>\%
   nc_create_network()
-nc_adjacency_graph(metabolite_data, network)
+nc_adjacency_graph(metabolite_data, network) \%>\% class()
 }

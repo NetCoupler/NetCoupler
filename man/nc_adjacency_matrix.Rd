@@ -13,6 +13,8 @@ nc_adjacency_matrix(.dag_skeleton)
 Outputs an adjacency matrix of the DAG skeleton.
 }
 \description{
+\lifecycle{experimental}
+
 Is generally a wrapper around calls to \code{\link[igraph:get.adjacency]{igraph::get.adjacency()}} and
 \code{\link[igraph:igraph.from.graphNEL]{igraph::igraph.from.graphNEL()}}. Transforms from a GraphNEL object in igraph.
 }
