@@ -94,8 +94,7 @@ nc_plot_network <- function(.data, .graph) {
         ggraph::scale_edge_colour_gradient2(mid = "gray80") +
         ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
         ggraph::geom_node_text(ggplot2::aes_string(label = "name"),
-                               repel = TRUE,
-                               nudge_x = 0.2) +
+                               repel = TRUE) +
         ggraph::theme_graph()
 }
 
