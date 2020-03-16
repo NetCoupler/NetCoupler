@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+![](https://img.shields.io/badge/document%20status-rough%20draft-red?style=flat-square)
+
 ## Brief description
 
 The goal of NetCoupler is to estimate causal links between a set of -omic (e.g.
