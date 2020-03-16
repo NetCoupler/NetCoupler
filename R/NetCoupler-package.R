@@ -2,11 +2,13 @@
 #'   assert_is_a_string assert_is_character assert_is_function assert_is_a_number
 #' @importFrom dplyr select mutate select_at
 #' @importFrom purrr map map_dfr map2 imap imap_dfr
+#' @import ggraph
 #' @keywords internal
 "_PACKAGE"
 
 ## usethis namespace: start
 #' @importFrom tibble tibble
+#' @importFrom lifecycle deprecate_soft
 ## usethis namespace: end
 NULL
 
