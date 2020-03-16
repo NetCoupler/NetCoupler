@@ -9,3 +9,6 @@
 ^CODE_OF_CONDUCT\.md$
 ^\.github$
 ^appveyor\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

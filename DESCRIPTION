@@ -21,9 +21,8 @@ Description: The NetCoupler algorithm identifies direct effects
     network (e.g. lifestyle), to be used to identify indirect pathways
     between the external exposure and an outcome.
 License: MIT + file LICENSE
-URL: https://github.com/ClemensWittenbecher/NetCoupler
-BugReports: 
-    https://github.com/ClemensWittenbecher/NetCoupler/issues
+URL: https://github.com/NetCoupler/NetCoupler
+BugReports: https://github.com/NetCoupler/NetCoupler/issues
 Depends: R (>= 3.5.0)
 Imports: 
     dplyr,
