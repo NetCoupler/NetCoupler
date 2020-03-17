@@ -72,7 +72,8 @@ nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .mod
 
     all_top_models_tidied <- all_possible_models %>%
         # TODO: Have argument for threshold? For choosing number of models?
-        map(~ MuMIn::get.models(.x, subset = delta <= 5)) %>%
+        map(~ MuMIn::get.models(.x, subset = TRUE)) %>%
+        # map(~ MuMIn::get.models(.x, subset = TRUE)) %>%
         imap_dfr(~ .tidy_all_model_outputs(.x, .y, .exponentiate = .exponentiate)) %>%
         mutate(outcome = .outcome) %>%
         select_at(vars("outcome", everything()))
