@@ -76,7 +76,8 @@ nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .mod
         imap_dfr(~ .tidy_all_model_outputs(.x, .y, .exponentiate = .exponentiate)) %>%
         mutate(outcome = .outcome,
                adjusted_vars = paste(.adjustment_vars, collapse = ", ")) %>%
-        select_at(vars("outcome", everything()))
+        select_at(vars("outcome", everything())) %>%
+        rename_all(~ gsub("\\.", "_", .))
 
     return(all_top_models_tidied)
 }
