@@ -1,2 +1,2 @@
 library(survival)
-library(dplyr)
+library(dplyr, quietly = TRUE)
