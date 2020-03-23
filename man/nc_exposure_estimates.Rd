@@ -49,7 +49,6 @@ effects
 \examples{
 
 library(dplyr)
-library(survival)
 metabolite_network <- simulated_data \%>\%
   select(matches("metabolite")) \%>\%
   nc_create_network()
