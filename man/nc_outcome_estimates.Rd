@@ -38,8 +38,7 @@ estimates.
 }
 \description{
 \lifecycle{experimental}
-}
-\details{
+
 This algorithm estimates direct effect of a predefined exposure
 (network-variable) on time-to-event for all causal models that agree with the
 input-network: Cox prop. hazards regression models are used to estimate the

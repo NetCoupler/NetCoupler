@@ -22,8 +22,7 @@ variables now standardized.
 }
 \description{
 \lifecycle{experimental}
-}
-\details{
+
 Can standardize by either 1) \code{\link[=log]{log()}}-transforming and then applying \code{\link[=scale]{scale()}}
 (mean-center and scaled by standard deviation), or 2) if \code{.regressed_on}
 variables are given, then log-transforming, running a linear regression to obtain

@@ -42,7 +42,7 @@ pc_dag_estimates <- function(.data, .alpha = 0.01) {
 #' @param .data Input metabolic data.
 #' @param .alpha Significance level threshold applied to each test.
 #'
-#' @return DAG skeleton object.
+#' @return A DAG skeleton object.
 #'
 #' @examples
 #'

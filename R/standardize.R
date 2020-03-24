@@ -1,6 +1,7 @@
 
 #' Standardize the metabolic variables.
 #'
+#' @description
 #' \lifecycle{experimental}
 #'
 #' Can standardize by either 1) [log()]-transforming and then applying [scale()]
