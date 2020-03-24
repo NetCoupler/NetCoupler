@@ -55,7 +55,7 @@ nc_classify_effects <- function(.tbl) {
     assert_is_data.frame(.tbl)
 
     if (!all(c("index_node", "estimate", "std_error") %in% names(.tbl))) {
-        rlang::abort(c("The data frame provided does not contain the proper columns. Make sure to use the data frame generated from:",
+        rlang::abort(c("The data frame provided does not contain the proper columns. Make sure to use the data frame generated from either of these:",
                        "nc_exposure_estimates()",
                        "nc_outcome_estimates()"))
     }
@@ -63,7 +63,7 @@ nc_classify_effects <- function(.tbl) {
     # Need to round since some p-values can be really small (basically zero),
     # and others can be exactly zero. So need to assume both are same.
     rounded_p_values <- .tbl %>%
-        mutate(p_value = round(p_value, 6))
+        dplyr::mutate_at("p_value", ~ round(., 6))
 
     filtered_estimates <- rounded_p_values %>%
         nc_filter_estimates()
@@ -73,43 +73,48 @@ nc_classify_effects <- function(.tbl) {
         names()
 
     no_neighbours <- filtered_estimates %>%
-        dplyr::filter(neighbour_vars == "") %>%
-        mutate(no_neighbours_adj_p_value = stats::p.adjust(p_value, "fdr")) %>%
-        dplyr::rename(no_neighbours_p_value = p_value,
-                      no_neighbours_estimate = estimate) %>%
-        select(
-            contains(external_variable),
-            index_node,
-            no_neighbours_adj_p_value,
-            no_neighbours_p_value,
-            no_neighbours_estimate
-        )
+        dplyr::filter_at("neighbour_vars", ~ . == "") %>%
+        mutate(no_neighbours_adj_p_value = stats::p.adjust(.data$p_value, "fdr")) %>%
+        dplyr::rename(no_neighbours_p_value = .data$p_value,
+                      no_neighbours_estimate = .data$estimate) %>%
+        select_at(c(
+            external_variable,
+            "index_node",
+            "no_neighbours_adj_p_value",
+            "no_neighbours_p_value",
+            "no_neighbours_estimate"
+        ))
 
     classify_direct_effects <- filtered_estimates %>%
-        mutate(adj_p_value = stats::p.adjust(p_value, "fdr")) %>%
+        mutate(adj_p_value = stats::p.adjust(.data$p_value, "fdr")) %>%
         dplyr::full_join(no_neighbours, by = c(external_variable, "index_node")) %>%
         mutate(
-            smaller_pvalue = adj_p_value <= no_neighbours_adj_p_value,
-            same_direction = sign(estimate) == sign(no_neighbours_estimate),
-            smaller_pvalue = dplyr::if_else(neighbour_vars == "", NA, smaller_pvalue),
-            same_direction = dplyr::if_else(neighbour_vars == "", NA, same_direction)
+            smaller_pvalue = .data$adj_p_value <= .data$no_neighbours_adj_p_value,
+            same_direction = sign(.data$estimate) == sign(.data$no_neighbours_estimate),
+            smaller_pvalue = dplyr::if_else(.data$neighbour_vars == "", NA, .data$smaller_pvalue),
+            same_direction = dplyr::if_else(.data$neighbour_vars == "", NA, .data$same_direction)
         ) %>%
-        group_by_at(c(external_variable, "index_node")) %>%
+        dplyr::group_by_at(c(external_variable, "index_node")) %>%
         mutate(direct_effect = dplyr::case_when(
-            all(smaller_pvalue, na.rm = TRUE) &
-                all(same_direction, na.rm = TRUE) &
+            all(.data$smaller_pvalue, na.rm = TRUE) &
+                all(.data$same_direction, na.rm = TRUE) &
                 # When standard error is smaller than the estimate.
-                all(std_error < abs(estimate), na.rm = TRUE) ~ "direct",
-            any(smaller_pvalue, na.rm = TRUE) &
-                any(same_direction, na.rm = TRUE) ~ "ambiguous",
+                all(.data$std_error < abs(.data$estimate), na.rm = TRUE) ~ "direct",
+            any(.data$smaller_pvalue, na.rm = TRUE) &
+                any(.data$same_direction, na.rm = TRUE) ~ "ambiguous",
             TRUE ~ "none"
         )) %>%
-        dplyr::filter(neighbour_vars == "") %>%
-        select(
-            -statistic, -adjusted_vars,
-            -neighbour_vars, -dplyr::matches("no_neighbour"),
-            -smaller_pvalue, -same_direction
-        )
+        dplyr::filter(.data$neighbour_vars == "") %>%
+        select(-dplyr::matches("no_neighbour"),
+               -dplyr::all_of(
+                   c(
+                       "statistic",
+                       "adjusted_vars",
+                       "neighbour_vars",
+                       "smaller_pvalue",
+                       "same_direction"
+                   )
+               ))
 
     return(classify_direct_effects)
 }
@@ -124,18 +129,20 @@ nc_filter_estimates <- function(.tbl) {
         names()
     if (.filter_by == "outcome") {
         .tbl %>%
-            group_by(model_id) %>%
-            mutate(neighbour_vars = .extract_neighbour_nodes(term, adjusted_vars, index_node)) %>%
+            dplyr::group_by_at("model_id") %>%
+            mutate(neighbour_vars = .extract_neighbour_nodes(.data$term,
+                                                             .data$adjusted_vars,
+                                                             .data$index_node)) %>%
             dplyr::ungroup() %>%
-            dplyr::filter(index_node == term) %>%
-            select_at(vars(-term, -model_id))
+            dplyr::filter(.data$index_node == .data$term) %>%
+            select(-dplyr::all_of(c("term", "model_id")))
     } else {
         .tbl %>%
-            group_by(model_id) %>%
-            mutate(neighbour_vars = .extract_neighbour_nodes(term, adjusted_vars)) %>%
+            dplyr::group_by_at("model_id") %>%
+            mutate(neighbour_vars = .extract_neighbour_nodes(.data$term, .data$adjusted_vars)) %>%
             dplyr::ungroup() %>%
-            dplyr::filter(term == .filter_by) %>%
-            select_at(vars(-term, -model_id))
+            dplyr::filter(.data$term == .filter_by) %>%
+            select(-dplyr::all_of(c("term", "model_id")))
 
     }
 }
