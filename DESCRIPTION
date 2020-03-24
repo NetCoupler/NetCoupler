@@ -42,7 +42,8 @@ Imports:
     ggdag,
     tidygraph,
     ggraph,
-    ggplot2
+    ggplot2,
+    rlang
 Suggests: 
     covr,
     testthat (>= 2.1.0),

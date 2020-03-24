@@ -1,5 +1,7 @@
 # NetCoupler 0.0.4.9000 (development version)
 
+* Add a function to classify the direct effects between outcome or exposure and 
+the network (#98).
 * Add function to plot network graph: `nc_plot_network()` (#89).
 * Added helper functions `nc_adjacency_graph()`,
 `nc_adjacency_matrix()`, and `nc_partial_corr_matrix()` 

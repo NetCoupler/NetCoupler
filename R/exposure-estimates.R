@@ -63,8 +63,10 @@ nc_exposure_estimates <- function(.data, .graph, .exposure, .adjustment_vars, .m
         # TODO: Have argument for threshold? For choosing number of models?
         map(~ MuMIn::get.models(.x, subset = TRUE)) %>%
         imap_dfr(~ .tidy_all_model_outputs(.x, .y, .exponentiate = .exponentiate)) %>%
-        mutate(exposure = .exposure) %>%
-        select_at(vars("exposure", everything()))
+        mutate(exposure = .exposure,
+               adjusted_vars = paste(.adjustment_vars, collapse = ", ")) %>%
+        select_at(vars("exposure", everything())) %>%
+        dplyr::rename_all(~ gsub("\\.", "_", .))
 
     return(all_top_models_tidied)
 }

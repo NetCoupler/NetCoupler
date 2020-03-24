@@ -6,31 +6,31 @@ library(survival)
 
 # including exposure and network-variables (a-p)
 
-dag_graph <- dagitty('dag{
-    exposure -> b [beta=.15]
-    exposure -> l [beta=.15]
-    exposure -> o [beta=.15]
-    a -> b [beta=.3]
-    b -> c [beta=.2]
-    c -> d [beta=.5]
-    d -> e [beta=.3]
-    e -> f [beta=.6]
-    b -> k [beta=.3]
-    k -> l [beta=.3]
-    l -> m [beta=.5]
-    m -> o [beta=.3]
-    o -> p [beta=.5]
-    a -> v [beta=.2]
-    c -> v [beta=.5]
-    d -> v [beta=.3]
-    e -> m [beta=.5]
-    k -> o [beta=.3]
-    o -> p [beta=.65]
+dag_graph <- dagitty('dag {
+    exposure -> metabolite_1 [beta=-.8]
+    exposure -> metabolite_8 [beta=.8]
+    exposure -> metabolite_10 [beta=.60]
+    metabolite_1 -> metabolite_2 [beta=-.3]
+    metabolite_2 -> metabolite_3 [beta=.2]
+    metabolite_3 -> metabolite_4 [beta=.5]
+    metabolite_4 -> metabolite_5 [beta=.3]
+    metabolite_5 -> metabolite_6 [beta=-.6]
+    metabolite_2 -> metabolite_7 [beta=.3]
+    metabolite_7 -> metabolite_8 [beta=.3]
+    metabolite_8 -> metabolite_9 [beta=.5]
+    metabolite_9 -> metabolite_10 [beta=-.3]
+    metabolite_10 -> metabolite_11 [beta=.5]
+    metabolite_1 -> metabolite_12 [beta=.2]
+    metabolite_3 -> metabolite_12 [beta=.5]
+    metabolite_4 -> metabolite_12 [beta=-.3]
+    metabolite_5 -> metabolite_9 [beta=.5]
+    metabolite_6 -> metabolite_10 [beta=.3]
+    metabolite_10 -> metabolite_12 [beta=-.65]
 }')
 
 simulated_dag_data <- simulateSEM(dag_graph, N = 2000) %>%
-    setNames(c("exposure", paste0("metabolite_", 1:(length(.) - 1)))) %>%
-    mutate_at(vars(matches("metabolite_")), ~ . + 6)
+    mutate_at(vars(matches("metabolite_")), ~ . + 6) %>%
+    as_tibble()
 
 #' Survival time simulation.
 #'
@@ -57,9 +57,9 @@ simulate_survival_time <- function(.data, IV1, IV2, IV3) {
         lambda_event = 0.7 * 9 ** (-8)
     )
 
-    X1 <- .data[, IV1]
-    X2 <- .data[, IV2]
-    X3 <- .data[, IV3]
+    X1 <- .data[[IV1]]
+    X2 <- .data[[IV2]]
+    X3 <- .data[[IV3]]
 
     number_observations <- nrow(.data)
     randomness <- rnorm(number_observations, mean = 10, sd = 1)
@@ -104,7 +104,7 @@ simulated_data <-
         ),
         simulated_dag_data
     ) %>%
-    mutate(age = rnorm(n(), mean = 50, sd = 10))
+    mutate(age = rnorm(n(), mean = 50, sd = 10)) %>%
     as_tibble()
 
 usethis::use_data(simulated_data, overwrite = TRUE)
