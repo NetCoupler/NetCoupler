@@ -3,6 +3,10 @@
 language: R
 cache: packages
 
+branches:
+  only:
+    - master
+
 addons:
   apt:
     packages:
