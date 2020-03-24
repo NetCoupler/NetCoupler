@@ -28,3 +28,6 @@ tidyselect::last_col
 #' @importFrom dplyr vars
 #' @export
 dplyr::vars
+#' @importFrom tidyselect all_of
+#' @export
+tidyselect::all_of

@@ -1,5 +1,6 @@
 #' Estimating pathways to an estimated DAG from an exposure.
 #'
+#' @description
 #' \lifecycle{experimental}
 #'
 #' This algorithm estimates direct effects of a predefined exposure on each
@@ -18,7 +19,6 @@
 #' @examples
 #'
 #' library(dplyr)
-#' library(survival)
 #' metabolite_network <- simulated_data %>%
 #'   select(matches("metabolite")) %>%
 #'   nc_create_network()
@@ -62,10 +62,12 @@ nc_exposure_estimates <- function(.data, .graph, .exposure, .adjustment_vars, .m
 
     all_top_models_tidied <- all_possible_models %>%
         # TODO: Have argument for threshold? For choosing number of models?
-        map(~ MuMIn::get.models(.x, subset = delta <= 5)) %>%
+        map(~ MuMIn::get.models(.x, subset = TRUE)) %>%
         imap_dfr(~ .tidy_all_model_outputs(.x, .y, .exponentiate = .exponentiate)) %>%
-        mutate(exposure = .exposure) %>%
-        select_at(vars("exposure", everything()))
+        mutate(exposure = .exposure,
+               adjusted_vars = paste(.adjustment_vars, collapse = ", ")) %>%
+        select_at(vars("exposure", everything())) %>%
+        dplyr::rename_all(~ gsub("\\.", "_", .))
 
     return(all_top_models_tidied)
 }

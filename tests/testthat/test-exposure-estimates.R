@@ -12,7 +12,6 @@ test_that("model estimation works and results are output", {
             .model_function = lm
         )
 
-    expect_equal(ncol(exposure_estimates), 10)
     expect_type(exposure_estimates, "list")
     expect_identical(class(exposure_estimates)[1], "tbl_df")
 })

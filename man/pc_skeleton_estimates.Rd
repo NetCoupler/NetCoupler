@@ -12,7 +12,7 @@ pc_skeleton_estimates(.data, .alpha = 0.01)
 \item{.alpha}{Significance level threshold applied to each test.}
 }
 \value{
-DAG skeleton object.
+A DAG skeleton object.
 }
 \description{
 Uses the PC-algorithm and is mostly a wrapper around \code{\link[pcalg:skeleton]{pcalg::skeleton()}}.

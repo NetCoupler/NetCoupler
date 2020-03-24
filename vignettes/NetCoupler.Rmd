@@ -274,7 +274,7 @@ http://www.jstatsoft.org/v47/i11/.*
 
 ## Simple example of use
 
-```{r example-use}
+```{r example-use, cache=TRUE}
 library(NetCoupler)
 library(dplyr)
 
@@ -302,4 +302,52 @@ exposure_estimates <- simulated_data %>%
     )
 
 exposure_estimates
+```
+
+### Visualizing the network
+
+To see the network of only the metabolic variables, use the function
+`nc_plot_network()`.
+
+```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5}
+simulated_data %>% 
+    select(matches("metabolite")) %>% 
+    nc_plot_network(metabolite_network)
+```
+
+### Classifying direct effects on exposure or outcome side
+
+You can classify direct effects by using `nc_classify_effects()`,
+which works on both the exposure side (`exposure -> metabolite`) 
+and the outcome side (`metabolite -> outcome`).
+The function applies a simple algorithm, described in more
+detail in `vignette("description")`.
+For the exposure side, 
+the function identifies whether a link between the exposure 
+and an index node (one metabolic variable in the network) exists,
+regardless of conditioning on potential confounders 
+and on neighbouring nodes (other metabolic variables linked to the index variable).
+Depending on how consistent and strong the link is,
+the effect is classified as "direct", "ambiguous", or "none".
+
+In the example below, we specifically generated the simulated data so that
+the exposure associated with the metabolites 1, 8, and 12.
+And as we can see, those links have been correctly identified.
+
+```{r}
+exposure_direct_effects <- exposure_estimates %>% 
+    nc_classify_effects()
+exposure_direct_effects
+exposure_direct_effects %>% 
+    dplyr::filter(direct_effect == "direct")
+```
+
+You can also classify direct effects with an outcome using the same function:
+
+```{r}
+outcome_direct_effects <- outcome_estimates %>% 
+    nc_classify_effects()
+outcome_direct_effects
+outcome_direct_effects %>% 
+    dplyr::filter(direct_effect == "direct")
 ```

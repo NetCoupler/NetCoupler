@@ -16,8 +16,8 @@ The NetCoupler algorithm identifies direct effects
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/ClemensWittenbecher/NetCoupler}
-  \item Report bugs at \url{https://github.com/ClemensWittenbecher/NetCoupler/issues}
+  \item \url{https://github.com/NetCoupler/NetCoupler}
+  \item Report bugs at \url{https://github.com/NetCoupler/NetCoupler/issues}
 }
 
 }

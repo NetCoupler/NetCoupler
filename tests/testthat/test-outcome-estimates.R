@@ -13,7 +13,6 @@ test_that("model estimation works and results are output", {
             .exponentiate = TRUE
         )
 
-    expect_equal(ncol(outcome_estimates), 10)
     expect_type(outcome_estimates, "list")
     expect_identical(class(outcome_estimates)[1], "tbl_df")
 })

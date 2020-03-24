@@ -38,8 +38,7 @@ estimates.
 }
 \description{
 \lifecycle{experimental}
-}
-\details{
+
 This algorithm estimates direct effects of a predefined exposure on each
 network-variable for all causal models that agree with the input-network:
 models are adjusted for all possible combinations of direct neighbors
@@ -49,7 +48,6 @@ effects
 \examples{
 
 library(dplyr)
-library(survival)
 metabolite_network <- simulated_data \%>\%
   select(matches("metabolite")) \%>\%
   nc_create_network()

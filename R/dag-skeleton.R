@@ -35,31 +35,6 @@ pc_dag_estimates <- function(.data, .alpha = 0.01) {
     )
 }
 
-#' Extract adjacency matrix from a DAG skeleton.
-#'
-#' Is generally a wrapper around calls to [igraph::get.adjacency()] and
-#' [igraph::igraph.from.graphNEL()]. Transforms from a GraphNEL object in igraph.
-#'
-#' @param .dag_skeleton The PC DAG skeleton object.
-#'
-#' @return Outputs an adjacency matrix of the DAG skeleton.
-#'
-#' @examples
-#'
-#' \dontrun{
-#' library(dplyr)
-#' skeleton_estimate <- simulated_data %>%
-#' select(contains("metabolite")) %>%
-#' NetCoupler:::pc_skeleton_estimates()
-#'
-#' NetCoupler:::adjacency_matrix(skeleton_estimate)
-#' }
-#'
-adjacency_matrix <- function(.dag_skeleton) {
-    # TODO: Include a check here that it is a DAG skeleton..?
-    igraph::get.adjacency(igraph::igraph.from.graphNEL(.dag_skeleton@graph))
-}
-
 #' Estimate order-independent PC-stable skeleton of a DAG.
 #'
 #' Uses the PC-algorithm and is mostly a wrapper around [pcalg::skeleton()].
@@ -67,7 +42,7 @@ adjacency_matrix <- function(.dag_skeleton) {
 #' @param .data Input metabolic data.
 #' @param .alpha Significance level threshold applied to each test.
 #'
-#' @return DAG skeleton object.
+#' @return A DAG skeleton object.
 #'
 #' @examples
 #'
@@ -96,28 +71,3 @@ pc_skeleton_estimates <- function(.data, .alpha = 0.01) {
     )
 }
 
-#' Estimate Pearson's partial correlation coefficients.
-#'
-#' This function is a wrapper around [ppcor::pcor()] that extracts correlation
-#' coefficient estimates, then adds the variable names to the column and row names.
-#'
-#' @param .data Input data of metabolic variables as matrix or data.frame.
-#'
-#' @return Outputs a matrix of partial correlation coefficients.
-#'
-#' @examples
-#'
-#' \dontrun{
-#' library(dplyr)
-#' simulated_data %>%
-#' select(contains("metabolite")) %>%
-#' NetCoupler:::partial_corr_matrix()
-#' }
-#'
-partial_corr_matrix <- function(.data) {
-    # TODO: check if input data is gaussian
-    pcor_matrix <- ppcor::pcor(.data)$estimate
-    colnames(pcor_matrix) <- colnames(.data)
-    rownames(pcor_matrix) <- colnames(.data)
-    return(pcor_matrix)
-}
