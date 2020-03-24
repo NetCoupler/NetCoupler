@@ -77,7 +77,7 @@ nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .mod
         mutate(outcome = .outcome,
                adjusted_vars = paste(.adjustment_vars, collapse = ", ")) %>%
         select_at(vars("outcome", everything())) %>%
-        rename_all(~ gsub("\\.", "_", .))
+        dplyr::rename_all(~ gsub("\\.", "_", .))
 
     return(all_top_models_tidied)
 }

@@ -66,7 +66,7 @@ nc_exposure_estimates <- function(.data, .graph, .exposure, .adjustment_vars, .m
         mutate(exposure = .exposure,
                adjusted_vars = paste(.adjustment_vars, collapse = ", ")) %>%
         select_at(vars("exposure", everything())) %>%
-        rename_all(~ gsub("\\.", "_", .))
+        dplyr::rename_all(~ gsub("\\.", "_", .))
 
     return(all_top_models_tidied)
 }
