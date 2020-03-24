@@ -8,12 +8,12 @@ standardized_with_residuals <- simulated_data %>%
 
 test_that("logging and scaling works", {
     metabolite_means <- standardized %>%
-        dplyr::select(matches("metabolite")) %>%
+        select(matches("metabolite")) %>%
         colSums() %>%
         round(0)
 
     metabolite_sd <- standardized %>%
-        dplyr::select(matches("metabolite")) %>%
+        select(matches("metabolite")) %>%
         purrr::map_dbl(sd) %>%
         round(0)
 
@@ -24,12 +24,12 @@ test_that("logging and scaling works", {
 
 test_that("standardization with residuals works", {
     metabolite_means_resid <- standardized_with_residuals %>%
-        dplyr::select(matches("metabolite")) %>%
+        select(matches("metabolite")) %>%
         colSums() %>%
         round(0)
 
     metabolite_sd_resid <- standardized_with_residuals %>%
-        dplyr::select(matches("metabolite")) %>%
+        select(matches("metabolite")) %>%
         purrr::map_dbl(sd) %>%
         round(0)
 

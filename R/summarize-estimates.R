@@ -105,8 +105,8 @@ nc_classify_effects <- function(.tbl) {
             TRUE ~ "none"
         )) %>%
         dplyr::filter(.data$neighbour_vars == "") %>%
-        select(-dplyr::matches("no_neighbour"),
-               -dplyr::all_of(
+        select(-matches("no_neighbour"),
+               -all_of(
                    c(
                        "statistic",
                        "adjusted_vars",
@@ -135,14 +135,14 @@ nc_filter_estimates <- function(.tbl) {
                                                              .data$index_node)) %>%
             dplyr::ungroup() %>%
             dplyr::filter(.data$index_node == .data$term) %>%
-            select(-dplyr::all_of(c("term", "model_id")))
+            select(-all_of(c("term", "model_id")))
     } else {
         .tbl %>%
             dplyr::group_by_at("model_id") %>%
             mutate(neighbour_vars = .extract_neighbour_nodes(.data$term, .data$adjusted_vars)) %>%
             dplyr::ungroup() %>%
             dplyr::filter(.data$term == .filter_by) %>%
-            select(-dplyr::all_of(c("term", "model_id")))
+            select(-all_of(c("term", "model_id")))
 
     }
 }
