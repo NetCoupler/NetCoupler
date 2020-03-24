@@ -1,5 +1,6 @@
 #' Estimating pathways to an estimated DAG from an exposure.
 #'
+#' @description
 #' \lifecycle{experimental}
 #'
 #' This algorithm estimates direct effects of a predefined exposure on each
