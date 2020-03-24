@@ -339,7 +339,7 @@ exposure_direct_effects <- exposure_estimates %>%
     nc_classify_effects()
 exposure_direct_effects
 exposure_direct_effects %>% 
-    filter(direct_effect == "direct")
+    dplyr::filter(direct_effect == "direct")
 ```
 
 You can also classify direct effects with an outcome using the same function:
@@ -349,5 +349,5 @@ outcome_direct_effects <- outcome_estimates %>%
     nc_classify_effects()
 outcome_direct_effects
 outcome_direct_effects %>% 
-    filter(direct_effect == "direct")
+    dplyr::filter(direct_effect == "direct")
 ```
