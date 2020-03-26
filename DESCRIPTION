@@ -35,7 +35,6 @@ Imports:
     tibble,
     MuMIn,
     ids,
-    broom,
     lifecycle,
     assertive.types,
     tidyselect,
@@ -49,6 +48,7 @@ Suggests:
     testthat (>= 2.1.0),
     knitr,
     rmarkdown,
+    broom,
     survival
 VignetteBuilder: 
     knitr
