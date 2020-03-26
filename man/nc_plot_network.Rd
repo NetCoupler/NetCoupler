@@ -4,10 +4,10 @@
 \alias{nc_plot_network}
 \title{Plots the network of the metabolic variables.}
 \usage{
-nc_plot_network(.data, .graph)
+nc_plot_network(.tbl, .graph)
 }
 \arguments{
-\item{.data}{The data containing only the metabolic variables.}
+\item{.tbl}{The data containing only the metabolic variables.}
 
 \item{.graph}{The network graph object of the metabolic variable network.}
 }

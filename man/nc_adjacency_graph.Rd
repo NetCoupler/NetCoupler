@@ -4,10 +4,10 @@
 \alias{nc_adjacency_graph}
 \title{Compute the adjacency matrix of the graph with the data.}
 \usage{
-nc_adjacency_graph(.data, .graph)
+nc_adjacency_graph(.tbl, .graph)
 }
 \arguments{
-\item{.data}{The data containing only the metabolic variables.}
+\item{.tbl}{The data containing only the metabolic variables.}
 
 \item{.graph}{The network graph object of the metabolic variable network.}
 }

@@ -5,17 +5,17 @@
 \title{Estimating pathways to an estimated DAG from an exposure.}
 \usage{
 nc_exposure_estimates(
-  .data,
+  .tbl,
   .graph,
   .exposure,
-  .adjustment_vars,
+  .adjustment_vars = NA,
   .model_function,
   .exponentiate = FALSE,
   ...
 )
 }
 \arguments{
-\item{.data}{A data.frame that contains the data with the metabolic variables
+\item{.tbl}{A data.frame that contains the data with the metabolic variables
 and the outcome.}
 
 \item{.graph}{The estimated graph skeleton obtained from \code{\link[=nc_create_network]{nc_create_network()}}.}

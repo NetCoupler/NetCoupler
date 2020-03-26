@@ -1,2 +1,2 @@
 library(survival)
-library(dplyr, quietly = TRUE)
+suppressPackageStartupMessages(library(dplyr, quietly = TRUE))

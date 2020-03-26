@@ -4,10 +4,10 @@
 \alias{pc_dag_estimates}
 \title{Estimate equivalence class of DAG from the PC algorithm.}
 \usage{
-pc_dag_estimates(.data, .alpha = 0.01)
+pc_dag_estimates(.tbl, .alpha = 0.01)
 }
 \arguments{
-\item{.data}{Input data, samples by metabolite matrix or as data.frame.}
+\item{.tbl}{Input data, samples by metabolite matrix or as data.frame.}
 
 \item{.alpha}{Significance level threshold applied to each test.}
 }

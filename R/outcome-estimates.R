@@ -10,7 +10,7 @@
 #' combinations of direct neighbors (adjacency set) -> Output is a multiset of
 #' possible causal effects.
 #'
-#' @param .data A data.frame that contains the data with the metabolic variables
+#' @param .tbl A data.frame that contains the data with the metabolic variables
 #'   and the outcome.
 #' @param .graph The estimated graph skeleton obtained from [nc_create_network()].
 #' @param .outcome Character. The outcome variable of interest.
@@ -41,42 +41,66 @@
 #'     .exponentiate = TRUE
 #'    )
 #'
-nc_outcome_estimates <- function(.data, .graph, .outcome, .adjustment_vars, .model_function,
-                                 .exponentiate = FALSE, ...) {
-    assert_is_data.frame(.data)
+nc_outcome_estimates <-
+    function(.tbl,
+             .graph,
+             .outcome,
+             .adjustment_vars = NA,
+             .model_function,
+             .exponentiate = FALSE,
+             ...) {
+
+    assert_is_data.frame(.tbl)
     assert_is_s4(.graph)
     assert_is_a_string(.outcome)
-    assert_is_character(.adjustment_vars)
+    # TODO: This check needs to be better constructed
+    if (!missing(.adjustment_vars) | !any(is.na(.adjustment_vars)))
+        assert_is_character(.adjustment_vars)
     assert_is_function(.model_function)
 
     network_edges <- .graph@graph@edgeL
 
     all_possible_model_formulas <- network_edges %>%
-        imap(~ c(.graph@graph@nodes[.x$edges], .y, .adjustment_vars)) %>%
+        imap(~ stats::na.omit(c(.graph@graph@nodes[.x$edges], .y, .adjustment_vars))) %>%
         map2(.outcome, ~ stats::reformulate(.x, response = .y))
+
+    variables_to_keep <- all_possible_model_formulas %>%
+        purrr::map(all.vars) %>%
+        purrr::flatten_chr() %>%
+        unique()
+
+    # TODO: Right now only complete case in full dataset is allowed, need to consider at model-level
+    .tbl <- .tbl %>%
+        select_at(variables_to_keep) %>%
+        stats::na.omit()
 
     # The central variable surrounded by neighbour variables in the network.
     index_node <- names(network_edges)
 
-    # TODO: Need to consider missing values.
     all_possible_models <- all_possible_model_formulas %>%
         map(~ .model_function(
             formula = .x,
-            data = .data,
+            data = .tbl,
             na.action = "na.fail"
             # TODO: Need to figure out how to pass other options to function
         )) %>%
         map2(index_node,
-             ~ suppressMessages(MuMIn::dredge(.x, fixed = c(
+             ~ suppressMessages(MuMIn::dredge(.x, fixed = stats::na.omit(c(
                  .y, .adjustment_vars
-             ))))
+             )))))
 
     all_top_models_tidied <- all_possible_models %>%
         # TODO: Have argument for threshold? For choosing number of models?
         map(~ MuMIn::get.models(.x, subset = TRUE)) %>%
         imap_dfr(~ .tidy_all_model_outputs(.x, .y, .exponentiate = .exponentiate)) %>%
-        mutate(outcome = .outcome,
-               adjusted_vars = paste(.adjustment_vars, collapse = ", ")) %>%
+        mutate(
+            outcome = .outcome,
+            adjusted_vars = dplyr::if_else(
+                !any(is.na(.adjustment_vars)),
+                paste(.adjustment_vars, collapse = ", "),
+                NA_character_
+            )
+        ) %>%
         select_at(vars("outcome", everything())) %>%
         dplyr::rename_all(~ gsub("\\.", "_", .))
 

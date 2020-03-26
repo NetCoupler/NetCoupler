@@ -3,7 +3,7 @@
 #' Is mostly a wrapper around [pcalg::pc()]. Estimates an order-independent
 #' skeleton.
 #'
-#' @param .data Input data, samples by metabolite matrix or as data.frame.
+#' @param .tbl Input data, samples by metabolite matrix or as data.frame.
 #' @param .alpha Significance level threshold applied to each test.
 #'
 #' @return Outputs a `pcAlgo` object.
@@ -17,12 +17,12 @@
 #' NetCoupler:::pc_dag_estimates()
 #' }
 #'
-pc_dag_estimates <- function(.data, .alpha = 0.01) {
-    number_samples <- nrow(.data)
-    metabolite_names <- colnames(.data)
+pc_dag_estimates <- function(.tbl, .alpha = 0.01) {
+    number_samples <- nrow(.tbl)
+    metabolite_names <- colnames(.tbl)
 
     pcalg::pc(
-        suffStat = list(C = stats::cor(.data), n = number_samples),
+        suffStat = list(C = stats::cor(.tbl), n = number_samples),
         indepTest = pcalg::gaussCItest,
         labels = metabolite_names,
         skel.method = "stable",
@@ -39,7 +39,7 @@ pc_dag_estimates <- function(.data, .alpha = 0.01) {
 #'
 #' Uses the PC-algorithm and is mostly a wrapper around [pcalg::skeleton()].
 #'
-#' @param .data Input metabolic data.
+#' @param .tbl Input metabolic data.
 #' @param .alpha Significance level threshold applied to each test.
 #'
 #' @return A DAG skeleton object.
@@ -53,13 +53,13 @@ pc_dag_estimates <- function(.data, .alpha = 0.01) {
 #' NetCoupler:::pc_skeleton_estimates()
 #' }
 #'
-pc_skeleton_estimates <- function(.data, .alpha = 0.01) {
-    number_samples <- nrow(.data)
-    metabolite_names <- colnames(.data)
+pc_skeleton_estimates <- function(.tbl, .alpha = 0.01) {
+    number_samples <- nrow(.tbl)
+    metabolite_names <- colnames(.tbl)
 
     # TODO: Confirm that this does this.
     pcalg::skeleton(
-        suffStat = list(C = stats::cor(.data), n = number_samples),
+        suffStat = list(C = stats::cor(.tbl, use = "complete.obs"), n = number_samples),
         # Test conditional independence of Gaussians via Fisher's Z
         indepTest = pcalg::gaussCItest,
         labels = metabolite_names,

@@ -4,10 +4,10 @@
 \alias{nc_create_network}
 \title{Create an estimate of the metabolic network skeleton.}
 \usage{
-nc_create_network(.data, .alpha = 0.05)
+nc_create_network(.tbl, .alpha = 0.05)
 }
 \arguments{
-\item{.data}{Data of the metabolic variables.}
+\item{.tbl}{Data of the metabolic variables.}
 
 \item{.alpha}{The alpha level to set.}
 }

@@ -4,10 +4,10 @@
 \alias{nc_partial_corr_matrix}
 \title{Estimate Pearson's partial correlation coefficients.}
 \usage{
-nc_partial_corr_matrix(.data)
+nc_partial_corr_matrix(.tbl)
 }
 \arguments{
-\item{.data}{Input data of metabolic variables as matrix or data.frame.}
+\item{.tbl}{Input data of metabolic variables as matrix or data.frame.}
 }
 \value{
 Outputs a matrix of partial correlation coefficients.
