@@ -72,7 +72,7 @@ nc_outcome_estimates <-
     # TODO: Right now only complete case in full dataset is allowed, need to consider at model-level
     .tbl <- .tbl %>%
         select_at(variables_to_keep) %>%
-        na.omit()
+        stats::na.omit()
 
     # The central variable surrounded by neighbour variables in the network.
     index_node <- names(network_edges)
