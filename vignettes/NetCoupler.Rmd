@@ -274,9 +274,12 @@ http://www.jstatsoft.org/v47/i11/.*
 
 ## Simple example of use
 
-```{r example-use, cache=TRUE}
+```{r, load-packages, message=FALSE, warning=FALSE}
 library(NetCoupler)
 library(dplyr)
+```
+
+```{r example-use, cache=TRUE}
 
 # Make partial independence network from metabolite data
 metabolite_network <- simulated_data %>% 
