@@ -10,7 +10,7 @@
 #' combinations of direct neighbors (adjacency set) -> Output is a multiset of
 #' possible causal effects.
 #'
-#' @param .data A data.frame that contains the data with the metabolic variables
+#' @param .tbl A data.frame that contains the data with the metabolic variables
 #'   and the outcome.
 #' @param .graph The estimated graph skeleton obtained from [nc_create_network()].
 #' @param .outcome Character. The outcome variable of interest.

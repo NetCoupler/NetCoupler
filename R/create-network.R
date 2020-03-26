@@ -9,7 +9,7 @@
 #' Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
 #' Defaults to using the PC algorithm to calculate possible edges.
 #'
-#' @param .data Data of the metabolic variables.
+#' @param .tbl Data of the metabolic variables.
 #' @param .alpha The alpha level to set.
 #'
 #' @return Outputs a DAG skeleton.
@@ -21,13 +21,13 @@
 #' simulated_data %>%
 #'   select(contains("metabolite")) %>%
 #'   nc_create_network()
-nc_create_network <- function(.data, .alpha = 0.05) {
-    assert_is_data.frame(.data)
+nc_create_network <- function(.tbl, .alpha = 0.05) {
+    assert_is_data.frame(.tbl)
     assert_is_a_number(.alpha)
     # TODO: Determine if this is important.
-    # DAG_est <- pc_dag_estimates(.data, .alpha)
+    # DAG_est <- pc_dag_estimates(.tbl, .alpha)
 
-    pc_skeleton_estimates(.data, .alpha)
+    pc_skeleton_estimates(.tbl, .alpha)
 }
 
 #' Compute the adjacency matrix of the graph with the data.
@@ -48,9 +48,9 @@ nc_create_network <- function(.data, .alpha = 0.05) {
 #' network <- metabolite_data %>%
 #'   nc_create_network()
 #' nc_adjacency_graph(metabolite_data, network)
-nc_adjacency_graph <- function(.data, .graph) {
+nc_adjacency_graph <- function(.tbl, .graph) {
     weighted_adjacency_matrix <- nc_adjacency_matrix(.graph) *
-        nc_partial_corr_matrix(.data)
+        nc_partial_corr_matrix(.tbl)
 
     igraph::graph.adjacency(weighted_adjacency_matrix,
                             weighted = TRUE, mode = "undirected")
@@ -61,7 +61,7 @@ nc_adjacency_graph <- function(.data, .graph) {
 #' @description
 #' \lifecycle{experimental}
 #'
-#' @param .data The data containing only the metabolic variables.
+#' @param .tbl The data containing only the metabolic variables.
 #' @param .graph The network graph object of the metabolic variable network.
 #'
 #' @return Outputs a `ggplot2`
@@ -76,8 +76,8 @@ nc_adjacency_graph <- function(.data, .graph) {
 #'   nc_create_network()
 #' nc_plot_network(metabolite_data, network)
 #'
-nc_plot_network <- function(.data, .graph) {
-    .data %>%
+nc_plot_network <- function(.tbl, .graph) {
+    .tbl %>%
         nc_adjacency_graph(.graph = .graph) %>%
         tidygraph::as_tbl_graph() %>%
         # tidygraph::activate(edges) %>%
@@ -134,7 +134,7 @@ nc_adjacency_matrix <- function(.dag_skeleton) {
 #' This function is a wrapper around [ppcor::pcor()] that extracts correlation
 #' coefficient estimates, then adds the variable names to the column and row names.
 #'
-#' @param .data Input data of metabolic variables as matrix or data.frame.
+#' @param .tbl Input data of metabolic variables as matrix or data.frame.
 #'
 #' @return Outputs a matrix of partial correlation coefficients.
 #' @export
@@ -146,10 +146,10 @@ nc_adjacency_matrix <- function(.dag_skeleton) {
 #'   select(contains("metabolite")) %>%
 #'   nc_partial_corr_matrix()
 #'
-nc_partial_corr_matrix <- function(.data) {
+nc_partial_corr_matrix <- function(.tbl) {
     # TODO: check if input data is gaussian
-    pcor_matrix <- ppcor::pcor(.data)$estimate
-    colnames(pcor_matrix) <- colnames(.data)
-    rownames(pcor_matrix) <- colnames(.data)
+    pcor_matrix <- ppcor::pcor(.tbl)$estimate
+    colnames(pcor_matrix) <- colnames(.tbl)
+    rownames(pcor_matrix) <- colnames(.tbl)
     return(pcor_matrix)
 }
