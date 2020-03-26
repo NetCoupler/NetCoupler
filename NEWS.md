@@ -1,5 +1,8 @@
 # NetCoupler 0.0.4.9000 (development version)
 
+* Input dataset can include missingness. Input data is treated as complete case
+for only the variables used in the modelling (#88).
+* For `lm` and `glm` models, model summary statistics are added (#88).
 * Add a function to classify the direct effects between outcome or exposure and 
 the network (#98).
 * Add function to plot network graph: `nc_plot_network()` (#89).
