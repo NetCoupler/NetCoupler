@@ -1,7 +1,7 @@
 # NetCoupler 0.0.4.9000 (development version)
 
-* Input dataset can include missingness. Input data is treated as complete case
-for only the variables used in the modelling (#88).
+## Added features
+
 * For `lm` and `glm` models, model summary statistics are added (#88).
 * Add a function to classify the direct effects between outcome or exposure and 
 the network (#98).
@@ -13,6 +13,15 @@ to help create the weights for the network plot.
 * Removed soft deprecated functions. Using MuMIn over glmulti doesn't change the
 results too much, see #60 for details (#83).
 * Removed stringr dependency (#65, #83).
+
+## Fixed bugs and other problems
+
+* Fix bug that didn't properly filter variables nor identify neighbour nodes
+in `nc_filter_estimates()` (#109).
+* Fix problem with `nc_standardize()` that prevented the ability to use the `.regressed_on`
+argument to extract residuals (#108).
+* Input dataset can include missingness. Input data is treated as complete case
+for only the variables used in the modelling (#88).
 
 # NetCoupler 0.0.3.9000
 

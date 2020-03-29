@@ -139,26 +139,26 @@ nc_filter_estimates <- function(.tbl) {
     } else {
         .tbl %>%
             dplyr::group_by_at("model_id") %>%
-            mutate(neighbour_vars = .extract_neighbour_nodes(.data$term, .data$adjusted_vars)) %>%
+            mutate(neighbour_vars = .extract_neighbour_nodes(.data$term,
+                                                             .data$adjusted_vars,
+                                                             .data$exposure)) %>%
             dplyr::ungroup() %>%
-            dplyr::filter(.data$term == .filter_by) %>%
+            dplyr::filter(.data$term == .data[[.filter_by]]) %>%
             select(-all_of(c("term", "model_id")))
 
     }
 }
 
-.extract_neighbour_nodes <- function(.term_var, .adj_var, .index_node = NULL) {
+.extract_neighbour_nodes <- function(.term_var, .adj_var, .main_x_var) {
     adjusted_variables <- .adj_var %>%
         unique() %>%
         strsplit(", ") %>%
         unlist()
 
-    if (!is.null(.index_node)) {
-        .index_node <- unique(.index_node)
-        .term_var <- .term_var[!.term_var %in% .index_node]
-    }
+    .main_x_var <- unique(.main_x_var)
+    .term_var <- .term_var[!.term_var %in% .main_x_var]
 
-    neighbour_nodes <- .term_var[!.term_var %in% c("exposure", "outcome", "(Intercept)")]
+    neighbour_nodes <- .term_var[.term_var != "(Intercept)"]
 
     neighbour_nodes[!neighbour_nodes %in% adjusted_variables] %>%
         paste(collapse = ", ")
