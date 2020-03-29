@@ -38,3 +38,8 @@ test_that("standardization with residuals works", {
     expect_false(identical(simulated_data, standardized_with_residuals))
     expect_false(identical(standardized, standardized_with_residuals))
 })
+
+#' simulated_data %>%
+#'   mutate(Random = rnorm(n(), 10, 2)) %>%
+#'   .insert_random_missingness() %>%
+#'   nc_standardize(vars(matches("metabolite_")), c("age", "Random"))
