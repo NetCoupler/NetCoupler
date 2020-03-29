@@ -23,26 +23,28 @@
 #'
 #' @examples
 #'
-#' # Don't regress on any variable.
+#' # Don't regress on any variable
 #' simulated_data %>%
-#'   nc_standardize(vars(matches("metabolite_"))) %>%
-#'   tibble::as_tibble()
+#'   nc_standardize(matches("metabolite_"))
 #'
-#' # Don't regress on any variable.
+#' # Extract residuals by regressing on a variable
 #' simulated_data %>%
-#'   nc_standardize(vars(matches("metabolite_")), "age") %>%
-#'   tibble::as_tibble()
+#'   nc_standardize(vars(matches("metabolite_")), "age")
 nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
     if (!is.null(.regressed_on)) {
         assertive.types::assert_is_character(.regressed_on)
-        .tbl %>%
-            dplyr::mutate_at(.vars, .funs = .log_regress_standardize,
-                             regressed_on = .tbl[.regressed_on])
+        standardized_data <- .replace_with_residuals(
+            .tbl = .tbl,
+            .vars = .vars,
+            .regressed_on = .regressed_on
+        )
     } else {
-        .tbl %>%
+        standardized_data <- .tbl %>%
             dplyr::mutate_at(.vars, .funs = .log_standardize)
     }
+    return(standardized_data)
 }
+
 
 .log_standardize <- function(x) {
     as.numeric(scale(log(x)))
@@ -53,4 +55,48 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
     logged_x <- log(x)
     residual_x <- stats::residuals(stats::glm.fit(y = logged_x, x = regressed_on))
     as.numeric(scale(residual_x))
+}
+
+.replace_with_residuals <- function(.tbl, .vars, .regressed_on) {
+    metabolic_names <- .tbl %>%
+        select_at(.vars) %>%
+        names()
+
+    data_with_id <- .tbl %>%
+        # TODO: Check that no id variable exists
+        mutate(.id_variable = row_number())
+
+    data_with_other_vars <- data_with_id %>%
+        select_at(vars(-metabolic_names))
+
+    standardized_data <- metabolic_names %>%
+        purrr::map(~ .extract_residuals(.x, data_with_id, .regressed_on)) %>%
+        purrr::reduce(full_join, by = ".id_variable") %>%
+        dplyr::full_join(data_with_other_vars, by = ".id_variable") %>%
+        dplyr::arrange_at(".id_variable") %>%
+        # To put in original ordering
+        select_at(names(data_with_id)) %>%
+        select(-".id_variable")
+
+    return(standardized_data)
+}
+
+.extract_residuals <- function(.var, .tbl, .regressed_on, .id_var = ".id_variable") {
+    no_missing <- .tbl %>%
+        select_at(c(.var, .regressed_on, .id_var)) %>%
+        na.omit()
+
+    metabolic_var <- no_missing[[.var]]
+    regress_on_vars <- no_missing[.regressed_on]
+
+    metabolic_residuals <-
+        .log_regress_standardize(metabolic_var,
+                                 regress_on_vars)
+
+    no_missing[.var] <- metabolic_residuals
+
+    data_with_residuals <- no_missing %>%
+        select_at(c(.var, ".id_variable"))
+
+    return(data_with_residuals)
 }
