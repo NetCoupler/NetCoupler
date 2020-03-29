@@ -17,7 +17,7 @@ results too much, see #60 for details (#83).
 ## Fixed bugs and other problems
 
 * Fix problem with `nc_standardize()` that prevented the ability to use the `.regressed_on`
-argument to extract residuals (#).
+argument to extract residuals (#108).
 * Input dataset can include missingness. Input data is treated as complete case
 for only the variables used in the modelling (#88).
 
