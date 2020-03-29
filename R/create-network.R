@@ -74,17 +74,31 @@ nc_adjacency_graph <- function(.tbl, .graph) {
 #'   select(starts_with("metabolite"))
 #' network <- metabolite_data %>%
 #'   nc_create_network()
-#' nc_plot_network(metabolite_data, network)
+#' nc_plot_network(metabolite_data, network,
+#' .node_rename_fun = function(x) stringr::str_replace(x, "metabolite_", "M"))
 #'
-nc_plot_network <- function(.tbl, .graph) {
-    .tbl %>%
+nc_plot_network <- function(.tbl,
+                            .graph,
+                            .edge_label_threshold = 0.2,
+                            .node_rename_fun = NULL) {
+
+    if (is.null(.node_rename_fun))
+        .node_rename_fun <- function(x) x
+    assert_is_function(.node_rename_fun)
+
+    graph_data_prep <- .tbl %>%
         nc_adjacency_graph(.graph = .graph) %>%
         tidygraph::as_tbl_graph() %>%
-        # tidygraph::activate(edges) %>%
+        tidygraph::activate(edges) %>%
+        tidygraph::mutate(edge_label = if_else(abs(weight) > .edge_label_threshold,
+                                               as.character(round(weight, 2)),
+                                               ""))
+
+    graph_data_prep %>%
         ggraph::ggraph("stress") +
         ggraph::geom_edge_diagonal(
             ggplot2::aes_string(
-                label = "round(weight, 2)",
+                label = "edge_label",
                 colour = "weight",
                 width = "abs(weight)"
             ),
@@ -94,7 +108,7 @@ nc_plot_network <- function(.tbl, .graph) {
         ggraph::geom_node_point(size = 2) +
         ggraph::scale_edge_colour_gradient2(mid = "gray80") +
         ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
-        ggraph::geom_node_text(ggplot2::aes_string(label = "name"),
+        ggraph::geom_node_text(ggplot2::aes_string(label = ".node_rename_fun(name)"),
                                repel = TRUE) +
         ggraph::theme_graph(base_family = 'Helvetica')
 }
