@@ -25,7 +25,7 @@
 #'
 #' # Don't regress on any variable
 #' simulated_data %>%
-#'   nc_standardize(matches("metabolite_"))
+#'   nc_standardize(vars(matches("metabolite_")))
 #'
 #' # Extract residuals by regressing on a variable
 #' simulated_data %>%
@@ -64,14 +64,14 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
 
     data_with_id <- .tbl %>%
         # TODO: Check that no id variable exists
-        mutate(.id_variable = row_number())
+        mutate(.id_variable = dplyr::row_number())
 
     data_with_other_vars <- data_with_id %>%
         select_at(vars(-metabolic_names))
 
     standardized_data <- metabolic_names %>%
         purrr::map(~ .extract_residuals(.x, data_with_id, .regressed_on)) %>%
-        purrr::reduce(full_join, by = ".id_variable") %>%
+        purrr::reduce(dplyr::full_join, by = ".id_variable") %>%
         dplyr::full_join(data_with_other_vars, by = ".id_variable") %>%
         dplyr::arrange_at(".id_variable") %>%
         # To put in original ordering
@@ -84,7 +84,7 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
 .extract_residuals <- function(.var, .tbl, .regressed_on, .id_var = ".id_variable") {
     no_missing <- .tbl %>%
         select_at(c(.var, .regressed_on, .id_var)) %>%
-        na.omit()
+        stats::na.omit()
 
     metabolic_var <- no_missing[[.var]]
     regress_on_vars <- no_missing[.regressed_on]
