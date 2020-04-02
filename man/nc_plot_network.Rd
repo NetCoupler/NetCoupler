@@ -2,17 +2,30 @@
 % Please edit documentation in R/create-network.R
 \name{nc_plot_network}
 \alias{nc_plot_network}
-\title{Plots the network of the metabolic variables.}
+\title{Plot of the network of the metabolic variables.}
 \usage{
-nc_plot_network(.tbl, .graph)
+nc_plot_network(
+  .tbl,
+  .graph,
+  .edge_label_threshold = 0.2,
+  .node_rename_fun = NULL
+)
 }
 \arguments{
 \item{.tbl}{The data containing only the metabolic variables.}
 
 \item{.graph}{The network graph object of the metabolic variable network.}
+
+\item{.edge_label_threshold}{Threshold set for edge weight value above which
+the edge label will be kept. This argument helps to reduce clutter in the
+graph.}
+
+\item{.node_rename_fun}{Function to pass to rename the metabolic variables.
+Preferably use functions that search and replace patterns, like \code{\link[=gsub]{gsub()}} or
+\code{\link[stringr:str_replace]{stringr::str_replace()}}.}
 }
 \value{
-Outputs a \code{ggplot2}
+Outputs a \code{ggplot2} object of the metabolic network.
 }
 \description{
 \lifecycle{experimental}
@@ -24,6 +37,10 @@ metabolite_data <- simulated_data \%>\%
   select(starts_with("metabolite"))
 network <- metabolite_data \%>\%
   nc_create_network()
-nc_plot_network(metabolite_data, network)
+nc_plot_network(
+  metabolite_data,
+  network,
+  .node_rename_fun = function(x) gsub("metabolite_", "M", x)
+)
 
 }
