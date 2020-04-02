@@ -56,15 +56,21 @@ nc_adjacency_graph <- function(.tbl, .graph) {
                             weighted = TRUE, mode = "undirected")
 }
 
-#' Plots the network of the metabolic variables.
+#' Plot of the network of the metabolic variables.
 #'
 #' @description
 #' \lifecycle{experimental}
 #'
 #' @param .tbl The data containing only the metabolic variables.
 #' @param .graph The network graph object of the metabolic variable network.
+#' @param .edge_label_threshold Threshold set for edge weight value above which
+#'   the edge label will be kept. This argument helps to reduce clutter in the
+#'   graph.
+#' @param .node_rename_fun Function to pass to rename the metabolic variables.
+#'   Preferably use functions that search and replace patterns, like [gsub()] or
+#'   [stringr::str_replace()].
 #'
-#' @return Outputs a `ggplot2`
+#' @return Outputs a `ggplot2` object of the metabolic network.
 #' @export
 #'
 #' @examples
@@ -74,8 +80,11 @@ nc_adjacency_graph <- function(.tbl, .graph) {
 #'   select(starts_with("metabolite"))
 #' network <- metabolite_data %>%
 #'   nc_create_network()
-#' nc_plot_network(metabolite_data, network,
-#' .node_rename_fun = function(x) stringr::str_replace(x, "metabolite_", "M"))
+#' nc_plot_network(
+#'   metabolite_data,
+#'   network,
+#'   .node_rename_fun = function(x) gsub("metabolite_", "M", x)
+#' )
 #'
 nc_plot_network <- function(.tbl,
                             .graph,
@@ -89,9 +98,9 @@ nc_plot_network <- function(.tbl,
     graph_data_prep <- .tbl %>%
         nc_adjacency_graph(.graph = .graph) %>%
         tidygraph::as_tbl_graph() %>%
-        tidygraph::activate(edges) %>%
-        tidygraph::mutate(edge_label = if_else(abs(weight) > .edge_label_threshold,
-                                               as.character(round(weight, 2)),
+        tidygraph::activate("edges") %>%
+        tidygraph::mutate(edge_label = dplyr::if_else(abs(.data$weight) > .edge_label_threshold,
+                                               as.character(round(.data$weight, 2)),
                                                ""))
 
     graph_data_prep %>%
