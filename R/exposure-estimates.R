@@ -65,9 +65,6 @@ nc_exposure_estimates <-
         select_at(variables_to_keep) %>%
         stats::na.omit()
 
-    # The central variable surrounded by neighbour variables in the network.
-    index_node <- names(network_edges)
-
     all_possible_models <- all_possible_model_formulas %>%
         map( ~ {
             # TODO: Need to figure out how to pass other options to function
@@ -75,15 +72,19 @@ nc_exposure_estimates <-
                             data = .tbl,
                             na.action = "na.fail")
         }) %>%
-        map2(index_node,
-             ~ suppressMessages(MuMIn::dredge(.x, fixed = stats::na.omit(c(
+        map(~ suppressMessages(MuMIn::dredge(.x, fixed = stats::na.omit(c(
                  .adjustment_vars, .exposure
              )))))
 
-    all_top_models_tidied <- all_possible_models %>%
-        # TODO: Have argument for threshold? For choosing number of models?
-        map(~ MuMIn::get.models(.x, subset = TRUE)) %>%
-        imap_dfr(~ .tidy_all_model_outputs(.x, .y, .exponentiate = .exponentiate)) %>%
+    # TODO: Have argument for threshold? For choosing number of models?
+    # TODO: Don't know why but now message outputs about new name... might be a _dfr thing?
+    tidied_models <- suppressMessages(
+        imap_dfr(all_possible_models,
+                 .extract_and_tidy_models,
+                 .exponentiate = .exponentiate)
+    )
+
+    tidied_models <- tidied_models %>%
         mutate(
             exposure = .exposure,
             adjusted_vars = dplyr::if_else(
@@ -92,9 +93,9 @@ nc_exposure_estimates <-
                 NA_character_
             )
         ) %>%
-        select_at(vars("exposure", everything())) %>%
+            # select_at(vars("index_node", everything())))
+        dplyr::relocate(c("exposure", "index_node", "model_id")) %>%
         dplyr::rename_all(~ gsub("\\.", "_", .))
 
-    return(all_top_models_tidied)
+    return(tidied_models)
 }
-

@@ -57,3 +57,25 @@ test_that("Correct metabolites are classified as direct", {
     expected_outcome_associations <- paste0("metabolite_", c(3, 9, 12))[2]
     expect_identical(outcome_direct_effect_vars, expected_outcome_associations)
 })
+
+test_that("Factor confounders are extracted properly", {
+    multimodel_exposure <- simulated_data %>%
+        mutate(Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) %>%
+        nc_exposure_estimates(
+            .graph = metabolite_network,
+            .exposure = "exposure",
+            .adjustment_vars = c("age", "Sex"),
+            .model_function = lm
+        )
+
+    classified_results <- nc_classify_effects(multimodel_exposure)
+    expect_equal(nrow(classified_results), 12)
+
+    # Same expected metabolites
+    exposure_direct_effect_vars <- classified_results %>%
+        dplyr::filter(direct_effect == "direct") %>%
+        pull(index_node)
+
+    expected_exposure_associations <- paste0("metabolite_", c(1, 10, 8))
+    expect_identical(exposure_direct_effect_vars, expected_exposure_associations)
+})

@@ -5,7 +5,7 @@
 * For `lm` and `glm` models, model summary statistics are added (#88).
 * Add a function to classify the direct effects between outcome or exposure and 
 the network (#98).
-* Add function to plot network graph: `nc_plot_network()` (#89).
+* Add function to plot network graph: `nc_plot_network()` (#89, #110).
 * Added helper functions `nc_adjacency_graph()`,
 `nc_adjacency_matrix()`, and `nc_partial_corr_matrix()` 
 to help create the weights for the network plot.

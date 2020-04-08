@@ -25,11 +25,12 @@
 #'   select(matches("metabolite")) %>%
 #'   nc_create_network()
 #' multimodel_exposure <- simulated_data %>%
-#'   mutate(Random = rnorm(nrow(.))) %>%
+#'   mutate(Random = rnorm(nrow(.)),
+#'          Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) %>%
 #'   nc_exposure_estimates(
 #'     .graph = metabolite_network,
 #'     .exposure = "exposure",
-#'     .adjustment_vars = c("age", "Random"),
+#'     .adjustment_vars = c("age", "Random", "Sex"),
 #'     .model_function = lm
 #'    )
 #'
@@ -153,13 +154,14 @@ nc_filter_estimates <- function(.tbl) {
     adjusted_variables <- .adj_var %>%
         unique() %>%
         strsplit(", ") %>%
-        unlist()
+        unlist() %>%
+        paste(collapse = "|")
 
     .main_x_var <- unique(.main_x_var)
     .term_var <- .term_var[!.term_var %in% .main_x_var]
 
     neighbour_nodes <- .term_var[.term_var != "(Intercept)"]
 
-    neighbour_nodes[!neighbour_nodes %in% adjusted_variables] %>%
+    neighbour_nodes[!grepl(adjusted_variables, neighbour_nodes)] %>%
         paste(collapse = ", ")
 }
