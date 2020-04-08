@@ -89,10 +89,15 @@ nc_outcome_estimates <-
                  .y, .adjustment_vars
              )))))
 
-    all_top_models_tidied <- all_possible_models %>%
-        # TODO: Have argument for threshold? For choosing number of models?
-        map(~ MuMIn::get.models(.x, subset = TRUE)) %>%
-        imap_dfr(~ .tidy_all_model_outputs(.x, .y, .exponentiate = .exponentiate)) %>%
+    # TODO: Have argument for threshold? For choosing number of models?
+    # TODO: Don't know why but now message outputs about new name... might be a _dfr thing?
+    tidied_models <- suppressMessages(
+        imap_dfr(all_possible_models,
+                 .extract_and_tidy_models,
+                 .exponentiate = .exponentiate)
+    )
+
+    tidied_models <- tidied_models %>%
         mutate(
             outcome = .outcome,
             adjusted_vars = dplyr::if_else(
@@ -104,5 +109,5 @@ nc_outcome_estimates <-
         select_at(vars("outcome", everything())) %>%
         dplyr::rename_all(~ gsub("\\.", "_", .))
 
-    return(all_top_models_tidied)
+    return(tidied_models)
 }

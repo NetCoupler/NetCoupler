@@ -1,3 +1,12 @@
+.extract_and_tidy_models <- function(.x, .y, .exponentiate, .mumin_subset = TRUE) {
+    all_models <- MuMIn::get.models(.x, subset = .mumin_subset)
+    tidied_models <- map_dfr(all_models,
+                             .tidy_model_output,
+                             .exponentiate = .exponentiate)
+    id_added <- mutate(tidied_models, index_node = .y)
+    return(id_added)
+}
+
 .tidy_all_model_outputs <- function(.list, .names, .exponentiate) {
     .list %>%
         map_dfr(.tidy_model_output, .exponentiate = .exponentiate) %>%
@@ -15,8 +24,7 @@
     model_estimates <- model_estimates %>%
         .conditionally_add_model_summary(.object)
 
-    model_estimates %>%
-        select_at(vars("model_id", everything()))
+    return(model_estimates)
 }
 
 .conditionally_add_model_summary <- function(.tbl, .object) {
