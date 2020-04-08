@@ -40,11 +40,12 @@ metabolite_network <- simulated_data \%>\%
   select(matches("metabolite")) \%>\%
   nc_create_network()
 multimodel_exposure <- simulated_data \%>\%
-  mutate(Random = rnorm(nrow(.))) \%>\%
+  mutate(Random = rnorm(nrow(.)),
+         Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) \%>\%
   nc_exposure_estimates(
     .graph = metabolite_network,
     .exposure = "exposure",
-    .adjustment_vars = c("age", "Random"),
+    .adjustment_vars = c("age", "Random", "Sex"),
     .model_function = lm
    )
 
