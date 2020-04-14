@@ -1,11 +1,11 @@
-#' Generic function to compute model estimates between an external variable and
-#' a network.
+#' Compute model estimates between an external (exposure or outcome) variable
+#' and a network.
 #'
+#' @rdname nc_model_estimates
 #' @param .tbl The data.frame or tibble that contains the variables of interest,
 #'   including the variables passed to the network.
 #' @param .graph Output graph object from `nc_create_network()`.
-#' @param .external_var The variable that links to the network variables
-#'   ("external" to the network).
+#' @param .exposure,.outcome Character. The exposure or outcome variable of interest.
 #' @param .adjustment_vars Optional. Variables to adjust for in the models.
 #' @param .model_function A function for the model to use (e.g. [stats::lm()],
 #'   [stats::glm()], [survival::coxph()]). Can be any model as long as the
@@ -17,8 +17,11 @@
 #'   usage.
 #' @param .exponentiate Logical. Whether to exponentiate the log estimates, as
 #'   computed with e.g. logistic regression models.
-#' @param .external_side Character vector. Either "exposure" or "outcome", to
-#'   indicate which side the external variable is on relative to the network.
+#' @param .external_var Argument for internal function. The variable that links
+#'   to the network variables ("external" to the network).
+#' @param .external_side Argument for internal function. Character vector.
+#'   Either "exposure" or "outcome", to indicate which side the external
+#'   variable is on relative to the network.
 #'
 #'   - Exposure indicating the implied directionality is from the external
 #'   variable to the network variable.
@@ -40,26 +43,81 @@
 #'   select(matches("metabolite")) %>%
 #'   nc_create_network()
 #' simulated_data %>%
-#'   nc_model_estimates(
+#'   nc_exposure_estimates(
 #'     .graph = metabolite_network,
-#'     .external_var = "exposure",
-#'     .external_side = "exposure",
+#'     .exposure = "exposure",
 #'     .adjustment_vars = "age",
-#'     .model_function = glm
+#'     .model_function = lm
 #'    )
 #'
 #' simulated_data %>%
-#'   nc_model_estimates(
+#'   nc_outcome_estimates(
 #'     .graph = metabolite_network,
-#'     .external_var = "case_status",
-#'     .external_side = "outcome",
+#'     .outcome = "survival::Surv(survival_time, case_status)",
 #'     .adjustment_vars = "age",
-#'     .model_function = glm,
-#'     .model_arg_list = list(family = binomial(link = "logit")),
+#'     .model_function = survival::coxph,
 #'     .exponentiate = TRUE
 #'    )
 #'
-nc_model_estimates <-
+NULL
+
+#' @describeIn nc_model_estimates Computes the model estimates for the exposure side.
+#' @export
+nc_exposure_estimates <-
+    function(.tbl,
+             .graph,
+             .exposure,
+             .adjustment_vars = NA,
+             .model_function,
+             .model_arg_list = NULL,
+             .exponentiate = FALSE) {
+        nc_model_estimates(
+            .tbl = .tbl,
+            .graph = .graph,
+            .external_var = .exposure,
+            .adjustment_vars = .adjustment_vars,
+            .model_function = .model_function,
+            .model_arg_list = .model_arg_list,
+            .exponentiate = .exponentiate,
+            .external_side = "exposure"
+        )
+    }
+
+#' @describeIn nc_model_estimates Computes the model estimates for the exposure side.
+#' @export
+nc_outcome_estimates <-
+    function(.tbl,
+             .graph,
+             .outcome,
+             .adjustment_vars = NA,
+             .model_function,
+             .model_arg_list = NULL,
+             .exponentiate = FALSE) {
+        nc_model_estimates(
+            .tbl = .tbl,
+            .graph = .graph,
+            .external_var = .outcome,
+            .adjustment_vars = .adjustment_vars,
+            .model_function = .model_function,
+            .model_arg_list = .model_arg_list,
+            .exponentiate = .exponentiate,
+            .external_side = "outcome"
+        )
+}
+
+as_edge_tbl <- function(.edge_list) {
+    nodes <- names(.edge_list)
+    edge_table <- purrr::map_dfr(
+        .edge_list,
+        .single_edge_list_to_tbl,
+        .id = "source_node",
+        .nodes = nodes
+    )
+    return(edge_table)
+}
+
+#' @describeIn nc_model_estimates Internal function. Included to document algorithm.
+.compute_model_estimates <-
     function(.tbl,
              .graph,
              .external_var,
@@ -132,17 +190,6 @@ nc_model_estimates <-
     tibble(target_node = .nodes[.edges$edges])
 }
 
-as_edge_tbl <- function(.edge_list) {
-    nodes <- names(.edge_list)
-    edge_table <- purrr::map_dfr(
-        .edge_list,
-        .single_edge_list_to_tbl,
-        .id = "source_node",
-        .nodes = nodes
-    )
-    return(edge_table)
-}
-
 .all_neighbour_combinations <- function(.edge_table) {
     neighbours <- .edge_table$target_node
     all_combinations <- lapply(seq_along(neighbours),
@@ -198,54 +245,3 @@ as_edge_tbl <- function(.edge_list) {
              stats::reformulate)
     }
 
-#' Estimating pathways to an estimated DAG from an exposure.
-#'
-#' @description
-#' \lifecycle{experimental}
-#'
-#' This algorithm estimates direct effects of a predefined exposure on each
-#' network-variable for all causal models that agree with the input-network:
-#' models are adjusted for all possible combinations of direct neighbors
-#' (==variables in the adjacency set) -> Output is a multiset of possible
-#' effects
-#'
-#' @inheritParams nc_outcome_estimates
-#' @param .exposure Character. The exposure variable of interest.
-#'
-#' @return Outputs a [tibble][tibble::tibble-package] with all the models computed and their
-#'   estimates.
-#' @export
-#'
-#' @examples
-#'
-#' library(dplyr)
-#' metabolite_network <- simulated_data %>%
-#'   select(matches("metabolite")) %>%
-#'   nc_create_network()
-#' simulated_data %>%
-#'   nc_exposure_estimates(
-#'     .graph = metabolite_network,
-#'     .exposure = "exposure",
-#'     .adjustment_vars = "age",
-#'     .model_function = lm
-#'    )
-#'
-nc_exposure_estimates <-
-    function(.tbl,
-             .graph,
-             .exposure,
-             .adjustment_vars = NA,
-             .model_function,
-             .model_arg_list = NULL,
-             .exponentiate = FALSE) {
-        nc_model_estimates(
-            .tbl = .tbl,
-            .graph = .graph,
-            .external_var = .exposure,
-            .adjustment_vars = .adjustment_vars,
-            .model_function = .model_function,
-            .model_arg_list = .model_arg_list,
-            .exponentiate = .exponentiate,
-            .external_side = "exposure"
-        )
-    }
