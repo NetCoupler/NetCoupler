@@ -197,3 +197,55 @@ as_edge_tbl <- function(.edge_list) {
              external_input$y,
              stats::reformulate)
     }
+
+#' Estimating pathways to an estimated DAG from an exposure.
+#'
+#' @description
+#' \lifecycle{experimental}
+#'
+#' This algorithm estimates direct effects of a predefined exposure on each
+#' network-variable for all causal models that agree with the input-network:
+#' models are adjusted for all possible combinations of direct neighbors
+#' (==variables in the adjacency set) -> Output is a multiset of possible
+#' effects
+#'
+#' @inheritParams nc_outcome_estimates
+#' @param .exposure Character. The exposure variable of interest.
+#'
+#' @return Outputs a [tibble][tibble::tibble-package] with all the models computed and their
+#'   estimates.
+#' @export
+#'
+#' @examples
+#'
+#' library(dplyr)
+#' metabolite_network <- simulated_data %>%
+#'   select(matches("metabolite")) %>%
+#'   nc_create_network()
+#' simulated_data %>%
+#'   nc_exposure_estimates(
+#'     .graph = metabolite_network,
+#'     .exposure = "exposure",
+#'     .adjustment_vars = "age",
+#'     .model_function = lm
+#'    )
+#'
+nc_exposure_estimates <-
+    function(.tbl,
+             .graph,
+             .exposure,
+             .adjustment_vars = NA,
+             .model_function,
+             .model_arg_list = NULL,
+             .exponentiate = FALSE) {
+        nc_model_estimates(
+            .tbl = .tbl,
+            .graph = .graph,
+            .external_var = .exposure,
+            .adjustment_vars = .adjustment_vars,
+            .model_function = .model_function,
+            .model_arg_list = .model_arg_list,
+            .exponentiate = .exponentiate,
+            .external_side = "exposure"
+        )
+    }
