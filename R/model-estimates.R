@@ -1,7 +1,7 @@
 #' Compute model estimates between an external (exposure or outcome) variable
 #' and a network.
 #'
-#' @rdname nc_model_estimates
+#' @name nc_model_estimates
 #' @param .tbl The data.frame or tibble that contains the variables of interest,
 #'   including the variables passed to the network.
 #' @param .graph Output graph object from `nc_create_network()`.
@@ -42,6 +42,7 @@
 #' metabolite_network <- simulated_data %>%
 #'   select(matches("metabolite")) %>%
 #'   nc_create_network()
+#'
 #' simulated_data %>%
 #'   nc_exposure_estimates(
 #'     .graph = metabolite_network,
@@ -117,6 +118,7 @@ as_edge_tbl <- function(.edge_list) {
 }
 
 #' @describeIn nc_model_estimates Internal function. Included to document algorithm.
+#' @keywords internal
 .compute_model_estimates <-
     function(.tbl,
              .graph,
@@ -209,6 +211,30 @@ as_edge_tbl <- function(.edge_list) {
 
     model_estimates %>%
         .conditionally_add_model_summary(.object)
+}
+
+.conditionally_add_model_summary <- function(.tbl, .object) {
+    if (!any(class(.object) %in% c("lm", "glm"))) {
+        return(.tbl)
+    }
+
+    if (requireNamespace("broom", quietly = TRUE)) {
+        model_id <- unique(.tbl$model_id)
+
+        model_summary <- .object %>%
+            broom::glance() %>%
+            mutate(model_id = model_id,
+                   sample_size = stats::nobs(.object)) %>%
+            select(any_of(c("model_id", "r_squared", "adj_r_squared",
+                            "df", "logLik", "AIC", "BIC", "sample_size")))
+
+        summary_with_estimates <- .tbl %>%
+            dplyr::left_join(model_summary, by = "model_id")
+        return(summary_with_estimates)
+    } else {
+        rlang::inform("If you'd like model summary statistics like AIC added to the results, please install the broom package.")
+        return(.tbl)
+    }
 }
 
 .generate_all_network_combinations <- function(.edge_tbl) {
