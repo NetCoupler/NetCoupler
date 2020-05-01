@@ -72,7 +72,7 @@ nc_exposure_estimates <-
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
-        .compute_model_estimates(
+        multiple_models <- .compute_model_estimates(
             .tbl = .tbl,
             .graph = .graph,
             .external_var = .exposure,
@@ -82,6 +82,8 @@ nc_exposure_estimates <-
             .exponentiate = .exponentiate,
             .external_side = "exposure"
         )
+        multiple_models %>%
+            dplyr::rename("exposure" = "external_var")
     }
 
 #' @describeIn nc_model_estimates Computes the model estimates for the exposure side.
@@ -94,7 +96,7 @@ nc_outcome_estimates <-
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
-        .compute_model_estimates(
+        multiple_models <- .compute_model_estimates(
             .tbl = .tbl,
             .graph = .graph,
             .external_var = .outcome,
@@ -104,6 +106,8 @@ nc_outcome_estimates <-
             .exponentiate = .exponentiate,
             .external_side = "outcome"
         )
+        multiple_models %>%
+            dplyr::rename("outcome" = "external_var")
 }
 
 as_edge_tbl <- function(.edge_list) {
