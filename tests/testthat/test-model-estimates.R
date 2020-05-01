@@ -1,28 +1,3 @@
-#' library(dplyr)
-#' metabolite_network <- simulated_data %>%
-#'   select(matches("metabolite")) %>%
-#'   nc_create_network()
-#' simulated_data %>%
-#'   nc_model_estimates(
-#'     .graph = metabolite_network,
-#'     .external_var = "exposure",
-#'     .external_side = "exposure",
-#'     .adjustment_vars = "age",
-#'     .model_function = glm
-#'    )
-#'
-#' simulated_data %>%
-#'   nc_model_estimates(
-#'     .graph = metabolite_network,
-#'     .external_var = "case_status",
-#'     .external_side = "outcome",
-#'     .adjustment_vars = "age",
-#'     .model_function = glm,
-#'     .model_arg_list = list(family = binomial(link = "logit")),
-#'     .exponentiate = TRUE
-#'    )
-#'
-
 context("Exposure and outcome multiple model estimates.")
 
 test_that("exposure side estimation outputs correctly", {
@@ -76,8 +51,8 @@ test_that("one or more adjustment variable can be added", {
             .model_function = lm
         )
 
-    expect_type(two_adj_vars, "list")
-    expect_identical(class(two_adj_vars)[1], "tbl_df")
+    expect_type(two_adj, "list")
+    expect_identical(class(two_adj)[1], "tbl_df")
 
     adjusted_variables <- unique(two_adj$adjusted_vars)
     adjusted_variables <- strsplit(adjusted_variables, ", ")[[1]]
