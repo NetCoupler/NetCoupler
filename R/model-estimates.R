@@ -134,7 +134,7 @@ as_edge_tbl <- function(.edge_list) {
     assert_is_s4(.graph)
     assert_is_a_string(.external_var)
     # TODO: This check needs to be better constructed
-    if (!missing(.adjustment_vars) | !any(is.na(.adjustment_vars)))
+    if (!any(is.na(.adjustment_vars)))
         assert_is_character(.adjustment_vars)
     if (!is.null(.model_arg_list))
         assert_is_list(.model_arg_list)
