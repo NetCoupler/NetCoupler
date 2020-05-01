@@ -249,9 +249,8 @@ as_edge_tbl <- function(.edge_list) {
 .generate_formula_list <-
     function(.network_tbl, .ext_var, .ext_side, .adj_vars) {
         xvars_prep <-
-            list(.network_tbl$neighbours,
-                 .adj_vars) %>%
-            purrr::pmap(c)
+            list(.network_tbl$neighbours) %>%
+            purrr::pmap(c, .adj_vars)
 
         external_input <- switch(
             .ext_side,
