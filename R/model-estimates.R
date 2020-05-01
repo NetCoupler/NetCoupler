@@ -72,7 +72,7 @@ nc_exposure_estimates <-
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
-        nc_model_estimates(
+        .compute_model_estimates(
             .tbl = .tbl,
             .graph = .graph,
             .external_var = .exposure,
@@ -94,7 +94,7 @@ nc_outcome_estimates <-
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
-        nc_model_estimates(
+        .compute_model_estimates(
             .tbl = .tbl,
             .graph = .graph,
             .external_var = .outcome,
