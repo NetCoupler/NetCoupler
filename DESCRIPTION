@@ -23,42 +23,43 @@ Description: The NetCoupler algorithm identifies direct effects
 License: MIT + file LICENSE
 URL: https://github.com/NetCoupler/NetCoupler
 BugReports: https://github.com/NetCoupler/NetCoupler/issues
-Depends: R (>= 3.5.0)
+Depends: 
+    R (>= 3.5.0)
 Imports: 
-    dplyr (>= 0.8.99.9002),
-    pcalg,
-    igraph,
-    ppcor,
-    stats,
-    magrittr,
-    purrr,
-    tibble,
-    MuMIn,
-    ids,
-    lifecycle,
     assertive.types,
-    tidyselect,
-    ggdag,
-    tidygraph,
-    ggraph,
+    dplyr (>= 0.8.99.9002),
     ggplot2,
-    rlang
+    ggraph,
+    ids,
+    igraph,
+    lifecycle,
+    magrittr,
+    pcalg,
+    ppcor,
+    purrr,
+    rlang (>= 0.4.6),
+    stats,
+    tibble,
+    tidygraph,
+    tidyselect,
+    vctrs (>= 0.2.99.9011)
 Suggests: 
+    broom,
     covr,
-    testthat (>= 2.1.0),
     knitr,
     rmarkdown,
-    broom,
-    survival
+    survival,
+    testthat (>= 2.1.0)
 VignetteBuilder: 
     knitr
 RdMacros: 
     lifecycle
+Remotes:  
+    tidyverse/dplyr,
+    r-lib/vctrs
 biocViews:
 ByteCompile: true
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
-Remotes:  
-    tidyverse/dplyr
