@@ -28,8 +28,6 @@ Depends:
 Imports: 
     assertive.types,
     dplyr (>= 0.8.99.9002),
-    ggplot2,
-    ggraph,
     ids,
     igraph,
     lifecycle,
@@ -40,10 +38,12 @@ Imports:
     rlang (>= 0.4.6),
     stats,
     tibble,
-    tidygraph,
     tidyselect,
     vctrs (>= 0.2.99.9011)
 Suggests: 
+    tidygraph,
+    ggraph,
+    ggplot2,
     broom,
     covr,
     knitr,
