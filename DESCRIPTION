@@ -41,7 +41,8 @@ Imports:
     stats,
     tibble,
     tidygraph,
-    tidyselect
+    tidyselect,
+    vctrs (>= 0.2.99.9011)
 Suggests: 
     broom,
     covr,
@@ -53,8 +54,9 @@ VignetteBuilder:
     knitr
 RdMacros: 
     lifecycle
-Remotes: 
-    tidyverse/dplyr
+Remotes:  
+    tidyverse/dplyr,
+    r-lib/vctrs
 biocViews:
 ByteCompile: true
 Encoding: UTF-8
