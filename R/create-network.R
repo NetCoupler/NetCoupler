@@ -24,8 +24,6 @@
 nc_create_network <- function(.tbl, .alpha = 0.05) {
     assert_is_data.frame(.tbl)
     assert_is_a_number(.alpha)
-    # TODO: Determine if this is important.
-    # DAG_est <- pc_dag_estimates(.tbl, .alpha)
 
     pc_skeleton_estimates(.tbl, .alpha)
 }
@@ -66,7 +64,7 @@ nc_adjacency_graph <- function(.tbl, .graph) {
 #' @param .edge_label_threshold Threshold set for edge weight value above which
 #'   the edge label will be kept. This argument helps to reduce clutter in the
 #'   graph.
-#' @param .node_rename_fun Function to pass to rename the metabolic variables.
+#' @param .fn_node_rename Function to pass to rename the metabolic variables.
 #'   Preferably use functions that search and replace patterns, like [gsub()] or
 #'   [stringr::str_replace()].
 #'
@@ -89,19 +87,21 @@ nc_adjacency_graph <- function(.tbl, .graph) {
 nc_plot_network <- function(.tbl,
                             .graph,
                             .edge_label_threshold = 0.2,
-                            .node_rename_fun = NULL) {
+                            .fn_node_rename = NULL) {
 
-    if (is.null(.node_rename_fun))
-        .node_rename_fun <- function(x) x
-    assert_is_function(.node_rename_fun)
+    if (is.null(.fn_node_rename))
+        .fn_node_rename <- function(x) x
+    assert_is_function(.fn_node_rename)
 
     graph_data_prep <- .tbl %>%
         nc_adjacency_graph(.graph = .graph) %>%
         tidygraph::as_tbl_graph() %>%
         tidygraph::activate("edges") %>%
-        tidygraph::mutate(edge_label = dplyr::if_else(abs(.data$weight) > .edge_label_threshold,
-                                               as.character(round(.data$weight, 2)),
-                                               ""))
+        tidygraph::mutate(edge_label = dplyr::if_else(
+            abs(.data$weight) > .edge_label_threshold,
+            as.character(round(.data$weight, 2)),
+            ""
+        ))
 
     graph_data_prep %>%
         ggraph::ggraph("stress") +
@@ -117,7 +117,7 @@ nc_plot_network <- function(.tbl,
         ggraph::geom_node_point(size = 2) +
         ggraph::scale_edge_colour_gradient2(mid = "gray80") +
         ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
-        ggraph::geom_node_text(ggplot2::aes_string(label = ".node_rename_fun(name)"),
+        ggraph::geom_node_text(ggplot2::aes_string(label = ".fn_node_rename(name)"),
                                repel = TRUE) +
         ggraph::theme_graph(base_family = 'Helvetica')
 }

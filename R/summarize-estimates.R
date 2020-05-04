@@ -74,27 +74,41 @@ nc_classify_effects <- function(.tbl) {
         names()
 
     no_neighbours <- filtered_estimates %>%
-        dplyr::filter_at("neighbour_vars", ~ . == "") %>%
+        dplyr::filter(dplyr::across(all_of("neighbour_vars"), ~ . == "")) %>%
         mutate(no_neighbours_adj_p_value = stats::p.adjust(.data$p_value, "fdr")) %>%
         dplyr::rename(no_neighbours_p_value = .data$p_value,
                       no_neighbours_estimate = .data$estimate) %>%
-        select_at(c(
+        select(all_of(c(
             external_variable,
             "index_node",
             "no_neighbours_adj_p_value",
             "no_neighbours_p_value",
             "no_neighbours_estimate"
-        ))
+        )))
 
-    classify_direct_effects <- filtered_estimates %>%
+    neighbour_vs_no_neighbour_models <- filtered_estimates %>%
         mutate(adj_p_value = stats::p.adjust(.data$p_value, "fdr")) %>%
-        dplyr::full_join(no_neighbours, by = c(external_variable, "index_node")) %>%
+        dplyr::full_join(no_neighbours, by = c(external_variable, "index_node"))
+
+    # TODO: Use another comparator here, like AIC or something?
+    models_compared <- neighbour_vs_no_neighbour_models %>%
         mutate(
-            smaller_pvalue = .data$adj_p_value <= .data$no_neighbours_adj_p_value,
-            same_direction = sign(.data$estimate) == sign(.data$no_neighbours_estimate),
-            smaller_pvalue = dplyr::if_else(.data$neighbour_vars == "", NA, .data$smaller_pvalue),
-            same_direction = dplyr::if_else(.data$neighbour_vars == "", NA, .data$same_direction)
-        ) %>%
+            # nnm = no neighbour
+            # nm = no neighbour models
+            nnm_has_bigger_pval_than_nm = .data$adj_p_value <= .data$no_neighbours_adj_p_value,
+            # For no neighbour model, have variable be NA
+            nnm_has_bigger_pval_than_nm = dplyr::if_else(.data$neighbour_vars == "",
+                                                         NA,
+                                                         .data$nnm_has_bigger_pval_than_nm),
+            nnm_has_same_direction_as_nm = sign(.data$estimate) ==
+                sign(.data$no_neighbours_estimate),
+            # For no neighbour model, have variable be NA
+            nnm_has_same_direction_as_nm = dplyr::if_else(.data$neighbour_vars == "",
+                                                          NA,
+                                                          .data$nnm_has_same_direction_as_nm)
+        )
+
+    classify_direct_effects <- models_compared %>%
         dplyr::group_by_at(c(external_variable, "index_node")) %>%
         mutate(direct_effect = dplyr::case_when(
             all(.data$smaller_pvalue, na.rm = TRUE) &
