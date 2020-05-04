@@ -98,8 +98,6 @@ nc_plot_network <- function(.tbl,
     # TODO: Fix this to be tidier, there should be a better way to do it.
     if (!requireNamespace("ggplot2", quietly = TRUE))
         rlang::abort("Can't find ggplot2, please install it.")
-    if (!requireNamespace("ggraph", quietly = TRUE))
-        rlang::abort("Can't find ggraph, please install it.")
     if (!requireNamespace("tidygraph", quietly = TRUE))
         rlang::abort("Can't find tidygraph, please install it.")
 
