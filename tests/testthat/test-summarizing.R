@@ -1,8 +1,5 @@
 context("Summarizing and classifying pathways from multi-models")
 
-metabolite_network <- simulated_data %>%
-    select(matches("metabolite")) %>%
-    nc_create_network()
 multimodel_exposure <- simulated_data %>%
     mutate(Random = rnorm(nrow(.))) %>%
     nc_exposure_estimates(

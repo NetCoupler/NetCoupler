@@ -23,6 +23,12 @@ argument to extract residuals (#108).
 * Input dataset can include missingness. Input data is treated as complete case
 for only the variables used in the modelling (#88).
 
+## Internal changes
+
+* Rewrote underlying model estimation algorithm so it doesn't use MuMIn and
+so there is one unified function for both outcome and exposure side estimation
+(#101)
+
 # NetCoupler 0.0.3.9000
 
 * Add `nc_standardize()` function to standardize the metabolic variables (#73).

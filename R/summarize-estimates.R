@@ -119,6 +119,7 @@ nc_classify_effects <- function(.tbl) {
                 any(.data$same_direction, na.rm = TRUE) ~ "ambiguous",
             TRUE ~ "none"
         )) %>%
+        dplyr::ungroup() %>%
         dplyr::filter(.data$neighbour_vars == "") %>%
         select(-matches("no_neighbour"),
                -all_of(
