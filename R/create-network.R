@@ -95,6 +95,12 @@ nc_plot_network <- function(.tbl,
         .node_rename_fun <- function(x) x
     assert_is_function(.node_rename_fun)
 
+    # TODO: Fix this to be tidier, there should be a better way to do it.
+    if (!requireNamespace("ggplot2", quietly = TRUE))
+        rlang::abort("Can't find ggplot2, please install it.")
+    if (!requireNamespace("tidygraph", quietly = TRUE))
+        rlang::abort("Can't find tidygraph, please install it.")
+
     graph_data_prep <- .tbl %>%
         nc_adjacency_graph(.graph = .graph) %>%
         tidygraph::as_tbl_graph() %>%

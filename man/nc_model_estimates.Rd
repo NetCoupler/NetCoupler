@@ -99,6 +99,7 @@ library(dplyr)
 metabolite_network <- simulated_data \%>\%
   select(matches("metabolite")) \%>\%
   nc_create_network()
+
 simulated_data \%>\%
   nc_exposure_estimates(
     .graph = metabolite_network,
