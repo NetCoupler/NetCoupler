@@ -50,7 +50,7 @@ nc_create_network <- function(.tbl, .alpha = 0.05) {
 #' nc_adjacency_graph(metabolite_data, network)
 nc_adjacency_graph <- function(.tbl, .graph) {
     weighted_adjacency_matrix <- nc_adjacency_matrix(.graph) *
-        nc_partial_corr_matrix(.tbl)
+        round(nc_partial_corr_matrix(.tbl), digits = 3)
 
     igraph::graph.adjacency(weighted_adjacency_matrix,
                             weighted = TRUE, mode = "undirected")
