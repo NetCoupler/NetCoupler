@@ -296,7 +296,7 @@ about differences in variable numerical scale (mean of 1 vs mean of 1000).
 
 ```{r metabolic-residuals}
 std_metabolic_data <- simulated_data %>% 
-    nc_standardize(vars(starts_with("metabolite")), 
+    nc_standardize(starts_with("metabolite"), 
                    .regressed_on = "age") %>% 
     select(starts_with("metabolite"))
 ```
