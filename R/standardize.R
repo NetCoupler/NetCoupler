@@ -35,12 +35,12 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
         assertive.types::assert_is_character(.regressed_on)
         standardized_data <- .replace_with_residuals(
             .tbl = .tbl,
-            .vars = .vars,
+            .vars = {{ .vars }},
             .regressed_on = .regressed_on
         )
     } else {
         standardized_data <- .tbl %>%
-            dplyr::mutate_at(.vars, .funs = .log_standardize)
+            dplyr::mutate(dplyr::across(.cols = {{ .vars }}, .fns = .log_standardize))
     }
     return(standardized_data)
 }
@@ -59,7 +59,7 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
 
 .replace_with_residuals <- function(.tbl, .vars, .regressed_on) {
     metabolic_names <- .tbl %>%
-        select(.vars) %>%
+        select({{ .vars }}) %>%
         names()
 
     data_with_id_var <- .tbl %>%

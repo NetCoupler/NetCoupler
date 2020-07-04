@@ -64,7 +64,7 @@ nc_classify_effects <- function(.tbl) {
     # Need to round since some p-values can be really small (basically zero),
     # and others can be exactly zero. So need to assume both are same.
     rounded_p_values <- .tbl %>%
-        dplyr::mutate_at("p_value", ~ round(., 6))
+        dplyr::mutate(dplyr::across("p_value", ~ round(., 6)))
 
     filtered_estimates <- rounded_p_values %>%
         nc_filter_estimates()
@@ -109,7 +109,7 @@ nc_classify_effects <- function(.tbl) {
         )
 
     classify_direct_effects <- models_compared %>%
-        dplyr::group_by_at(c(external_variable, "index_node")) %>%
+        dplyr::group_by(all_of(external_variable, "index_node")) %>%
         mutate(direct_effect = dplyr::case_when(
             all(.data$smaller_pvalue, na.rm = TRUE) &
                 all(.data$same_direction, na.rm = TRUE) &
