@@ -274,7 +274,7 @@ http://www.jstatsoft.org/v47/i11/.*
 
 ## Simple example of use
 
-```{r, load-packages, message=FALSE, warning=FALSE}
+```{r load-packages, message=FALSE, warning=FALSE}
 library(NetCoupler)
 library(dplyr)
 ```
@@ -328,7 +328,7 @@ since they will be included in the models.
 
 ```{r standardize-data}
 standardized_data <- simulated_data %>% 
-    nc_standardize(vars(starts_with("metabolite")))
+    nc_standardize(starts_with("metabolite"))
 ```
 
 Then estimate the outcome or exposure:
