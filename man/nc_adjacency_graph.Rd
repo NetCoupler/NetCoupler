@@ -12,7 +12,7 @@ nc_adjacency_graph(.tbl, .graph)
 \item{.graph}{The network graph object of the metabolic variable network.}
 }
 \value{
-Outputs an \code{igraph} object from \code{\link[igraph:graph.adjacency]{igraph::graph.adjacency()}}.
+Outputs an \code{igraph} object from \code{\link[igraph:graph_from_adjacency_matrix]{igraph::graph.adjacency()}}.
 }
 \description{
 \lifecycle{experimental}

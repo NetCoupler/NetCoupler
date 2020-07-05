@@ -42,4 +42,4 @@ test_that("standardization with residuals works", {
 #' simulated_data %>%
 #'   mutate(Random = rnorm(n(), 10, 2)) %>%
 #'   .insert_random_missingness() %>%
-#'   nc_standardize(vars(matches("metabolite_")), c("age", "Random"))
+#'   nc_standardize(matches("metabolite_"), c("age", "Random"))
