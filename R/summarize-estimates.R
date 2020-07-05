@@ -93,8 +93,8 @@ nc_classify_effects <- function(.tbl) {
     # TODO: Use another comparator here, like AIC or something?
     models_compared <- neighbour_vs_no_neighbour_models %>%
         mutate(
-            # nnm = no neighbour
-            # nm = no neighbour models
+            # nnm = no neighbour models
+            # nm = neighbour models
             nnm_has_bigger_pval_than_nm = .data$adj_p_value <= .data$no_neighbours_adj_p_value,
             # For no neighbour model, have variable be NA
             nnm_has_bigger_pval_than_nm = dplyr::if_else(.data$neighbour_vars == "",
@@ -109,26 +109,24 @@ nc_classify_effects <- function(.tbl) {
         )
 
     classify_direct_effects <- models_compared %>%
-        dplyr::group_by(all_of(external_variable, "index_node")) %>%
+        dplyr::group_by(.data[[external_variable]], .data$index_node) %>%
         mutate(direct_effect = dplyr::case_when(
-            all(.data$smaller_pvalue, na.rm = TRUE) &
-                all(.data$same_direction, na.rm = TRUE) &
+            all(.data$nnm_has_bigger_pval_than_nm, na.rm = TRUE) &
+                all(.data$nnm_has_same_direction_as_nm, na.rm = TRUE) &
                 # When standard error is smaller than the estimate.
                 all(.data$std_error < abs(.data$estimate), na.rm = TRUE) ~ "direct",
-            any(.data$smaller_pvalue, na.rm = TRUE) &
-                any(.data$same_direction, na.rm = TRUE) ~ "ambiguous",
+            any(.data$nnm_has_bigger_pval_than_nm, na.rm = TRUE) &
+                any(.data$nnm_has_same_direction_as_nm, na.rm = TRUE) ~ "ambiguous",
             TRUE ~ "none"
         )) %>%
         dplyr::ungroup() %>%
         dplyr::filter(.data$neighbour_vars == "") %>%
-        select(-matches("no_neighbour"),
+        select(-matches("no_neighbour|nnm_"),
                -all_of(
                    c(
                        "statistic",
                        "adjusted_vars",
-                       "neighbour_vars",
-                       "smaller_pvalue",
-                       "same_direction"
+                       "neighbour_vars"
                    )
                ))
 
