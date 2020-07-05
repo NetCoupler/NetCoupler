@@ -27,7 +27,6 @@ Depends:
     R (>= 3.5.0)
 Imports: 
     assertive.types,
-    dplyr (>= 0.8.99.9002),
     ggraph,
     ids,
     igraph,
@@ -39,8 +38,7 @@ Imports:
     rlang (>= 0.4.6),
     stats,
     tibble,
-    tidyselect,
-    vctrs (>= 0.2.99.9011)
+    tidyselect
 Suggests: 
     tidygraph,
     ggplot2,
@@ -54,9 +52,6 @@ VignetteBuilder:
     knitr
 RdMacros: 
     lifecycle
-Remotes:  
-    tidyverse/dplyr,
-    r-lib/vctrs
 biocViews:
 ByteCompile: true
 Encoding: UTF-8
