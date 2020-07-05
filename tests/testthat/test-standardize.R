@@ -1,10 +1,10 @@
 context("Standardize metabolic variables.")
 
 standardized <- simulated_data %>%
-    nc_standardize(vars(matches("metabolite")))
+    nc_standardize(matches("metabolite"))
 
 standardized_with_residuals <- simulated_data %>%
-    nc_standardize(vars(matches("metabolite")), "age")
+    nc_standardize(matches("metabolite"), "age")
 
 test_that("logging and scaling works", {
     metabolite_means <- standardized %>%

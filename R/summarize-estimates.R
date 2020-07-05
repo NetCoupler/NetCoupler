@@ -64,14 +64,14 @@ nc_classify_effects <- function(.tbl) {
     # Need to round since some p-values can be really small (basically zero),
     # and others can be exactly zero. So need to assume both are same.
     rounded_p_values <- .tbl %>%
-        dplyr::mutate(dplyr::across("p_value", ~ round(., 6)))
+        mutate(dplyr::across("p_value", ~ round(., 6)))
 
     filtered_estimates <- rounded_p_values %>%
         nc_filter_estimates()
 
-    external_variable <- filtered_estimates %>%
-        select(matches("^(exposure|outcome)$")) %>%
-        names()
+    external_variable <- grep("^(exposure|outcome)$",
+                              names(filtered_estimates),
+                              value = TRUE)
 
     no_neighbours <- filtered_estimates %>%
         dplyr::filter(dplyr::across(all_of("neighbour_vars"), ~ . == "")) %>%
@@ -145,7 +145,7 @@ nc_filter_estimates <- function(.tbl) {
         names()
     if (.filter_by == "outcome") {
         .tbl %>%
-            dplyr::group_by_at("model_id") %>%
+            dplyr::group_by(.data$model_id) %>%
             mutate(neighbour_vars = .extract_neighbour_nodes(.data$term,
                                                              .data$adjusted_vars,
                                                              .data$index_node)) %>%
@@ -154,7 +154,7 @@ nc_filter_estimates <- function(.tbl) {
             select(-all_of(c("term", "model_id")))
     } else {
         .tbl %>%
-            dplyr::group_by_at("model_id") %>%
+            dplyr::group_by(.data$model_id) %>%
             mutate(neighbour_vars = .extract_neighbour_nodes(.data$term,
                                                              .data$adjusted_vars,
                                                              .data$exposure)) %>%

@@ -40,7 +40,7 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
         )
     } else {
         standardized_data <- .tbl %>%
-            dplyr::mutate(dplyr::across(.cols = {{ .vars }}, .fns = .log_standardize))
+            mutate(dplyr::across(.cols = {{ .vars }}, .fns = .log_standardize))
     }
     return(standardized_data)
 }
@@ -75,10 +75,10 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
 
     standardized_data <- data_with_residuals %>%
         dplyr::full_join(data_without_metabolic_vars, by = ".id_variable") %>%
-        dplyr::arrange_at(".id_variable") %>%
+        dplyr::arrange(.data$.id_variable) %>%
         # To put in original ordering
         dplyr::relocate(all_of(names(data_with_id_var))) %>%
-        select(-".id_variable")
+        select(-.data$.id_variable)
 
     return(standardized_data)
 }

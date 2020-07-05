@@ -187,7 +187,7 @@ as_edge_tbl <- function(.edge_list) {
             )
         ) %>%
         dplyr::relocate(c("external_var", "index_node", "model_id")) %>%
-        dplyr::rename_all(~ gsub("\\.", "_", .))
+        dplyr::rename_with(~ gsub("\\.", "_", .))
 
     return(tidied_models)
 }
