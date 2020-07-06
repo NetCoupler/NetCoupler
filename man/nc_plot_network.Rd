@@ -40,7 +40,7 @@ network <- metabolite_data \%>\%
 nc_plot_network(
   metabolite_data,
   network,
-  .node_rename_fun = function(x) gsub("metabolite_", "M", x)
+  .fn_node_rename = function(x) gsub("metabolite_", "M", x)
 )
 
 }

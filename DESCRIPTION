@@ -27,6 +27,7 @@ Depends:
     R (>= 3.5.0)
 Imports: 
     assertive.types,
+    dplyr,
     ggraph,
     ids,
     igraph,
@@ -38,7 +39,8 @@ Imports:
     rlang (>= 0.4.6),
     stats,
     tibble,
-    tidyselect
+    tidyselect,
+    utils
 Suggests: 
     tidygraph,
     ggplot2,
