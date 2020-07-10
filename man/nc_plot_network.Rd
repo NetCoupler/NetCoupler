@@ -8,7 +8,7 @@ nc_plot_network(
   .tbl,
   .graph,
   .edge_label_threshold = 0.2,
-  .node_rename_fun = NULL
+  .fn_node_rename = NULL
 )
 }
 \arguments{
@@ -20,7 +20,7 @@ nc_plot_network(
 the edge label will be kept. This argument helps to reduce clutter in the
 graph.}
 
-\item{.node_rename_fun}{Function to pass to rename the metabolic variables.
+\item{.fn_node_rename}{Function to pass to rename the metabolic variables.
 Preferably use functions that search and replace patterns, like \code{\link[=gsub]{gsub()}} or
 \code{\link[stringr:str_replace]{stringr::str_replace()}}.}
 }
@@ -40,7 +40,7 @@ network <- metabolite_data \%>\%
 nc_plot_network(
   metabolite_data,
   network,
-  .node_rename_fun = function(x) gsub("metabolite_", "M", x)
+  .fn_node_rename = function(x) gsub("metabolite_", "M", x)
 )
 
 }

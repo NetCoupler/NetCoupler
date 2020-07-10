@@ -164,7 +164,7 @@ as_edge_tbl <- function(.edge_list) {
         unique()
 
     model_data <- .tbl %>%
-        select_at(variables_to_keep) %>%
+        select(all_of(variables_to_keep)) %>%
         stats::na.omit()
 
     model_arg_list <- list(formula = formula_list)
@@ -187,7 +187,7 @@ as_edge_tbl <- function(.edge_list) {
             )
         ) %>%
         dplyr::relocate(c("external_var", "index_node", "model_id")) %>%
-        dplyr::rename_all(~ gsub("\\.", "_", .))
+        dplyr::rename_with(~ gsub("\\.", "_", .))
 
     return(tidied_models)
 }
@@ -199,7 +199,7 @@ as_edge_tbl <- function(.edge_list) {
 .all_neighbour_combinations <- function(.edge_table) {
     neighbours <- .edge_table$target_node
     all_combinations <- lapply(seq_along(neighbours),
-                               combn,
+                               utils::combn,
                                x = neighbours,
                                simplify = FALSE)
     unlist(all_combinations, recursive = FALSE)
