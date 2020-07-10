@@ -29,7 +29,7 @@ dag_graph <- dagitty('dag {
 }')
 
 simulated_dag_data <- simulateSEM(dag_graph, N = 2000) %>%
-    mutate_at(vars(matches("metabolite_")), ~ . + 6) %>%
+    mutate(across(matches("metabolite_"), ~ . + 6)) %>%
     as_tibble()
 
 #' Survival time simulation.

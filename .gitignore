@@ -6,3 +6,5 @@ inst/doc
 *.swp
 
 docs/
+*_files
+*_cache

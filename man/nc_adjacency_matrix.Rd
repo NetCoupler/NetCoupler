@@ -15,8 +15,8 @@ Outputs an adjacency matrix of the DAG skeleton.
 \description{
 \lifecycle{experimental}
 
-Is generally a wrapper around calls to \code{\link[igraph:get.adjacency]{igraph::get.adjacency()}} and
-\code{\link[igraph:igraph.from.graphNEL]{igraph::igraph.from.graphNEL()}}. Transforms from a GraphNEL object in igraph.
+Is generally a wrapper around calls to \code{\link[igraph:as_adjacency_matrix]{igraph::get.adjacency()}} and
+\code{\link[igraph:graph_from_graphnel]{igraph::igraph.from.graphNEL()}}. Transforms from a GraphNEL object in igraph.
 }
 \examples{
 
