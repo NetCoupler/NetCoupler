@@ -1,4 +1,4 @@
-# NetCoupler 0.0.4.9000 (development version)
+# NetCoupler (development version)
 
 ## Added features
 
