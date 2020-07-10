@@ -16,9 +16,10 @@ results too much, see #60 for details (#83).
 
 ## Fixed bugs and other problems
 
+* Fix bug where too many digits caused a problem for `pcor()` (#125, #131).
 * Fix bug that didn't properly filter variables nor identify neighbour nodes
 in `nc_filter_estimates()` (#109).
-* Fix problem with `nc_standardize()` that prevented the ability to use the `.regressed_on`
+* Fix problem with `nc_standardize()` that prevented the ability to use the `.regressed_on`.
 argument to extract residuals (#108).
 * Input dataset can include missingness. Input data is treated as complete case
 for only the variables used in the modelling (#88).
