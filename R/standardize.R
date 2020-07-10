@@ -98,7 +98,7 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
     no_missing[.var] <- metabolic_residuals
 
     data_with_residuals <- no_missing %>%
-        select(all_of(c(.var, ".id_variable")))
+        select(all_of(c(.var, .id_var)))
 
     return(data_with_residuals)
 }
