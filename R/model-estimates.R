@@ -54,11 +54,12 @@
 #' simulated_data %>%
 #'   nc_outcome_estimates(
 #'     .graph = metabolite_network,
-#'     .outcome = "survival::Surv(survival_time, case_status)",
+#'     .outcome = "case_status",
+#'     .model_function = glm,
 #'     .adjustment_vars = "age",
-#'     .model_function = survival::coxph,
+#'     .model_arg_list = list(family = binomial(link = "logit")),
 #'     .exponentiate = TRUE
-#'    )
+#'   )
 #'
 NULL
 
