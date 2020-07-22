@@ -1,5 +1,7 @@
 # NetCoupler (development version)
 
+# NetCoupler 0.0.4
+
 ## Added features
 
 * For `lm` and `glm` models, model summary statistics are added (#88).
