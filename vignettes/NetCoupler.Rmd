@@ -392,108 +392,28 @@ outcome_direct_effects %>%
     dplyr::filter(direct_effect == "direct")
 ```
 
-```{r, eval=FALSE}
-std_metabolic_data <- simulated_data %>% 
-    nc_standardize(starts_with("metabolite"), 
-                   .regressed_on = "age") %>% 
-    select(starts_with("metabolite"))
+### Plotting 
 
-# Make partial independence network from metabolite data
-metabolite_network <- std_metabolic_data %>% 
-    nc_create_network()
+To visualize the results of the linked network graph and the effect
+classification, there are two functions to show the exposure and the outcome
+plots. In general, these plot functions are currently mostly for exploratory
+purposes and are too "busy" and crowded to be meaningful for presentation or
+publication. However, these are good starting points for making prettier,
+more legible plots.
 
-standardized_data <- simulated_data %>% 
-    nc_standardize(starts_with("metabolite"))
-outcome_estimates <- standardized_data %>%
-    nc_outcome_estimates(
-        .graph = metabolite_network,
-        .outcome = "survival::Surv(survival_time, case_status)",
-        .adjustment_vars = "age",
-        .model_function = survival::coxph
-    )
+```{r plot-outcome-estimation-networks, fig.width=9, fig.height=8}
+nc_plot_outcome_estimation(
+    standardized_data,
+    metabolite_network,
+    outcome_direct_effects
+)
+```
 
-outcome_estimates
-outcome_direct_effects <- outcome_estimates %>% 
-    nc_classify_effects()
-outcome_direct_effects %>% 
-    names()
-
-nc_plot_external_var(standardized_data,
-                     metabolite_network,
-                     outcome_direct_effects)
-
-library(dplyr)
-library(tidygraph)
-library(ggraph)
-
-model_edges <- outcome_direct_effects %>% 
-    mutate(to = as.numeric(as.factor(index_node)),
-           from = length(unique(outcome)) + length(unique(index_node)),
-           direct_effect = na_if(direct_effect, "none"),
-           estimate = if_else(is.na(direct_effect), NA_real_, estimate)) %>% 
-    select(from, to, estimate, p_value, direct_effect)
-
-network_edges <- graph_data_prep %>% 
-    activate("edges") %>% 
-    as_tibble()
-
-all_edges <- bind_rows(model_edges, network_edges)
-
-models_graph <- tbl_graph(
-    nodes = tibble(
-        name = graph_data_prep %>%
-            activate("nodes") %>%
-            pull(name) %>%
-            union(unique(outcome_direct_effects$outcome))
-    ),
-    edges = all_edges
-) %>% 
-    activate("edges") %>% 
-    mutate(estimate = if_else(direct_effect == "none", NA_real_,
-                              estimate),
-           weight = if_else(is.na(weight), estimate, weight),
-           direct_effect = if_else(is.na(direct_effect), 
-                                   "direct", direct_effect)) %>% 
-        tidygraph::mutate(edge_label = dplyr::if_else(
-            abs(.data$weight) > 0.2,
-            as.character(round(.data$weight, 2)),
-            ""
-        )) %>% 
-        tidygraph::mutate(edge_label = dplyr::if_else(
-            is.na(edge_label),
-            "",
-            edge_label
-        ))
-
-
-layout <- models_graph %>% 
-    create_layout("gem") %>% 
-    mutate(y = if_else(name == unique(outcome_direct_effects$outcome),
-                       mean(y), y),
-           x = if_else(name == unique(outcome_direct_effects$outcome),
-                       max(x) * 2.25, x)) 
-
-models_graph %>%
-    ggraph("manual", x = layout$x, y = layout$y) +
-        ggraph::geom_edge_diagonal(
-            ggplot2::aes_string(
-                label = "edge_label",
-                colour = "weight",
-                width = "abs(weight)",
-                linetype = "forcats::fct_rev(direct_effect)",
-                alpha = "direct_effect"
-            ),
-            angle_calc = "along",
-            label_dodge = grid::unit(0.25, "cm")
-        ) +
-        ggraph::geom_node_point(size = 2) +
-        ggraph::scale_edge_colour_distiller(palette = "RdBu") +
-        ggraph::scale_edge_alpha_discrete(guide = FALSE, range = c(0.7, 1)) +
-        ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
-        ggraph::geom_node_text(ggplot2::aes_string(label = "name"),
-                               repel = TRUE) +
-    ggraph::scale_edge_linetype_discrete(name = "") +
-    ggraph::theme_graph() 
-
+```{r plot-exposure-estimation-networks, fig.width=9, fig.height=8}
+nc_plot_exposure_estimation(
+    standardized_data,
+    metabolite_network,
+    exposure_direct_effects
+)
 ```
 
