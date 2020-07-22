@@ -122,6 +122,7 @@ test_that("missingness in data still provides results", {
 })
 
 test_that("computes when using survival::Surv and coxph", {
+    skip_on_ci()
     skip_if_not_installed("survival")
     outcome_estimates <- simulated_data %>%
         nc_outcome_estimates(
