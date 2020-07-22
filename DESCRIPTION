@@ -1,7 +1,7 @@
 Package: NetCoupler
 Title: Inference of Causal Links Between Metabolomics and
     Disease Incidence
-Version: 0.0.4.9000
+Version: 0.0.4.9001
 Authors@R: 
     c(person(given = "Luke",
              family = "Johnston",
