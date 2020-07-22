@@ -156,7 +156,7 @@ nc_plot_network <- function(.tbl,
                 label = "edge_label",
                 colour = "weight",
                 width = "abs(weight)",
-                linetype = "forcats::fct_rev(direct_effect)",
+                linetype = ".fct_rev(direct_effect)",
                 alpha = "direct_effect"
             ),
             angle_calc = "along",
