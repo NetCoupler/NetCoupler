@@ -52,16 +52,16 @@ multimodel_exposure <- simulated_data \%>\%
 nc_filter_estimates(multimodel_exposure)
 nc_classify_effects(multimodel_exposure)
 
-library(survival)
 multimodel_outcome <- simulated_data \%>\%
   mutate(Random = rnorm(nrow(.))) \%>\%
   nc_outcome_estimates(
     .graph = metabolite_network,
-    .outcome = "survival::Surv(survival_time, case_status)",
+    .outcome = "case_status",
+    .model_function = glm,
     .adjustment_vars = c("age", "Random"),
-    .model_function = survival::coxph,
+    .model_arg_list = list(family = binomial(link = "logit")),
     .exponentiate = TRUE
-   )
+  )
 
 nc_filter_estimates(multimodel_outcome)
 nc_classify_effects(multimodel_outcome)

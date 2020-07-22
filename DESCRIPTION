@@ -48,7 +48,6 @@ Suggests:
     covr,
     knitr,
     rmarkdown,
-    survival,
     testthat (>= 2.1.0)
 VignetteBuilder: 
     knitr
