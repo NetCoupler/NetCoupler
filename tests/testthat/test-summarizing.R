@@ -1,21 +1,17 @@
 context("Summarizing and classifying pathways from multi-models")
 
 multimodel_exposure <- simulated_data %>%
-    mutate(Random = rnorm(nrow(.))) %>%
     nc_exposure_estimates(
         .graph = metabolite_network,
         .exposure = "exposure",
-        .adjustment_vars = c("age", "Random"),
         .model_function = lm
     )
 exposure_results <- nc_classify_effects(multimodel_exposure)
 
 multimodel_outcome <- simulated_data %>%
-    mutate(Random = rnorm(nrow(.))) %>%
     nc_outcome_estimates(
         .graph = metabolite_network,
         .outcome = "survival::Surv(survival_time, case_status)",
-        .adjustment_vars = c("age", "Random"),
         .model_function = survival::coxph,
         .exponentiate = TRUE
     )
