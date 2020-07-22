@@ -97,6 +97,11 @@ nc_plot_network <- function(.tbl,
              .edge_label_threshold = 0.2,
              .external_var_side =c("outcome", "exposure")) {
 
+    if (!requireNamespace("ggplot2", quietly = TRUE))
+        rlang::abort("Can't find ggplot2, please install it.")
+    if (!requireNamespace("tidygraph", quietly = TRUE))
+        rlang::abort("Can't find tidygraph, please install it.")
+
     external_var <- match.arg(.external_var_side)
     # TODO: Extract the data processing from the plotting functionality
     tbl_graph <- .create_tbl_network_graph(.tbl, .graph)
