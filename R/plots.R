@@ -74,6 +74,7 @@ nc_plot_network <- function(.tbl,
 
 .create_tbl_network_graph <- function(.tbl, .graph) {
     .tbl %>%
+        select(all_of(.graph@graph@nodes)) %>%
         nc_adjacency_graph(.graph = .graph) %>%
         tidygraph::as_tbl_graph() %>%
         tidygraph::activate("edges")
@@ -89,30 +90,37 @@ nc_plot_network <- function(.tbl,
                    ))
 }
 
-nc_plot_external_var <- function(.tbl, .graph, .tbl_model, .edge_label_threshold = 0.2) {
+.plot_external_var <-
+    function(.tbl,
+             .graph,
+             .tbl_model,
+             .edge_label_threshold = 0.2,
+             .external_var_side =c("outcome", "exposure")) {
+
+    external_var <- match.arg(.external_var_side)
+    # TODO: Extract the data processing from the plotting functionality
     tbl_graph <- .create_tbl_network_graph(.tbl, .graph)
 
     tbl_model_edges <- .tbl_model %>%
         mutate(
             to = as.numeric(as.factor(.data$index_node)),
-            from = length(unique(.data$outcome)) + length(unique(.data$index_node)),
+            from = length(unique(.data[[external_var]])) + length(unique(.data$index_node)),
             direct_effect = dplyr::na_if(.data$direct_effect, "none"),
             estimate = if_else(is.na(.data$direct_effect), NA_real_, .data$estimate)
         ) %>%
         select(all_of(c("from", "to", "estimate", "p_value", "direct_effect")))
 
     tbl_graph_edges <- tbl_graph %>%
-        tidygraph::activate("edges") %>%
-        as_tibble()
+        tidygraph::activate("edges")
 
-    tbl_edges <- dplyr::bind_rows(tbl_model_edges, tbl_graph_edges)
+    tbl_edges <- dplyr::bind_rows(tbl_model_edges, as_tibble(tbl_graph_edges))
 
-    tbl_graph_data <- tbl_graph(
+    tbl_graph_data <- tidygraph::tbl_graph(
         nodes = tibble(name = tbl_graph_edges %>%
                            tidygraph::activate("nodes") %>%
                            dplyr::pull(.data$name) %>%
                            dplyr::union(unique(
-                               .tbl_model$outcome
+                               .tbl_model[[external_var]]
                            ))),
         edges = tbl_edges
     ) %>%
@@ -128,13 +136,19 @@ nc_plot_external_var <- function(.tbl, .graph, .tbl_model, .edge_label_threshold
         mutate(edge_label = if_else(is.na(.data$edge_label),
                                     "",
                                     .data$edge_label))
+
+    nudge_to_side <- switch(.external_var_side,
+                            exposure = min,
+                            outcome = max)
+
     node_positions <- tbl_graph_data %>%
         ggraph::create_layout("gem") %>%
-        mutate(y = if_else(.data$name == unique(.tbl_model$outcome),
+        mutate(y = if_else(.data$name == unique(.tbl_model[[external_var]]),
                            mean(.data$y), .data$y),
-               x = if_else(.data$name == unique(.tbl_model$outcome),
-                           max(.data$x) * 2.25, .data$x))
+               x = if_else(.data$name == unique(.tbl_model[[external_var]]),
+                           nudge_to_side(.data$x) * 2.25, .data$x))
 
+    # TODO: Convert this into own geom object?
     tbl_graph_data %>%
         ggraph::ggraph("manual", x = node_positions$x, y = node_positions$y) +
         ggraph::geom_edge_diagonal(
@@ -156,5 +170,49 @@ nc_plot_external_var <- function(.tbl, .graph, .tbl_model, .edge_label_threshold
                                repel = TRUE) +
         ggraph::scale_edge_linetype_discrete(name = "") +
         ggraph::theme_graph()
+    }
+
+#' Plot of the outcome or exposure side model estimation.
+#'
+#' @description
+#' \lifecycle{experimental}
+#'
+#' Plots the results of the effect classification based on the model estimation,
+#' linking the results into the network graph.
+#'
+#' @param .tbl The original data, with the metabolic variables that have been
+#'   standardized.
+#' @param .graph The graph object created from `nc_create_network()`.
+#' @param .tbl_model The tibble of the model results obtained from
+#'   `nc_classify_effects()`.
+#' @param .edge_label_threshold Threshold to pass for the value to be added to
+#'   the edge label.
+#'
+#' @return a [ggplot2][ggplot2::ggplot2-package] object showing the model
+#'   estimation results linked with the network graph.
+#' @export
+#'
+nc_plot_outcome_estimation <- function(.tbl,
+                                       .graph,
+                                       .tbl_model,
+                                       .edge_label_threshold = 0.2) {
+    .plot_external_var(.tbl = .tbl,
+                       .graph = .graph,
+                       .tbl_model = .tbl_model,
+                       .edge_label_threshold = .edge_label_threshold,
+                       .external_var_side = "outcome")
+
 }
 
+#' @describeIn nc_plot_outcome_estimation Plots the exposure side estimation.
+#' @export
+nc_plot_exposure_estimation <- function(.tbl,
+                                        .graph,
+                                        .tbl_model,
+                                        .edge_label_threshold = 0.2) {
+    .plot_external_var(.tbl = .tbl,
+                       .graph = .graph,
+                       .tbl_model = .tbl_model,
+                       .edge_label_threshold = .edge_label_threshold,
+                       .external_var_side = "exposure")
+}
