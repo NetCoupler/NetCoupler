@@ -14,8 +14,6 @@ test_that("exposure side estimation outputs correctly", {
 
 test_that("outcome side estimation outputs correctly", {
     outcome_estimates <- simulated_data %>%
-        # To speed it up a bit.
-        sample_n(500) %>%
         nc_outcome_estimates(
             .graph = metabolite_network,
             .outcome = "case_status",
@@ -124,6 +122,7 @@ test_that("missingness in data still provides results", {
 })
 
 test_that("computes when using survival::Surv and coxph", {
+    skip_on_ci()
     skip_if_not_installed("survival")
     outcome_estimates <- simulated_data %>%
         nc_outcome_estimates(

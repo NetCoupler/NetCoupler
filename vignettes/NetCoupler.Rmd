@@ -337,9 +337,10 @@ Then estimate the outcome or exposure:
 outcome_estimates <- standardized_data %>%
     nc_outcome_estimates(
         .graph = metabolite_network,
-        .outcome = "survival::Surv(survival_time, case_status)",
-        .adjustment_vars = "age",
-        .model_function = survival::coxph
+        .outcome = "case_status",
+        .model_function = glm,
+        .model_arg_list = list(family = binomial(link = "logit")),
+        .exponentiate = TRUE
     )
 
 outcome_estimates
