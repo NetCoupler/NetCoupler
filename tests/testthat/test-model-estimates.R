@@ -14,8 +14,6 @@ test_that("exposure side estimation outputs correctly", {
 
 test_that("outcome side estimation outputs correctly", {
     outcome_estimates <- simulated_data %>%
-        # To speed it up a bit.
-        sample_n(500) %>%
         nc_outcome_estimates(
             .graph = metabolite_network,
             .outcome = "case_status",
