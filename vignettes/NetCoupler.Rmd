@@ -374,7 +374,7 @@ In the example below, we specifically generated the simulated data so that
 the exposure associated with the metabolites 1, 8, and 12.
 And as we can see, those links have been correctly identified.
 
-```{r}
+```{r classify-exposure-effects}
 exposure_direct_effects <- exposure_estimates %>% 
     nc_classify_effects()
 exposure_direct_effects
@@ -384,10 +384,36 @@ exposure_direct_effects %>%
 
 You can also classify direct effects with an outcome using the same function:
 
-```{r}
+```{r classify-outcome-effects}
 outcome_direct_effects <- outcome_estimates %>% 
     nc_classify_effects()
 outcome_direct_effects
 outcome_direct_effects %>% 
     dplyr::filter(direct_effect == "direct")
 ```
+
+### Plotting 
+
+To visualize the results of the linked network graph and the effect
+classification, there are two functions to show the exposure and the outcome
+plots. In general, these plot functions are currently mostly for exploratory
+purposes and are too "busy" and crowded to be meaningful for presentation or
+publication. However, these are good starting points for making prettier,
+more legible plots.
+
+```{r plot-outcome-estimation-networks, fig.width=9, fig.height=8}
+nc_plot_outcome_estimation(
+    standardized_data,
+    metabolite_network,
+    outcome_direct_effects
+)
+```
+
+```{r plot-exposure-estimation-networks, fig.width=9, fig.height=8}
+nc_plot_exposure_estimation(
+    standardized_data,
+    metabolite_network,
+    exposure_direct_effects
+)
+```
+
