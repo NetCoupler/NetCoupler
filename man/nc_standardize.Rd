@@ -22,8 +22,7 @@ variables now standardized.
 }
 \description{
 \lifecycle{experimental}
-}
-\details{
+
 Can standardize by either 1) \code{\link[=log]{log()}}-transforming and then applying \code{\link[=scale]{scale()}}
 (mean-center and scaled by standard deviation), or 2) if \code{.regressed_on}
 variables are given, then log-transforming, running a linear regression to obtain
@@ -32,13 +31,11 @@ remove influence of potential confounding.
 }
 \examples{
 
-# Don't regress on any variable.
+# Don't regress on any variable
 simulated_data \%>\%
-  nc_standardize(vars(matches("metabolite_"))) \%>\%
-  tibble::as_tibble()
+  nc_standardize(matches("metabolite_"))
 
-# Don't regress on any variable.
+# Extract residuals by regressing on a variable
 simulated_data \%>\%
-  nc_standardize(vars(matches("metabolite_")), "age") \%>\%
-  tibble::as_tibble()
+  nc_standardize(matches("metabolite_"), "age")
 }

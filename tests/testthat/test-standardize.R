@@ -1,19 +1,19 @@
 context("Standardize metabolic variables.")
 
 standardized <- simulated_data %>%
-    nc_standardize(vars(matches("metabolite")))
+    nc_standardize(matches("metabolite"))
 
 standardized_with_residuals <- simulated_data %>%
-    nc_standardize(vars(matches("metabolite")), "age")
+    nc_standardize(matches("metabolite"), "age")
 
 test_that("logging and scaling works", {
     metabolite_means <- standardized %>%
-        dplyr::select(matches("metabolite")) %>%
+        select(matches("metabolite")) %>%
         colSums() %>%
         round(0)
 
     metabolite_sd <- standardized %>%
-        dplyr::select(matches("metabolite")) %>%
+        select(matches("metabolite")) %>%
         purrr::map_dbl(sd) %>%
         round(0)
 
@@ -24,12 +24,12 @@ test_that("logging and scaling works", {
 
 test_that("standardization with residuals works", {
     metabolite_means_resid <- standardized_with_residuals %>%
-        dplyr::select(matches("metabolite")) %>%
+        select(matches("metabolite")) %>%
         colSums() %>%
         round(0)
 
     metabolite_sd_resid <- standardized_with_residuals %>%
-        dplyr::select(matches("metabolite")) %>%
+        select(matches("metabolite")) %>%
         purrr::map_dbl(sd) %>%
         round(0)
 
@@ -38,3 +38,8 @@ test_that("standardization with residuals works", {
     expect_false(identical(simulated_data, standardized_with_residuals))
     expect_false(identical(standardized, standardized_with_residuals))
 })
+
+#' simulated_data %>%
+#'   mutate(Random = rnorm(n(), 10, 2)) %>%
+#'   .insert_random_missingness() %>%
+#'   nc_standardize(matches("metabolite_"), c("age", "Random"))

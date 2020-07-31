@@ -1,0 +1,224 @@
+---
+title: "Getting started with NetCoupler"
+author: 
+    - "Clemens Wittenbecher"
+    - "Luke Johnston"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with NetCoupler}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+![](https://img.shields.io/badge/document%20status-rough%20draft-red?style=flat-square)
+
+## Brief description
+
+The goal of NetCoupler is to estimate causal links between a set of -omic (e.g.
+metabolomics, lipidomics) or other high-dimensional metabolic data and either a
+disease outcome, an exposure, or both. The NetCoupler-algorithm, formulated by
+Clemens Wittenbecher and converted into an R package by Luke Johnston, links
+conditional dependency networks with an external outcome or exposure to identify
+direct effects between them.
+
+The NetCoupler's input is multi-layer information from prospective studies,
+including interdependent variables that constitute the central network of
+interest (e.g., metabolomics data), time-to-disease incidence, and optionally
+information on factors that influence the network (such as lifestyle variables,
+or genetic determinants).
+
+TODO: Add figure demonstrating NetCoupler
+
+Results can be graphically displayed as a joint network model. For example, to a
+data-driven metabolomics network links can be added that reflect
+network-independent associations of metabolites with disease risk and lifestyle
+habits (or genetics) with these disease-related metabolites.
+
+
+## Workflow
+
+The general workflow for using NetCoupler is to:
+
+1. Standardize variables that will form the network ("network variables") with
+`nc_standardize()`.
+1. Estimate the network linkages for the network variables with
+`nc_create_network()`.
+1. If interested in links to an *outcome*: Using the estimated network, extract
+the network variables (both "index" and "neighbour" variable list) and identify
+direct and ambiguous effects from the network to the outcome variable with
+`nc_outcome_estimates()`.
+1. If interested in links to an *exposure*: Just like with the *outcome*-side,
+except identify direct and ambiguous effects from the exposure variable to the
+network `nc_exposure_estimates()`.
+
+
+1. Using the estimated network, extract the network variables (both "index" and
+"neighbour" variable list) and identify direct and ambiguous effects with the
+outcome variable with `nc_outcome_estimates()`. 
+- Clusters of the variables will be selected based on the PC-algorithm
+Select a subset of variables or clusters from the PC-alg
+- Then run NetCoupler on that subset
+
+## Directed acyclic graph skeleton estimation
+
+The estimate the underlying directed acyclic graph (DAG) skeleton of the
+metabolite network, NetCoupler uses an implementation of the PC-algorithm 
+[@Kalisch2012;@Maathuis2010;@Spirtes2001;@Colombo2014]. Because of this, the
+assumptions from the PC-algorithm apply to NetCoupler. The output of this
+algorithm is a graphical model (`G`) of the underlying network that is used by
+NetCoupler.
+
+## Simple example of use
+
+```{r load-packages, message=FALSE, warning=FALSE}
+library(NetCoupler)
+library(dplyr)
+```
+
+### Estimating the metabolic network
+
+For estimating the network, it's (basically) required to standardize
+the metabolic variables before inputting into `nc_create_network()`.
+If you intend to also adjust for potential confounders when estimating
+the exposure or outcome side connections,
+you can include the potential impact these confounders may have on 
+the network by regressing the confounders on the metabolic variables.
+Then the residuals can be extracted and used when constructing the network.
+You do this with the `nc_standardize()` function. 
+This function also log-transforms and scales 
+(mean-center and z-score normalize) the values of the metabolic variables.
+We do this because the network estimation algorithm can sometimes be finicky
+about differences in variable numerical scale (mean of 1 vs mean of 1000).
+
+```{r metabolic-residuals}
+std_metabolic_data <- simulated_data %>% 
+    nc_standardize(starts_with("metabolite"), 
+                   .regressed_on = "age") %>% 
+    select(starts_with("metabolite"))
+```
+
+After that, you can estimate the network.
+
+```{r create-network}
+# Make partial independence network from metabolite data
+metabolite_network <- std_metabolic_data %>% 
+    nc_create_network()
+```
+
+To see what the network looks like,
+use the function `nc_plot_network()`.
+
+```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5}
+std_metabolic_data %>%
+    nc_plot_network(metabolite_network)
+```
+
+The plot is a bit crowded, but it provides a base to start tidying up from.
+
+### Estimating exposure and outcome-side connections
+
+For the exposure and outcome side, 
+you should standardize the metabolic variables, 
+but this time, we don't regress on the confounders 
+since they will be included in the models.
+
+```{r standardize-data}
+standardized_data <- simulated_data %>% 
+    nc_standardize(starts_with("metabolite"))
+```
+
+Then estimate the outcome or exposure:
+
+```{r example-use, cache=TRUE}
+outcome_estimates <- standardized_data %>%
+    nc_outcome_estimates(
+        .graph = metabolite_network,
+        .outcome = "case_status",
+        .model_function = glm,
+        .model_arg_list = list(family = binomial(link = "logit")),
+        .exponentiate = TRUE
+    )
+
+outcome_estimates
+
+exposure_estimates <- standardized_data %>%
+    nc_exposure_estimates(
+        .graph = metabolite_network,
+        .exposure = "exposure",
+        .adjustment_vars = "age",
+        .model_function = lm
+    )
+
+exposure_estimates
+```
+
+### Classifying direct effects on exposure or outcome side
+
+You can classify direct effects by using `nc_classify_effects()`,
+which works on both the exposure side (`exposure -> metabolite`) 
+and the outcome side (`metabolite -> outcome`).
+The function applies a simple algorithm, described in more
+detail in `vignette("description")`.
+For the exposure side, 
+the function identifies whether a link between the exposure 
+and an index node (one metabolic variable in the network) exists,
+regardless of conditioning on potential confounders 
+and on neighbouring nodes (other metabolic variables linked to the index variable).
+Depending on how consistent and strong the link is,
+the effect is classified as "direct", "ambiguous", or "none".
+
+In the example below, we specifically generated the simulated data so that
+the exposure associated with the metabolites 1, 8, and 12.
+And as we can see, those links have been correctly identified.
+
+```{r classify-exposure-effects}
+exposure_direct_effects <- exposure_estimates %>% 
+    nc_classify_effects()
+exposure_direct_effects
+exposure_direct_effects %>% 
+    dplyr::filter(direct_effect == "direct")
+```
+
+You can also classify direct effects with an outcome using the same function:
+
+```{r classify-outcome-effects}
+outcome_direct_effects <- outcome_estimates %>% 
+    nc_classify_effects()
+outcome_direct_effects
+outcome_direct_effects %>% 
+    dplyr::filter(direct_effect == "direct")
+```
+
+### Plotting 
+
+To visualize the results of the linked network graph and the effect
+classification, there are two functions to show the exposure and the outcome
+plots. In general, these plot functions are currently mostly for exploratory
+purposes and are too "busy" and crowded to be meaningful for presentation or
+publication. However, these are good starting points for making prettier,
+more legible plots.
+
+```{r plot-outcome-estimation-networks, fig.width=9, fig.height=8}
+nc_plot_outcome_estimation(
+    standardized_data,
+    metabolite_network,
+    outcome_direct_effects
+)
+```
+
+```{r plot-exposure-estimation-networks, fig.width=9, fig.height=8}
+nc_plot_exposure_estimation(
+    standardized_data,
+    metabolite_network,
+    exposure_direct_effects
+)
+```
+

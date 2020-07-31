@@ -4,10 +4,10 @@
 \alias{nc_create_network}
 \title{Create an estimate of the metabolic network skeleton.}
 \usage{
-nc_create_network(.data, .alpha = 0.05)
+nc_create_network(.tbl, .alpha = 0.05)
 }
 \arguments{
-\item{.data}{Data of the metabolic variables.}
+\item{.tbl}{Data of the metabolic variables.}
 
 \item{.alpha}{The alpha level to set.}
 }
@@ -15,13 +15,11 @@ nc_create_network(.data, .alpha = 0.05)
 Outputs a DAG skeleton.
 }
 \description{
-Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
-}
-\details{
 \lifecycle{experimental}
 
-Main NetCoupler network creator. Defaults to using the PC algorithm to calculate
-possible edges.
+Main NetCoupler network creator.
+Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
+Defaults to using the PC algorithm to calculate possible edges.
 }
 \examples{
 
