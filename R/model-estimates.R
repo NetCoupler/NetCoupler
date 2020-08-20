@@ -168,9 +168,13 @@ nc_outcome_estimates <-
     if (!is.null(.model_arg_list))
         other_args <- c(other_args, .model_arg_list)
 
+    network_index_nodes <- formula_list %>%
+        map(~all.vars(.)[1]) %>%
+        purrr::flatten_chr()
+
     model_tbl <- model_arg_list %>%
-        purrr::pmap(purrr::lift_dl(.model_function), other_args) %>%
-        purrr::map2_dfr(network_combinations$index_node,
+        furrr::future_pmap(purrr::lift_dl(.model_function), other_args) %>%
+        furrr::future_map2_dfr(network_index_nodes,
                  .tidy_models, .exponentiate = .exponentiate)
 
     tidied_models <- model_tbl %>%
