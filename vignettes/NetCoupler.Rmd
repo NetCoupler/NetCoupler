@@ -418,3 +418,75 @@ nc_plot_exposure_estimation(
 )
 ```
 
+
+
+```{r}
+std_metabolic_data <- simulated_data %>% 
+    nc_standardize(starts_with("metabolite"), 
+                   .regressed_on = "age") %>% 
+    select(starts_with("metabolite"))
+standardized_data <- simulated_data %>% 
+    nc_standardize(starts_with("metabolite"))
+
+metabolite_network <- std_metabolic_data %>% 
+    nc_create_network()
+edge_table <- as_edge_tbl(metabolite_network)
+future::plan(future::multisession)
+exposure_estimates <- standardized_data %>%
+    nc_exposure_estimates(
+        .edge_tbl = edge_table,
+        .exposure = "exposure",
+        .adjustment_vars = "age",
+        .model_function = lm
+    )
+exposure_direct_effects <- exposure_estimates %>% 
+    nc_classify_effects()
+de_vars <- exposure_direct_effects %>% 
+    filter(direct_effect == "direct") %>% 
+    pull(index_node) %>% 
+    unique()
+
+edge_table_2 <- as_edge_tbl(metabolite_network) %>% 
+    filter(!source_node %in% de_vars)
+exposure_estimates_with_de <- standardized_data %>%
+    nc_exposure_estimates(
+        .edge_tbl = edge_table_2,
+        .exposure = "exposure",
+        .adjustment_vars = "age",
+        .direct_effect_vars = de_vars,
+        .model_function = lm
+    )
+exposure_direct_effects_2 <- exposure_estimates_with_de %>% 
+    nc_classify_effects()
+
+View(exposure_estimates)
+View(exposure_estimates_with_de)
+
+View(exposure_direct_effects)
+View(exposure_direct_effects_2)
+
+exposure_direct_effects_2 %>% 
+    View()
+    pull(index_node) %>% 
+    unique()
+    
+de_vars_2 <- exposure_direct_effects_2 %>% 
+    filter(direct_effect == "direct") %>% 
+    pull(index_node) %>% 
+    unique()
+
+edge_table_3 <- as_edge_tbl(metabolite_network) %>% 
+    filter(!source_node %in% c(de_vars, de_vars_2))
+           
+exposure_estimates_with_de_2 <- standardized_data %>%
+    nc_exposure_estimates(
+        .edge_tbl = edge_table_3,
+        .exposure = "exposure",
+        .adjustment_vars = c("age", de_vars, de_vars_2),
+        .model_function = lm
+    )
+exposure_direct_effects_3 <- exposure_estimates_with_de_2 %>% 
+    nc_classify_effects()
+
+```
+
