@@ -40,7 +40,8 @@ Imports:
     stats,
     tibble,
     tidyselect,
-    utils
+    utils,
+    furrr
 Suggests: 
     tidygraph,
     ggplot2,
