@@ -133,29 +133,40 @@ nc_classify_effects <- function(.tbl) {
     return(classify_direct_effects)
 }
 
-#' @describeIn nc_classify_effects Filter out estimates so only exposure
-#'   estimates are kept. Adds a column with the neighbouring metabolite
+#' @describeIn nc_classify_effects Filter out estimates so only exposure or
+#'   outcome estimates are kept. Adds a column with the neighbouring metabolite
 #'   variables listed.
 #' @export
 nc_filter_estimates <- function(.tbl) {
+    # TODO: Convert to using grep or similar
     .filter_by <- .tbl %>%
         select(matches("^(exposure|outcome)$")) %>%
         names()
     if (.filter_by == "outcome") {
         .tbl %>%
             dplyr::group_by(.data$model_id) %>%
-            mutate(neighbour_vars = .extract_neighbour_nodes(.data$term,
-                                                             .data$adjusted_vars,
-                                                             .data$index_node)) %>%
+            mutate(
+                neighbour_vars = .extract_neighbour_nodes(
+                    .data$term,
+                    .data$adjusted_vars,
+                    .data$index_node,
+                    .data$adj_direct_effect_vars
+                )
+            ) %>%
             dplyr::ungroup() %>%
             dplyr::filter(.data$index_node == .data$term) %>%
             select(-all_of(c("term", "model_id")))
     } else {
         .tbl %>%
             dplyr::group_by(.data$model_id) %>%
-            mutate(neighbour_vars = .extract_neighbour_nodes(.data$term,
-                                                             .data$adjusted_vars,
-                                                             .data$exposure)) %>%
+            mutate(
+                neighbour_vars = .extract_neighbour_nodes(
+                    .data$term,
+                    .data$adjusted_vars,
+                    .data$exposure,
+                    .data$adj_direct_effect_vars
+                )
+            ) %>%
             dplyr::ungroup() %>%
             dplyr::filter(.data$term == .data[[.filter_by]]) %>%
             select(-all_of(c("term", "model_id")))
@@ -163,8 +174,13 @@ nc_filter_estimates <- function(.tbl) {
     }
 }
 
-.extract_neighbour_nodes <- function(.term_var, .adj_var, .main_x_var) {
-    adjusted_variables <- .adj_var %>%
+.extract_neighbour_nodes <-
+    function(.term_var,
+             .adj_var,
+             .main_x_var,
+             .de_var) {
+
+    adjusted_variables <- c(.adj_var, .de_var) %>%
         unique() %>%
         strsplit(", ") %>%
         unlist() %>%
