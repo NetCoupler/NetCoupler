@@ -43,9 +43,11 @@
 #'   select(matches("metabolite")) %>%
 #'   nc_create_network()
 #'
+#' edge_table <- as_edge_tbl(metabolite_network)
+#'
 #' simulated_data %>%
 #'   nc_exposure_estimates(
-#'     .graph = metabolite_network,
+#'     .edge_tbl = edge_table,
 #'     .exposure = "exposure",
 #'     .adjustment_vars = "age",
 #'     .model_function = lm
@@ -53,7 +55,7 @@
 #'
 #' simulated_data %>%
 #'   nc_outcome_estimates(
-#'     .graph = metabolite_network,
+#'     .edge_tbl = edge_table,
 #'     .outcome = "case_status",
 #'     .model_function = glm,
 #'     .adjustment_vars = "age",
@@ -67,17 +69,19 @@ NULL
 #' @export
 nc_exposure_estimates <-
     function(.tbl,
-             .graph,
+             .edge_tbl,
              .exposure,
              .adjustment_vars = NA,
+             .direct_effect_vars = NA,
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
         multiple_models <- .compute_model_estimates(
             .tbl = .tbl,
-            .graph = .graph,
+            .edge_tbl = .edge_tbl,
             .external_var = .exposure,
             .adjustment_vars = .adjustment_vars,
+            .direct_effect_vars = .direct_effect_vars,
             .model_function = .model_function,
             .model_arg_list = .model_arg_list,
             .exponentiate = .exponentiate,
@@ -91,17 +95,19 @@ nc_exposure_estimates <-
 #' @export
 nc_outcome_estimates <-
     function(.tbl,
-             .graph,
+             .edge_tbl,
              .outcome,
              .adjustment_vars = NA,
+             .direct_effect_vars = NA,
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
         multiple_models <- .compute_model_estimates(
             .tbl = .tbl,
-            .graph = .graph,
+            .edge_tbl = .edge_tbl,
             .external_var = .outcome,
             .adjustment_vars = .adjustment_vars,
+            .direct_effect_vars = .direct_effect_vars,
             .model_function = .model_function,
             .model_arg_list = .model_arg_list,
             .exponentiate = .exponentiate,
@@ -126,27 +132,26 @@ nc_outcome_estimates <-
 
     # TODO: Use tidy eval style input for variables.
     assert_is_data.frame(.tbl)
-    assert_is_s4(.graph)
+    assert_is_data.frame(.edge_tbl)
     assert_is_a_string(.external_var)
     # TODO: This check needs to be better constructed
     if (!any(is.na(.adjustment_vars)))
         assert_is_character(.adjustment_vars)
+    if (!any(is.na(.direct_effect_vars)))
+        assert_is_character(.direct_effect_vars)
     if (!is.null(.model_arg_list))
         assert_is_list(.model_arg_list)
     assert_is_logical(.exponentiate)
     assert_is_function(.model_function)
 
-    # TODO: Convert this .graph to an edge table from the beginning (as an input)
-    edge_table <- as_edge_tbl(.graph@graph@edgeL)
-
-    network_combinations <- .generate_all_network_combinations(edge_table)
+    network_combinations <- .generate_all_network_combinations(.edge_tbl)
 
     .external_side <- rlang::arg_match(.external_side)
     formula_list <- .generate_formula_list(
         .network_tbl = network_combinations,
         .ext_var = .external_var,
         .ext_side = .external_side,
-        .adj_vars = .adjustment_vars
+        .adj_vars = c(.adjustment_vars, .direct_effect_vars)
     )
 
     variables_to_keep <- formula_list %>%
@@ -175,7 +180,12 @@ nc_outcome_estimates <-
                 !any(is.na(.adjustment_vars)),
                 paste(.adjustment_vars, collapse = ", "),
                 NA_character_
-            )
+            ),
+            adj_direct_effect_vars = dplyr::if_else(
+                !any(is.na(.direct_effect_vars)),
+                paste(.direct_effect_vars, collapse = ", "),
+                NA_character_
+            ),
         ) %>%
         dplyr::relocate(c("external_var", "index_node", "model_id")) %>%
         dplyr::rename_with(~ gsub("\\.", "_", .))
@@ -241,7 +251,8 @@ nc_outcome_estimates <-
     function(.network_tbl, .ext_var, .ext_side, .adj_vars) {
         xvars_prep <-
             list(.network_tbl$neighbours) %>%
-            purrr::pmap(c, .adj_vars)
+            purrr::pmap(c, .adj_vars) %>%
+            map(sort)
 
         external_input <- switch(
             .ext_side,
@@ -251,13 +262,20 @@ nc_outcome_estimates <-
                            y = .ext_var)
         )
 
-        xvar_input <-
-            list(xvars_prep, external_input$x) %>%
+        xvar_input <- list(xvars_prep, external_input$x) %>%
             purrr::pmap(c) %>%
+            map(unique) %>%
+            map2(external_input$y, ~.x[!.x %in% .y]) %>%
             map(stats::na.omit)
 
-        map2(xvar_input,
-             external_input$y,
+        unique_formulas_df <- tibble(
+            yvar = external_input$y,
+            xvar = xvar_input
+        ) %>%
+            dplyr::distinct()
+
+        map2(unique_formulas_df$xvar,
+             unique_formulas_df$yvar,
              stats::reformulate)
     }
 
