@@ -111,24 +111,14 @@ nc_outcome_estimates <-
             dplyr::rename("outcome" = "external_var")
 }
 
-as_edge_tbl <- function(.edge_list) {
-    nodes <- names(.edge_list)
-    edge_table <- purrr::map_dfr(
-        .edge_list,
-        .single_edge_list_to_tbl,
-        .id = "source_node",
-        .nodes = nodes
-    )
-    return(edge_table)
-}
-
 #' @describeIn nc_model_estimates Internal function. Included to document algorithm.
 #' @keywords internal
 .compute_model_estimates <-
     function(.tbl,
-             .graph,
+             .edge_tbl,
              .external_var,
              .adjustment_vars = NA,
+             .direct_effect_vars = NA,
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE,
@@ -191,10 +181,6 @@ as_edge_tbl <- function(.edge_list) {
         dplyr::rename_with(~ gsub("\\.", "_", .))
 
     return(tidied_models)
-}
-
-.single_edge_list_to_tbl <- function(.edges, .nodes) {
-    tibble(target_node = .nodes[.edges$edges])
 }
 
 .all_neighbour_combinations <- function(.edge_table) {
