@@ -2,5 +2,5 @@ suppressPackageStartupMessages(library(dplyr, quietly = TRUE))
 
 metabolite_network <- simulated_data %>%
     select(matches("metabolite")) %>%
-    nc_create_network()
+    nc_estimate_network()
 

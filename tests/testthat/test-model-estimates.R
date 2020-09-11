@@ -109,7 +109,7 @@ test_that("missingness in data still provides results", {
     missingness_data <- .insert_random_missingness(simulated_data)
     metabolite_network <- missingness_data %>%
         select(matches("metabolite")) %>%
-        nc_create_network()
+        nc_estimate_network()
     exposure_estimates <- missingness_data %>%
         nc_exposure_estimates(
             .graph = metabolite_network,
