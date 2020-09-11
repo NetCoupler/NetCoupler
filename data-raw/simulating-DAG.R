@@ -26,6 +26,9 @@ dag_graph <- dagitty('dag {
     metabolite_5 -> metabolite_9 [beta=.5]
     metabolite_6 -> metabolite_10 [beta=.3]
     metabolite_10 -> metabolite_12 [beta=-.65]
+    metabolite_3 -> outcome_continuous [beta=-0.80]
+    metabolite_9 -> outcome_continuous [beta=0.70]
+    metabolite_12 -> outcome_continuous [beta=0.50]
 }')
 
 simulated_dag_data <- simulateSEM(dag_graph, N = 2000) %>%
