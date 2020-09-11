@@ -1,4 +1,3 @@
-
 #' @title
 #' Create an estimate of the metabolic network skeleton.
 #'
@@ -10,22 +9,58 @@
 #' Defaults to using the PC algorithm to calculate possible edges.
 #'
 #' @param .tbl Data of the metabolic variables.
-#' @param .alpha The alpha level to set.
+#' @param .alpha The alpha level to set. Default is 0.05.
 #'
 #' @return Outputs a DAG skeleton.
 #' @export
 #'
-#' @examples
+#' @seealso [nc_model_estimates]
 #'
-#' library(dplyr)
-#' simulated_data %>%
-#'   select(contains("metabolite")) %>%
-#'   nc_create_network()
-nc_create_network <- function(.tbl, .alpha = 0.05) {
+nc_estimate_network <- function(.tbl, .vars = everything(), .alpha = 0.05) {
     assert_is_data.frame(.tbl)
     assert_is_a_number(.alpha)
 
-    pc_skeleton_estimates(.tbl, .alpha)
+    .tbl <- .tbl %>%
+        select({{.vars}})
+
+    .graph <- .tbl %>%
+        pc_skeleton_estimates(.alpha)
+
+    .tbl %>%
+        compute_adjacency_graph(.graph = .graph) %>%
+        tidygraph::as_tbl_graph()
+}
+
+#' Convert network graph to edge table.
+#'
+#' @description
+#' \lifecycle{experimental}
+#'
+#' @param .edge_list Network graph from e.g. [nc_estimate_network()]
+#'
+#' @return A [tibble][tibble::tibble-package], with at least two columns:
+#'
+#' - `source_node`: The starting node (variable).
+#' - `target_node`: The ending node (variable) that links with the source node.
+#'
+#' @export
+#'
+#' @seealso For examples of usage, see [nc_model_estimates()].
+#'
+as_edge_tbl <- function(.edge_list) {
+    # TODO: Convert this to S3 method in case other network methods are different
+    if (class(.edge_list) != "pcAlgo") {
+        rlang::abort("The .edge_list is not from the pcalgo package. We currently do not have support for other network packages.")
+    }
+    .edge_list <- .edge_list@graph@edgeL
+    nodes <- names(.edge_list)
+    edge_table <- purrr::map_dfr(
+        .edge_list,
+        .single_edge_list_to_tbl,
+        .id = "source_node",
+        .nodes = nodes
+    )
+    return(edge_table)
 }
 
 #' Compute the adjacency matrix of the graph with the data.
@@ -36,19 +71,11 @@ nc_create_network <- function(.tbl, .alpha = 0.05) {
 #' @inheritParams nc_plot_network
 #'
 #' @return Outputs an `igraph` object from [igraph::graph.adjacency()].
-#' @export
+#' @keywords internal
 #'
-#' @examples
-#'
-#' library(dplyr)
-#' metabolite_data <- simulated_data %>%
-#'   select(starts_with("metabolite"))
-#' network <- metabolite_data %>%
-#'   nc_create_network()
-#' nc_adjacency_graph(metabolite_data, network)
-nc_adjacency_graph <- function(.tbl, .graph) {
-    weighted_adjacency_matrix <- nc_adjacency_matrix(.graph) *
-        round(nc_partial_corr_matrix(.tbl), digits = 3)
+compute_adjacency_graph <- function(.tbl, .graph) {
+    weighted_adjacency_matrix <- compute_adjacency_matrix(.graph) *
+        round(compute_partial_corr_matrix(.tbl), digits = 3)
 
     igraph::graph.adjacency(weighted_adjacency_matrix,
                             weighted = TRUE, mode = "undirected")
@@ -65,18 +92,9 @@ nc_adjacency_graph <- function(.tbl, .graph) {
 #' @param .dag_skeleton The PC DAG skeleton object.
 #'
 #' @return Outputs an adjacency matrix of the DAG skeleton.
-#' @export
+#' @keywords internal
 #'
-#' @examples
-#'
-#' library(dplyr)
-#' skeleton_estimate <- simulated_data %>%
-#'   select(contains("metabolite")) %>%
-#'   nc_create_network()
-#'
-#' nc_adjacency_matrix(skeleton_estimate)
-#'
-nc_adjacency_matrix <- function(.dag_skeleton) {
+compute_adjacency_matrix <- function(.dag_skeleton) {
     # TODO: Include a check here that it is a DAG skeleton..?
     igraph::get.adjacency(igraph::igraph.from.graphNEL(.dag_skeleton@graph))
 }
@@ -92,16 +110,9 @@ nc_adjacency_matrix <- function(.dag_skeleton) {
 #' @param .tbl Input data of metabolic variables as matrix or data.frame.
 #'
 #' @return Outputs a matrix of partial correlation coefficients.
-#' @export
+#' @keywords internal
 #'
-#' @examples
-#'
-#' library(dplyr)
-#' simulated_data %>%
-#'   select(contains("metabolite")) %>%
-#'   nc_partial_corr_matrix()
-#'
-nc_partial_corr_matrix <- function(.tbl) {
+compute_partial_corr_matrix <- function(.tbl) {
     # TODO: check if input data is gaussian
     pcor_matrix <- ppcor::pcor(.tbl)$estimate
     colnames(pcor_matrix) <- colnames(.tbl)
@@ -109,6 +120,7 @@ nc_partial_corr_matrix <- function(.tbl) {
     return(pcor_matrix)
 }
 
+# TODO: Don't know what this does or is for.
 #' Estimate equivalence class of DAG from the PC algorithm.
 #'
 #' Is mostly a wrapper around [pcalg::pc()]. Estimates an order-independent
@@ -118,15 +130,7 @@ nc_partial_corr_matrix <- function(.tbl) {
 #' @param .alpha Significance level threshold applied to each test.
 #'
 #' @return Outputs a `pcAlgo` object.
-#'
-#' @examples
-#'
-#' \dontrun{
-#' library(dplyr)
-#' simulated_data %>%
-#' select(contains("metabolite")) %>%
-#' NetCoupler:::pc_dag_estimates()
-#' }
+#' @keywords internal
 #'
 pc_dag_estimates <- function(.tbl, .alpha = 0.01) {
     number_samples <- nrow(.tbl)
@@ -154,15 +158,7 @@ pc_dag_estimates <- function(.tbl, .alpha = 0.01) {
 #' @param .alpha Significance level threshold applied to each test.
 #'
 #' @return A DAG skeleton object.
-#'
-#' @examples
-#'
-#' \dontrun{
-#' library(dplyr)
-#' simulated_data %>%
-#' select(contains("metabolite")) %>%
-#' NetCoupler:::pc_skeleton_estimates()
-#' }
+#' @keywords internal
 #'
 pc_skeleton_estimates <- function(.tbl, .alpha = 0.01) {
     number_samples <- nrow(.tbl)
@@ -180,4 +176,10 @@ pc_skeleton_estimates <- function(.tbl, .alpha = 0.01) {
         fixedEdges = NULL,
         verbose = FALSE
     )
+}
+
+# Helpers -----------------------------------------------------------------
+
+.single_edge_list_to_tbl <- function(.edges, .nodes) {
+    tibble(target_node = .nodes[.edges$edges])
 }
