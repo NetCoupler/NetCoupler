@@ -41,9 +41,9 @@ Imports:
     tibble,
     tidyselect,
     utils,
-    furrr
+    furrr,
+    tidygraph
 Suggests: 
-    tidygraph,
     ggplot2,
     broom,
     covr,
