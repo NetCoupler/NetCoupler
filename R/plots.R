@@ -15,18 +15,7 @@
 #' @return Outputs a `ggplot2` object of the metabolic network.
 #' @export
 #'
-#' @examples
-#'
-#' library(dplyr)
-#' metabolite_data <- simulated_data %>%
-#'   select(starts_with("metabolite"))
-#' network <- metabolite_data %>%
-#'   nc_create_network()
-#' nc_plot_network(
-#'   metabolite_data,
-#'   network,
-#'   .fn_node_rename = function(x) gsub("metabolite_", "M", x)
-#' )
+#' @seealso [nc_model_estimates]
 #'
 nc_plot_network <- function(.tbl,
                             .graph,
@@ -44,7 +33,7 @@ nc_plot_network <- function(.tbl,
         rlang::abort("Can't find tidygraph, please install it.")
 
     graph_data_prep <- .tbl %>%
-        nc_adjacency_graph(.graph = .graph) %>%
+        compute_adjacency_graph(.graph = .graph) %>%
         tidygraph::as_tbl_graph() %>%
         tidygraph::activate("edges") %>%
         tidygraph::mutate(edge_label = dplyr::if_else(
@@ -75,7 +64,7 @@ nc_plot_network <- function(.tbl,
 .create_tbl_network_graph <- function(.tbl, .graph) {
     .tbl %>%
         select(all_of(.graph@graph@nodes)) %>%
-        nc_adjacency_graph(.graph = .graph) %>%
+        compute_adjacency_graph(.graph = .graph) %>%
         tidygraph::as_tbl_graph() %>%
         tidygraph::activate("edges")
 }
@@ -187,7 +176,7 @@ nc_plot_network <- function(.tbl,
 #'
 #' @param .tbl The original data, with the metabolic variables that have been
 #'   standardized.
-#' @param .graph The graph object created from `nc_create_network()`.
+#' @param .graph The graph object created from `nc_estimate_network()`.
 #' @param .tbl_model The tibble of the model results obtained from
 #'   `nc_classify_effects()`.
 #' @param .edge_label_threshold Threshold to pass for the value to be added to
