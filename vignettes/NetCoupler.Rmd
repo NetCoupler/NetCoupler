@@ -18,6 +18,15 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Goals
+
+- Work with pipe `%>%` operator
+- Work with tidyselect helpers
+- Be autocomplete friendly (e.g. start function names with `nc_`)
+- In general, output as tibble, or at least easily modified into a data.frame/tibble
+- Arguments are prefixed with `.`
+- Internal functions are prefixed with `.`?
+
 ## Brief description
 
 The *NetCoupler*-algorithm operates by taking the following steps:
@@ -282,7 +291,7 @@ library(dplyr)
 ### Estimating the metabolic network
 
 For estimating the network, it's (basically) required to standardize
-the metabolic variables before inputting into `nc_create_network()`.
+the metabolic variables before inputting into `nc_estimate_network()`.
 If you intend to also adjust for potential confounders when estimating
 the exposure or outcome side connections,
 you can include the potential impact these confounders may have on 
@@ -306,7 +315,7 @@ After that, you can estimate the network.
 ```{r create-network}
 # Make partial independence network from metabolite data
 metabolite_network <- std_metabolic_data %>% 
-    nc_create_network()
+    nc_estimate_network()
 ```
 
 To see what the network looks like,
@@ -336,7 +345,7 @@ Then estimate the outcome or exposure:
 ```{r example-use, cache=TRUE}
 outcome_estimates <- standardized_data %>%
     nc_outcome_estimates(
-        .graph = metabolite_network,
+        .edge_tbl = as_edge_tbl(metabolite_network),
         .outcome = "case_status",
         .model_function = glm,
         .model_arg_list = list(family = binomial(link = "logit")),
@@ -347,7 +356,7 @@ outcome_estimates
 
 exposure_estimates <- standardized_data %>%
     nc_exposure_estimates(
-        .graph = metabolite_network,
+        .edge_tbl = as_edge_tbl(metabolite_network),
         .exposure = "exposure",
         .adjustment_vars = "age",
         .model_function = lm
@@ -420,18 +429,16 @@ nc_plot_exposure_estimation(
 
 
 
-```{r}
-std_metabolic_data <- simulated_data %>% 
-    nc_standardize(starts_with("metabolite"), 
-                   .regressed_on = "age") %>% 
-    select(starts_with("metabolite"))
+```{r, eval=FALSE}
 standardized_data <- simulated_data %>% 
     nc_standardize(starts_with("metabolite"))
 
-metabolite_network <- std_metabolic_data %>% 
-    nc_create_network()
+metabolite_network <- simulated_data %>% 
+    nc_standardize(starts_with("metabolite"), 
+                   .regressed_on = "age") %>% 
+    nc_estimate_network(starts_with("metabolite"))
 edge_table <- as_edge_tbl(metabolite_network)
-future::plan(future::multisession)
+# future::plan(future::multisession)
 exposure_estimates <- standardized_data %>%
     nc_exposure_estimates(
         .edge_tbl = edge_table,
