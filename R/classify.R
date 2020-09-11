@@ -17,39 +17,7 @@
 #' @export
 #' @seealso See the `vignette("description")` for a
 #'   detailed description of the algorithm used to classify direct effects.
-#'
-#' @examples
-#'
-#' library(dplyr)
-#' metabolite_network <- simulated_data %>%
-#'   select(matches("metabolite")) %>%
-#'   nc_create_network()
-#' multimodel_exposure <- simulated_data %>%
-#'   mutate(Random = rnorm(nrow(.)),
-#'          Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) %>%
-#'   nc_exposure_estimates(
-#'     .graph = metabolite_network,
-#'     .exposure = "exposure",
-#'     .adjustment_vars = c("age", "Random", "Sex"),
-#'     .model_function = lm
-#'    )
-#'
-#' nc_filter_estimates(multimodel_exposure)
-#' nc_classify_effects(multimodel_exposure)
-#'
-#' multimodel_outcome <- simulated_data %>%
-#'   mutate(Random = rnorm(nrow(.))) %>%
-#'   nc_outcome_estimates(
-#'     .graph = metabolite_network,
-#'     .outcome = "case_status",
-#'     .model_function = glm,
-#'     .adjustment_vars = c("age", "Random"),
-#'     .model_arg_list = list(family = binomial(link = "logit")),
-#'     .exponentiate = TRUE
-#'   )
-#'
-#' nc_filter_estimates(multimodel_outcome)
-#' nc_classify_effects(multimodel_outcome)
+#'   [nc_model_estimates]
 #'
 nc_classify_effects <- function(.tbl) {
     # TODO: Use an attribute as a "check"
