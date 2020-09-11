@@ -4,11 +4,11 @@
 #' @name nc_model_estimates
 #' @param .tbl The data.frame or tibble that contains the variables of interest,
 #'   including the variables passed to the network.
-#' @param .graph Output graph object from `nc_create_network()`.
+#' @param .graph Output graph object from `nc_estimate_network()`.
 #' @param .exposure,.outcome Character. The exposure or outcome variable of interest.
 #' @param .adjustment_vars Optional. Variables to adjust for in the models.
 #' @param .model_function A function for the model to use (e.g. [stats::lm()],
-#'   [stats::glm()], [survival::coxph()]). Can be any model as long as the
+#'   [stats::glm()], survival::coxph()). Can be any model as long as the
 #'   function has the arguments `formula` and `data`.
 #' @param .model_arg_list Optional. A list containing the named arguments that
 #'   will be passed to the model function. A simple example would be
@@ -41,7 +41,7 @@
 #' library(dplyr)
 #' metabolite_network <- simulated_data %>%
 #'   select(matches("metabolite")) %>%
-#'   nc_create_network()
+#'   nc_estimate_network()
 #'
 #' edge_table <- as_edge_tbl(metabolite_network)
 #'
@@ -62,6 +62,48 @@
 #'     .model_arg_list = list(family = binomial(link = "logit")),
 #'     .exponentiate = TRUE
 #'   )
+#'
+#' library(dplyr)
+#' metabolite_data <- simulated_data %>%
+#'   select(starts_with("metabolite"))
+#' network <- metabolite_data %>%
+#'   nc_estimate_network()
+#' nc_plot_network(
+#'   metabolite_data,
+#'   network,
+#'   .fn_node_rename = function(x) gsub("metabolite_", "M", x)
+#' )
+#' library(dplyr)
+#' metabolite_network <- simulated_data %>%
+#'   select(matches("metabolite")) %>%
+#'   nc_estimate_network()
+#' multimodel_exposure <- simulated_data %>%
+#'   mutate(Random = rnorm(nrow(.)),
+#'          Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) %>%
+#'   nc_exposure_estimates(
+#'     .graph = metabolite_network,
+#'     .exposure = "exposure",
+#'     .adjustment_vars = c("age", "Random", "Sex"),
+#'     .model_function = lm
+#'    )
+#'
+#' nc_filter_estimates(multimodel_exposure)
+#' nc_classify_effects(multimodel_exposure)
+#'
+#' multimodel_outcome <- simulated_data %>%
+#'   mutate(Random = rnorm(nrow(.))) %>%
+#'   nc_outcome_estimates(
+#'     .graph = metabolite_network,
+#'     .outcome = "case_status",
+#'     .model_function = glm,
+#'     .adjustment_vars = c("age", "Random"),
+#'     .model_arg_list = list(family = binomial(link = "logit")),
+#'     .exponentiate = TRUE
+#'   )
+#'
+#' nc_filter_estimates(multimodel_outcome)
+#' nc_classify_effects(multimodel_outcome)
+#'
 #'
 NULL
 
