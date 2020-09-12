@@ -124,7 +124,9 @@ nc_exposure_estimates <-
             .external_side = "exposure"
         )
         multiple_models %>%
-            dplyr::rename("exposure" = "external_var")
+            dplyr::rename("exposure" = "external_var") %>%
+            classify_effects()
+
     }
 
 #' @describeIn nc_model_estimates Computes the model estimates for the exposure side.
@@ -150,7 +152,8 @@ nc_outcome_estimates <-
             .external_side = "outcome"
         )
         multiple_models %>%
-            dplyr::rename("outcome" = "external_var")
+            dplyr::rename("outcome" = "external_var") %>%
+            classify_effects()
 }
 
 #' @describeIn nc_model_estimates Internal function. Included to document
