@@ -322,3 +322,35 @@ compute_model_estimates <-
              stats::reformulate)
     }
 
+
+# Putting this on hold, but keeping for now.
+# de_vars <- NA
+# exposure_estimates <- list()
+# edge_table <- list()
+# count <- 1
+# while (length(de_vars) > 0) {
+#     browser()
+#     print(count)
+#
+#     edge_table[[count]] <- as_edge_tbl(metabolite_network) %>%
+#         filter(!source_node %in% de_vars)
+#
+#     exposure_estimates[[count]] <- standardized_data %>%
+#         nc_exposure_estimates(
+#             .edge_tbl = edge_table[[count]],
+#             .exposure = "exposure",
+#             .adjustment_vars = "age",
+#             .direct_effect_vars = de_vars,
+#             .model_function = lm
+#         ) %>%
+#         nc_classify_effects()
+#
+#     de_vars_current <- exposure_estimates[[count]] %>%
+#         filter(effect == "direct") %>%
+#         pull(index_node) %>%
+#         unique()
+#
+#     de_vars <- na.omit(c(de_vars, de_vars_current))
+#
+#     count <- count + 1
+# }
