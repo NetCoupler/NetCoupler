@@ -87,9 +87,6 @@
 #'     .model_function = lm
 #'    )
 #'
-#' nc_filter_estimates(multimodel_exposure)
-#' nc_classify_effects(multimodel_exposure)
-#'
 #' multimodel_outcome <- simulated_data %>%
 #'   mutate(Random = rnorm(nrow(.))) %>%
 #'   nc_outcome_estimates(
@@ -100,9 +97,6 @@
 #'     .model_arg_list = list(family = binomial(link = "logit")),
 #'     .exponentiate = TRUE
 #'   )
-#'
-#' nc_filter_estimates(multimodel_outcome)
-#' nc_classify_effects(multimodel_outcome)
 #'
 #'
 NULL
