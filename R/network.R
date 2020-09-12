@@ -20,15 +20,9 @@ nc_estimate_network <- function(.tbl, .vars = everything(), .alpha = 0.05) {
     assert_is_data.frame(.tbl)
     assert_is_a_number(.alpha)
 
-    .tbl <- .tbl %>%
-        select({{.vars}})
-
-    .graph <- .tbl %>%
-        pc_skeleton_estimates(.alpha)
-
     .tbl %>%
-        compute_adjacency_graph(.graph = .graph) %>%
-        tidygraph::as_tbl_graph()
+        select({{.vars}}) %>%
+        pc_skeleton_estimates(.alpha)
 }
 
 #' Convert network graph to edge table.
@@ -36,7 +30,7 @@ nc_estimate_network <- function(.tbl, .vars = everything(), .alpha = 0.05) {
 #' @description
 #' \lifecycle{experimental}
 #'
-#' @param .edge_list Network graph from e.g. [nc_estimate_network()]
+#' @param .network Network graph from e.g. [nc_estimate_network()].
 #'
 #' @return A [tibble][tibble::tibble-package], with at least two columns:
 #'
@@ -45,18 +39,52 @@ nc_estimate_network <- function(.tbl, .vars = everything(), .alpha = 0.05) {
 #'
 #' @export
 #'
-#' @seealso For examples of usage, see [nc_model_estimates()].
+#' @seealso [nc_model_estimates()].
 #'
-as_edge_tbl <- function(.edge_list) {
-    # TODO: Convert this to S3 method in case other network methods are different
-    if (class(.edge_list) != "pcAlgo") {
-        rlang::abort("The .edge_list is not from the pcalgo package. We currently do not have support for other network packages.")
-    }
-    .edge_list <- .edge_list@graph@edgeL
-    nodes <- names(.edge_list)
+as_edge_tbl <- function(.network) {
+    UseMethod("as_edge_tbl", .network)
+}
+
+#' @export
+as_edge_tbl.tbl_graph <- function(.network) {
+    nodes <- .network %>%
+        tidygraph::activate("nodes") %>%
+        mutate(id = dplyr::row_number(name)) %>%
+        tidygraph::as_tibble()
+
+    edges <- .network %>%
+        tidygraph::activate("edges") %>%
+        tidygraph::as_tibble()
+
+    tibble(
+        source_node = edges %>%
+            left_join(nodes, by = c("from" = "id")) %>%
+            pull(name),
+        target_node = edges %>%
+            left_join(nodes, by = c("to" = "id")) %>%
+            pull(name),
+        adjacency_weight = edges$weight
+    )
+}
+
+
+#' @export
+as_edge_tbl.data.frame <- function(.network) {
+    # if (names(.network) %in% c("source_node", "target_node"))
+}
+
+#' @export
+as_edge_tbl.default <- function(.network) {
+    rlang::abort("The `.network` object is not from the pcalgo package. We currently do not have support for other network packages.")
+}
+
+#' @export
+as_edge_tbl.pcAlgo <- function(.network) {
+    .network <- .network@graph@edgeL
+    nodes <- names(.network)
     edge_table <- purrr::map_dfr(
-        .edge_list,
-        .single_edge_list_to_tbl,
+        .network,
+        .single_network_to_tbl,
         .id = "source_node",
         .nodes = nodes
     )
@@ -74,6 +102,7 @@ as_edge_tbl <- function(.edge_list) {
 #' @keywords internal
 #'
 compute_adjacency_graph <- function(.tbl, .graph) {
+    # TODO: This may change underlying graph connections, check into this.
     weighted_adjacency_matrix <- compute_adjacency_matrix(.graph) *
         round(compute_partial_corr_matrix(.tbl), digits = 3)
 
@@ -180,6 +209,6 @@ pc_skeleton_estimates <- function(.tbl, .alpha = 0.01) {
 
 # Helpers -----------------------------------------------------------------
 
-.single_edge_list_to_tbl <- function(.edges, .nodes) {
+.single_network_to_tbl <- function(.edges, .nodes) {
     tibble(target_node = .nodes[.edges$edges])
 }
