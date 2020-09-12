@@ -234,6 +234,8 @@ compute_model_estimates <-
     return(tidied_models)
 }
 
+# Helpers -----------------------------------------------------------------
+
 .all_neighbour_combinations <- function(.edge_table) {
     neighbours <- .edge_table$target_node
     all_combinations <- lapply(seq_along(neighbours),
