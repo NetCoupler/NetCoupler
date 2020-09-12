@@ -33,31 +33,32 @@
 nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
     if (!is.null(.regressed_on)) {
         assertive.types::assert_is_character(.regressed_on)
-        standardized_data <- .replace_with_residuals(
+        standardized_data <- replace_with_residuals(
             .tbl = .tbl,
             .vars = {{ .vars }},
             .regressed_on = .regressed_on
         )
     } else {
         standardized_data <- .tbl %>%
-            mutate(dplyr::across(.cols = {{ .vars }}, .fns = .log_standardize))
+            mutate(dplyr::across(.cols = {{ .vars }}, .fns = log_standardize))
     }
     return(standardized_data)
 }
 
+# Helpers -----------------------------------------------------------------
 
-.log_standardize <- function(x) {
+log_standardize <- function(x) {
     as.numeric(scale(log(x)))
 }
 
-.log_regress_standardize <- function(x, regressed_on) {
+log_regress_standardize <- function(x, regressed_on) {
     # TODO: Decide which method to regress by. lm only?
     logged_x <- log(x)
     residual_x <- stats::residuals(stats::glm.fit(y = logged_x, x = regressed_on))
     as.numeric(scale(residual_x))
 }
 
-.replace_with_residuals <- function(.tbl, .vars, .regressed_on) {
+replace_with_residuals <- function(.tbl, .vars, .regressed_on) {
     metabolic_names <- .tbl %>%
         select({{ .vars }}) %>%
         names()
@@ -70,7 +71,7 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
         select(-all_of(metabolic_names))
 
     data_with_residuals <- metabolic_names %>%
-        purrr::map(~ .extract_residuals(.x, data_with_id_var, .regressed_on)) %>%
+        purrr::map(~ extract_residuals(.x, data_with_id_var, .regressed_on)) %>%
         purrr::reduce(dplyr::full_join, by = ".id_variable")
 
     standardized_data <- data_with_residuals %>%
@@ -83,7 +84,7 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
     return(standardized_data)
 }
 
-.extract_residuals <- function(.var, .tbl, .regressed_on, .id_var = ".id_variable") {
+extract_residuals <- function(.var, .tbl, .regressed_on, .id_var = ".id_variable") {
     no_missing <- .tbl %>%
         select(all_of(c(.var, .regressed_on, .id_var))) %>%
         stats::na.omit()
@@ -92,7 +93,7 @@ nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
     regress_on_vars <- no_missing[.regressed_on]
 
     metabolic_residuals <-
-        .log_regress_standardize(metabolic_var,
+        log_regress_standardize(metabolic_var,
                                  regress_on_vars)
 
     no_missing[.var] <- metabolic_residuals

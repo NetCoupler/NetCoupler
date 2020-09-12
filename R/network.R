@@ -84,7 +84,7 @@ as_edge_tbl.pcAlgo <- function(.network) {
     nodes <- names(.network)
     edge_table <- purrr::map_dfr(
         .network,
-        .single_network_to_tbl,
+        single_network_to_tbl,
         .id = "source_node",
         .nodes = nodes
     )
@@ -209,6 +209,6 @@ pc_skeleton_estimates <- function(.tbl, .alpha = 0.01) {
 
 # Helpers -----------------------------------------------------------------
 
-.single_network_to_tbl <- function(.edges, .nodes) {
+single_network_to_tbl <- function(.edges, .nodes) {
     tibble(target_node = .nodes[.edges$edges])
 }

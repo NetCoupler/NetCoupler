@@ -19,7 +19,7 @@
 #'   detailed description of the algorithm used to classify direct effects.
 #'   [nc_model_estimates]
 #'
-nc_classify_effects <- function(.tbl) {
+classify_effects <- function(.tbl) {
     # TODO: Use an attribute as a "check"
     assert_is_data.frame(.tbl)
     check_tbl(.tbl)
