@@ -112,7 +112,7 @@ nc_exposure_estimates <-
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
-        multiple_models <- .compute_model_estimates(
+        multiple_models <- compute_model_estimates(
             .tbl = .tbl,
             .edge_tbl = .edge_tbl,
             .external_var = .exposure,
@@ -138,7 +138,7 @@ nc_outcome_estimates <-
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
-        multiple_models <- .compute_model_estimates(
+        multiple_models <- compute_model_estimates(
             .tbl = .tbl,
             .edge_tbl = .edge_tbl,
             .external_var = .outcome,
@@ -153,9 +153,10 @@ nc_outcome_estimates <-
             dplyr::rename("outcome" = "external_var")
 }
 
-#' @describeIn nc_model_estimates Internal function. Included to document algorithm.
+#' @describeIn nc_model_estimates Internal function. Included to document
+#'   algorithm.
 #' @keywords internal
-.compute_model_estimates <-
+compute_model_estimates <-
     function(.tbl,
              .edge_tbl,
              .external_var,
