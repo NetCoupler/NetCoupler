@@ -6,29 +6,32 @@ library(survival)
 
 # including exposure and network-variables (a-p)
 
+# TODO: Update this so it is using lavaan instead?
 dag_graph <- dagitty('dag {
-    exposure -> metabolite_1 [beta=-.8]
-    exposure -> metabolite_8 [beta=.8]
-    exposure -> metabolite_10 [beta=.60]
-    metabolite_1 -> metabolite_2 [beta=-.3]
-    metabolite_2 -> metabolite_3 [beta=.2]
-    metabolite_3 -> metabolite_4 [beta=.5]
-    metabolite_4 -> metabolite_5 [beta=.3]
-    metabolite_5 -> metabolite_6 [beta=-.6]
-    metabolite_2 -> metabolite_7 [beta=.3]
-    metabolite_7 -> metabolite_8 [beta=.3]
-    metabolite_8 -> metabolite_9 [beta=.5]
-    metabolite_9 -> metabolite_10 [beta=-.3]
-    metabolite_10 -> metabolite_11 [beta=.5]
-    metabolite_1 -> metabolite_12 [beta=.2]
-    metabolite_3 -> metabolite_12 [beta=.5]
-    metabolite_4 -> metabolite_12 [beta=-.3]
-    metabolite_5 -> metabolite_9 [beta=.5]
-    metabolite_6 -> metabolite_10 [beta=.3]
-    metabolite_10 -> metabolite_12 [beta=-.65]
-    metabolite_3 -> outcome_continuous [beta=-0.80]
-    metabolite_9 -> outcome_continuous [beta=0.70]
-    metabolite_12 -> outcome_continuous [beta=0.50]
+    exposure -> metabolite_1
+    exposure -> metabolite_8
+    exposure -> metabolite_10
+    metabolite_1 -> metabolite_2
+    metabolite_2 -> metabolite_3
+    metabolite_3 -> metabolite_4
+    metabolite_4 -> metabolite_5
+    metabolite_5 -> metabolite_6
+    metabolite_2 -> metabolite_7
+    metabolite_7 -> metabolite_8
+    metabolite_8 -> metabolite_9
+    metabolite_9 -> metabolite_10
+    metabolite_10 -> metabolite_11
+    metabolite_1 -> metabolite_12
+    metabolite_3 -> metabolite_12
+    metabolite_4 -> metabolite_12
+    metabolite_5 -> metabolite_9
+    metabolite_6 -> metabolite_10
+    metabolite_10 -> metabolite_12
+    metabolite_3 -> outcome_continuous
+    metabolite_9 -> outcome_continuous
+    metabolite_12 -> outcome_continuous
+    exposure [exposure]
+    outcome_continuous [outcome]
 }')
 
 simulated_dag_data <- simulateSEM(dag_graph, N = 2000) %>%
