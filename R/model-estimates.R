@@ -108,7 +108,6 @@ nc_exposure_estimates <-
              .edge_tbl,
              .exposure,
              .adjustment_vars = NA,
-             .direct_effect_vars = NA,
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
@@ -117,7 +116,6 @@ nc_exposure_estimates <-
             .edge_tbl = .edge_tbl,
             .external_var = .exposure,
             .adjustment_vars = .adjustment_vars,
-            .direct_effect_vars = .direct_effect_vars,
             .model_function = .model_function,
             .model_arg_list = .model_arg_list,
             .exponentiate = .exponentiate,
@@ -136,7 +134,6 @@ nc_outcome_estimates <-
              .edge_tbl,
              .outcome,
              .adjustment_vars = NA,
-             .direct_effect_vars = NA,
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE) {
@@ -145,7 +142,6 @@ nc_outcome_estimates <-
             .edge_tbl = .edge_tbl,
             .external_var = .outcome,
             .adjustment_vars = .adjustment_vars,
-            .direct_effect_vars = .direct_effect_vars,
             .model_function = .model_function,
             .model_arg_list = .model_arg_list,
             .exponentiate = .exponentiate,
@@ -164,7 +160,6 @@ compute_model_estimates <-
              .edge_tbl,
              .external_var,
              .adjustment_vars = NA,
-             .direct_effect_vars = NA,
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE,
@@ -177,8 +172,6 @@ compute_model_estimates <-
     # TODO: This check needs to be better constructed
     if (!any(is.na(.adjustment_vars)))
         assert_is_character(.adjustment_vars)
-    if (!any(is.na(.direct_effect_vars)))
-        assert_is_character(.direct_effect_vars)
     if (!is.null(.model_arg_list))
         assert_is_list(.model_arg_list)
     assert_is_logical(.exponentiate)
@@ -191,7 +184,7 @@ compute_model_estimates <-
         .network_tbl = network_combinations,
         .ext_var = .external_var,
         .ext_side = .external_side,
-        .adj_vars = c(.adjustment_vars, .direct_effect_vars)
+        .adj_vars = .adjustment_vars
     )
 
     variables_to_keep <- formula_list %>%
@@ -224,12 +217,7 @@ compute_model_estimates <-
                 !any(is.na(.adjustment_vars)),
                 paste(.adjustment_vars, collapse = ", "),
                 NA_character_
-            ),
-            adj_direct_effect_vars = dplyr::if_else(
-                !any(is.na(.direct_effect_vars)),
-                paste(.direct_effect_vars, collapse = ", "),
-                NA_character_
-            ),
+            )
         ) %>%
         dplyr::relocate(c("external_var", "index_node", "model_id")) %>%
         dplyr::rename_with(~ gsub("\\.", "_", .))
