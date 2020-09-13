@@ -340,16 +340,28 @@ standardized_data <- simulated_data %>%
     nc_standardize(starts_with("metabolite"))
 ```
 
-Then estimate the outcome or exposure:
+Now you can estimate the outcome or exposure and identify direct effects
+for either the exposure side (`exposure -> metabolite`) 
+or the outcome side (`metabolite -> outcome`).
+For more detail on the algorithm, see the `vignette("description")`.
+For the exposure side, 
+the function identifies whether a link between the exposure 
+and an index node (one metabolic variable in the network) exists,
+regardless of conditioning on potential confounders 
+and on neighbouring nodes (other metabolic variables linked to the index variable).
+Depending on how consistent and strong the link is,
+the effect is classified as "direct", "ambiguous", or "none".
+
+In the example below, we specifically generated the simulated data so that
+the exposure associated with the metabolites 1, 8, and 12.
+And as we can see, those links have been correctly identified.
 
 ```{r example-use, cache=TRUE}
 outcome_estimates <- standardized_data %>%
     nc_outcome_estimates(
         .edge_tbl = as_edge_tbl(metabolite_network),
-        .outcome = "case_status",
-        .model_function = glm,
-        .model_arg_list = list(family = binomial(link = "logit")),
-        .exponentiate = TRUE
+        .outcome = "outcome_continuous",
+        .model_function = lm
     )
 
 outcome_estimates
@@ -367,22 +379,6 @@ exposure_estimates
 
 ### Classifying direct effects on exposure or outcome side
 
-You can classify direct effects by using `nc_classify_effects()`,
-which works on both the exposure side (`exposure -> metabolite`) 
-and the outcome side (`metabolite -> outcome`).
-The function applies a simple algorithm, described in more
-detail in `vignette("description")`.
-For the exposure side, 
-the function identifies whether a link between the exposure 
-and an index node (one metabolic variable in the network) exists,
-regardless of conditioning on potential confounders 
-and on neighbouring nodes (other metabolic variables linked to the index variable).
-Depending on how consistent and strong the link is,
-the effect is classified as "direct", "ambiguous", or "none".
-
-In the example below, we specifically generated the simulated data so that
-the exposure associated with the metabolites 1, 8, and 12.
-And as we can see, those links have been correctly identified.
 
 ```{r classify-exposure-effects}
 exposure_direct_effects <- exposure_estimates %>% 
