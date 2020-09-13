@@ -65,10 +65,9 @@ keep_xvar_model_estimates <- function(.tbl, main_x_var) {
 extract_neighbour_nodes <-
     function(term_var,
              adj_var,
-             main_x_var,
-             de_var) {
+             main_x_var) {
 
-    adjusted_variables <- c(adj_var, de_var) %>%
+    adjusted_variables <- adj_var %>%
         unique() %>%
         strsplit(", ") %>%
         unlist() %>%
@@ -102,8 +101,7 @@ add_neighbours_by_model <- function(.tbl, main_x_var) {
             neighbour_vars = extract_neighbour_nodes(
                 .data$term,
                 .data$adjusted_vars,
-                .data[[main_x_var]],
-                .data$adj_direct_effect_vars
+                .data[[main_x_var]]
             )
         ) %>%
         dplyr::ungroup()
