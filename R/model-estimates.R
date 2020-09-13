@@ -39,13 +39,16 @@
 #' @examples
 #'
 #' library(dplyr)
-#' metabolite_network <- simulated_data %>%
-#'   select(matches("metabolite")) %>%
-#'   nc_estimate_network()
+#' standardized_data <- simulated_data %>%
+#'     nc_standardize(starts_with("metabolite"))
 #'
+#' metabolite_network <- simulated_data %>%
+#'     nc_standardize(starts_with("metabolite"),
+#'                    .regressed_on = "age") %>%
+#'     nc_estimate_network(starts_with("metabolite"))
 #' edge_table <- as_edge_tbl(metabolite_network)
 #'
-#' simulated_data %>%
+#' standardized_data %>%
 #'   nc_exposure_estimates(
 #'     .edge_tbl = edge_table,
 #'     .exposure = "exposure",
@@ -151,10 +154,10 @@ compute_model_estimates <-
     assert_is_logical(.exponentiate)
     assert_is_function(.model_function)
 
-    network_combinations <- .generate_all_network_combinations(.edge_tbl)
+    network_combinations <- generate_all_network_combinations(.edge_tbl)
 
     .external_side <- rlang::arg_match(.external_side)
-    formula_list <- .generate_formula_list(
+    formula_list <- generate_formula_list(
         .network_tbl = network_combinations,
         .ext_var = .external_var,
         .ext_side = .external_side,
@@ -182,7 +185,7 @@ compute_model_estimates <-
     model_tbl <- model_arg_list %>%
         furrr::future_pmap(purrr::lift_dl(.model_function), other_args) %>%
         furrr::future_map2_dfr(network_index_nodes,
-                 .tidy_models, .exponentiate = .exponentiate)
+                 tidy_models, .exponentiate = .exponentiate)
 
     tidied_models <- model_tbl %>%
         mutate(
@@ -201,7 +204,7 @@ compute_model_estimates <-
 
 # Helpers -----------------------------------------------------------------
 
-.all_neighbour_combinations <- function(.edge_table) {
+all_neighbour_combinations <- function(.edge_table) {
     neighbours <- .edge_table$target_node
     all_combinations <- lapply(seq_along(neighbours),
                                utils::combn,
@@ -210,7 +213,7 @@ compute_model_estimates <-
     unlist(all_combinations, recursive = FALSE)
 }
 
-.tidy_models <- function(.object, .index_node, .exponentiate) {
+tidy_models <- function(.object, .index_node, .exponentiate) {
     model_id <- ids::random_id(1, bytes = 8)
     model_estimates <- .object %>%
         broom::tidy(exponentiate = .exponentiate, conf.int = TRUE) %>%
@@ -219,10 +222,10 @@ compute_model_estimates <-
                index_node = .index_node)
 
     model_estimates %>%
-        .conditionally_add_model_summary(.object)
+        conditionally_add_model_summary(.object)
 }
 
-.conditionally_add_model_summary <- function(.tbl, .object) {
+conditionally_add_model_summary <- function(.tbl, .object) {
     if (!any(class(.object) %in% c("lm", "glm"))) {
         return(.tbl)
     }
@@ -246,16 +249,16 @@ compute_model_estimates <-
     }
 }
 
-.generate_all_network_combinations <- function(.edge_tbl) {
+generate_all_network_combinations <- function(.edge_tbl) {
     split(.edge_tbl, .edge_tbl$source_node) %>%
-        map(.all_neighbour_combinations) %>%
+        map(all_neighbour_combinations) %>%
         imap_dfr(
             ~ tibble(index_node = .y, neighbours = .x) %>%
                 dplyr::add_row(index_node = .y, neighbours = NULL)
         )
 }
 
-.generate_formula_list <-
+generate_formula_list <-
     function(.network_tbl, .ext_var, .ext_side, .adj_vars) {
         xvars_prep <-
             list(.network_tbl$neighbours) %>%
