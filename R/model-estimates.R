@@ -63,20 +63,6 @@
 #'     .exponentiate = TRUE
 #'   )
 #'
-#' library(dplyr)
-#' metabolite_data <- simulated_data %>%
-#'   select(starts_with("metabolite"))
-#' network <- metabolite_data %>%
-#'   nc_estimate_network()
-#' nc_plot_network(
-#'   metabolite_data,
-#'   network,
-#'   .fn_node_rename = function(x) gsub("metabolite_", "M", x)
-#' )
-#' library(dplyr)
-#' metabolite_network <- simulated_data %>%
-#'   select(matches("metabolite")) %>%
-#'   nc_estimate_network()
 #' multimodel_exposure <- simulated_data %>%
 #'   mutate(Random = rnorm(nrow(.)),
 #'          Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) %>%
@@ -86,18 +72,6 @@
 #'     .adjustment_vars = c("age", "Random", "Sex"),
 #'     .model_function = lm
 #'    )
-#'
-#' multimodel_outcome <- simulated_data %>%
-#'   mutate(Random = rnorm(nrow(.))) %>%
-#'   nc_outcome_estimates(
-#'     .graph = metabolite_network,
-#'     .outcome = "case_status",
-#'     .model_function = glm,
-#'     .adjustment_vars = c("age", "Random"),
-#'     .model_arg_list = list(family = binomial(link = "logit")),
-#'     .exponentiate = TRUE
-#'   )
-#'
 #'
 NULL
 
