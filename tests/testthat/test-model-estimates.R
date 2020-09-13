@@ -28,7 +28,7 @@ test_that("outcome side estimation outputs correctly", {
 
 test_that("one or more adjustment variable can be added", {
     one_adj <- simulated_data %>%
-        .compute_model_estimates(
+        compute_model_estimates(
             .graph = metabolite_network,
             .external_var = "exposure",
             .external_side = "exposure",
@@ -41,7 +41,7 @@ test_that("one or more adjustment variable can be added", {
 
     two_adj <- simulated_data %>%
         mutate(Random = rnorm(nrow(.))) %>%
-        .compute_model_estimates(
+        compute_model_estimates(
             .graph = metabolite_network,
             .external_var = "exposure",
             .external_side = "exposure",
