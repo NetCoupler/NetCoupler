@@ -408,7 +408,7 @@ more legible plots.
 nc_plot_outcome_estimation(
     standardized_data,
     metabolite_network,
-    outcome_direct_effects
+    outcome_estimates
 )
 ```
 
@@ -418,4 +418,27 @@ nc_plot_exposure_estimation(
     metabolite_network,
     exposure_direct_effects
 )
+```
+
+## Slow code? Use parallel processing with future
+
+If the analysis is taking a while, you can use the future package to speed things
+up by implementing parallel processing. Set the `.parallel` argument to `TRUE`
+in either `nc_outcome_estimates()` or `nc_exposure_estimates()` and then use
+the future package with a given `plan()`. If you use RStudio, the only usable
+strategy is `multisession`. After you run your code, close up the parallel
+processing by putting it back to normal with `plan(sequential)`. Using the future
+package you can speed up the processing by almost 2.5 times.
+
+```{r future-parallel-processing, eval=FALSE}
+library(future)
+plan(multisession)
+outcome_estimates <- standardized_data %>%
+    nc_outcome_estimates(
+        .edge_tbl = as_edge_tbl(metabolite_network),
+        .outcome = "outcome_continuous",
+        .model_function = lm,
+        .parallel = TRUE
+    )
+plan(sequential)
 ```
