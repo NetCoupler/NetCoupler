@@ -104,7 +104,7 @@ as_edge_tbl.pcAlgo <- function(.network) {
 #'
 #' @inheritParams nc_plot_network
 #'
-#' @return Outputs an `igraph` object from [igraph::graph.adjacency()].
+#' @return Outputs an `igraph` object from [igraph::graph_from_adjacency_matrix()].
 #' @keywords internal
 #'
 compute_adjacency_graph <- function(.tbl, .graph) {
@@ -121,8 +121,8 @@ compute_adjacency_graph <- function(.tbl, .graph) {
 #' @description
 #' \lifecycle{experimental}
 #'
-#' Is generally a wrapper around calls to [igraph::get.adjacency()] and
-#' [igraph::igraph.from.graphNEL()]. Transforms from a GraphNEL object in igraph.
+#' Is generally a wrapper around calls to [igraph::as_adjacency_matrix()] and
+#' [igraph::graph_from_graphnel()]. Transforms from a GraphNEL object in igraph.
 #'
 #' @param .dag_skeleton The PC DAG skeleton object.
 #'
@@ -131,7 +131,8 @@ compute_adjacency_graph <- function(.tbl, .graph) {
 #'
 compute_adjacency_matrix <- function(.dag_skeleton) {
     # TODO: Include a check here that it is a DAG skeleton..?
-    igraph::get.adjacency(igraph::igraph.from.graphNEL(.dag_skeleton@graph))
+    from_skeleton <- igraph::graph_from_graphnel(.dag_skeleton@graph)
+    igraph::as_adjacency_matrix(from_skeleton)
 }
 
 #' Estimate Pearson's partial correlation coefficients.
