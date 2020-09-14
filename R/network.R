@@ -152,7 +152,6 @@ compute_adjacency_matrix <- function(.dag_skeleton) {
 #' @keywords internal
 #'
 compute_partial_corr_matrix <- function(.tbl) {
-    # TODO: check if input data is gaussian
     pcor_matrix <- ppcor::pcor(.tbl)$estimate
     colnames(pcor_matrix) <- colnames(.tbl)
     rownames(pcor_matrix) <- colnames(.tbl)
