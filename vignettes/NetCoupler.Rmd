@@ -369,39 +369,30 @@ outcome_estimates <- standardized_data %>%
         .outcome = "outcome_continuous",
         .model_function = lm
     )
-
 outcome_estimates
 
 exposure_estimates <- standardized_data %>%
     nc_exposure_estimates(
         .edge_tbl = as_edge_tbl(metabolite_network),
         .exposure = "exposure",
-        .adjustment_vars = "age",
         .model_function = lm
     )
 
 exposure_estimates
 ```
 
-### Classifying direct effects on exposure or outcome side
+If you want to adjust for confounders and having already used `.regressed_on` in
+the `nc_standardize()` function, add confounders to `nc_outcome_estimates()`
+or `nc_exposure_estimates()` with the `.adjustment_vars` argument:
 
-
-```{r classify-exposure-effects}
-exposure_direct_effects <- exposure_estimates %>% 
-    nc_classify_effects()
-exposure_direct_effects
-exposure_direct_effects %>% 
-    dplyr::filter(direct_effect == "direct")
-```
-
-You can also classify direct effects with an outcome using the same function:
-
-```{r classify-outcome-effects}
-outcome_direct_effects <- outcome_estimates %>% 
-    nc_classify_effects()
-outcome_direct_effects
-outcome_direct_effects %>% 
-    dplyr::filter(direct_effect == "direct")
+```{r estimation-adjustment, eval=FALSE}
+outcome_estimates <- standardized_data %>%
+    nc_outcome_estimates(
+        .edge_tbl = as_edge_tbl(metabolite_network),
+        .outcome = "outcome_continuous",
+        .model_function = lm,
+        .adjustment_vars = "age"
+    )
 ```
 
 ### Plotting 
