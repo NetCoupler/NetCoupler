@@ -87,7 +87,8 @@ nc_exposure_estimates <-
              .adjustment_vars = NA,
              .model_function,
              .model_arg_list = NULL,
-             .exponentiate = FALSE) {
+             .exponentiate = FALSE,
+             .parallel = FALSE) {
         multiple_models <- compute_model_estimates(
             .tbl = .tbl,
             .edge_tbl = .edge_tbl,
@@ -96,7 +97,8 @@ nc_exposure_estimates <-
             .model_function = .model_function,
             .model_arg_list = .model_arg_list,
             .exponentiate = .exponentiate,
-            .external_side = "exposure"
+            .external_side = "exposure",
+            .parallel = .parallel
         )
         multiple_models %>%
             dplyr::rename("exposure" = "external_var") %>%
@@ -113,7 +115,8 @@ nc_outcome_estimates <-
              .adjustment_vars = NA,
              .model_function,
              .model_arg_list = NULL,
-             .exponentiate = FALSE) {
+             .exponentiate = FALSE,
+             .parallel = FALSE) {
         multiple_models <- compute_model_estimates(
             .tbl = .tbl,
             .edge_tbl = .edge_tbl,
@@ -122,7 +125,8 @@ nc_outcome_estimates <-
             .model_function = .model_function,
             .model_arg_list = .model_arg_list,
             .exponentiate = .exponentiate,
-            .external_side = "outcome"
+            .external_side = "outcome",
+            .parallel = .parallel
         )
         multiple_models %>%
             dplyr::rename("outcome" = "external_var") %>%
@@ -140,7 +144,8 @@ compute_model_estimates <-
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE,
-             .external_side = c("exposure", "outcome")) {
+             .external_side = c("exposure", "outcome"),
+             .parallel = FALSE) {
 
     # TODO: Use tidy eval style input for variables.
     assert_is_data.frame(.tbl)
@@ -182,10 +187,15 @@ compute_model_estimates <-
         map(~all.vars(.)[1]) %>%
         purrr::flatten_chr()
 
+    model_map2_dfr <- purrr::map2_dfr
+    if (.parallel) {
+        model_map2_dfr <- furrr::future_map2_dfr
+    }
+
     model_tbl <- model_arg_list %>%
-        furrr::future_pmap(purrr::lift_dl(.model_function), other_args) %>%
-        furrr::future_map2_dfr(network_index_nodes,
-                 tidy_models, .exponentiate = .exponentiate)
+        purrr::pmap(purrr::lift_dl(.model_function), other_args) %>%
+        model_map2_dfr(network_index_nodes,
+                       tidy_models, .exponentiate = .exponentiate)
 
     tidied_models <- model_tbl %>%
         mutate(
