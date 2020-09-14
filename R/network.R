@@ -46,6 +46,12 @@ as_edge_tbl <- function(.network) {
 }
 
 #' @export
+as_edge_tbl.igraph <- function(.network) {
+    .network %>%
+        tidygraph::as_tbl_graph()
+}
+
+#' @export
 as_edge_tbl.tbl_graph <- function(.network) {
     nodes <- .network %>%
         tidygraph::activate("nodes") %>%
