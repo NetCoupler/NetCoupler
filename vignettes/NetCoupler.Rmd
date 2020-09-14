@@ -292,22 +292,27 @@ library(dplyr)
 
 For estimating the network, it's (basically) required to standardize
 the metabolic variables before inputting into `nc_estimate_network()`.
-If you intend to also adjust for potential confounders when estimating
-the exposure or outcome side connections,
-you can include the potential impact these confounders may have on 
-the network by regressing the confounders on the metabolic variables.
-Then the residuals can be extracted and used when constructing the network.
-You do this with the `nc_standardize()` function. 
 This function also log-transforms and scales 
 (mean-center and z-score normalize) the values of the metabolic variables.
 We do this because the network estimation algorithm can sometimes be finicky
 about differences in variable numerical scale (mean of 1 vs mean of 1000).
 
-```{r metabolic-residuals}
+```{r metabolic-standardize}
 std_metabolic_data <- simulated_data %>% 
-    nc_standardize(starts_with("metabolite"), 
-                   .regressed_on = "age") %>% 
-    select(starts_with("metabolite"))
+    nc_standardize(starts_with("metabolite"))
+```
+
+If you intend to also adjust for potential confounders when estimating
+the exposure or outcome side connections,
+you can include the potential impact these confounders may have on 
+the network by regressing the confounders on the metabolic variables.
+Then the residuals can be extracted and used when constructing the network.
+You do this also with the `nc_standardize()` function. 
+
+```{r metabolic-standardize-residuals, eval=FALSE}
+std_metabolic_data <- simulated_data %>% 
+    nc_standardize(starts_with("metabolite"),
+                   .regressed_on = "age")
 ```
 
 After that, you can estimate the network.
