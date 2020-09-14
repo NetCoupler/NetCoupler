@@ -292,7 +292,7 @@ generate_formula_list <-
                            y = .ext_var)
         )
 
-        xvar_input <- list(xvars_prep, external_input$x) %>%
+        xvar_input <- list(external_input$x, xvars_prep) %>%
             purrr::pmap(c) %>%
             map(unique) %>%
             map2(external_input$y, ~.x[!.x %in% .y]) %>%
