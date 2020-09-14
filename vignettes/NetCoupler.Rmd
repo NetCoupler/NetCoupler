@@ -320,7 +320,7 @@ After that, you can estimate the network.
 ```{r create-network}
 # Make partial independence network from metabolite data
 metabolite_network <- std_metabolic_data %>% 
-    nc_estimate_network()
+    nc_estimate_network(starts_with("metabolite"))
 ```
 
 To see what the network looks like,
@@ -328,7 +328,8 @@ use the function `nc_plot_network()`.
 
 ```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5}
 std_metabolic_data %>%
-    nc_plot_network(metabolite_network)
+    nc_plot_network(metabolite_network, 
+                    starts_with("metabolite"))
 ```
 
 The plot is a bit crowded, but it provides a base to start tidying up from.
