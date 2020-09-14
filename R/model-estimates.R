@@ -231,8 +231,10 @@ tidy_models <- function(.object, .index_node, .exponentiate) {
         mutate(model_id = model_id,
                index_node = .index_node)
 
-    model_estimates %>%
-        conditionally_add_model_summary(.object)
+    model_estimates
+    # For now, this code increases computing time for not much benefit (that I see)
+    # model_estimates %>%
+    #     conditionally_add_model_summary(.object)
 }
 
 conditionally_add_model_summary <- function(.tbl, .object) {
