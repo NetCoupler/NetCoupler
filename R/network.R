@@ -112,8 +112,11 @@ compute_adjacency_graph <- function(.tbl, .graph) {
     weighted_adjacency_matrix <- compute_adjacency_matrix(.graph) *
         round(compute_partial_corr_matrix(.tbl), digits = 3)
 
-    igraph::graph.adjacency(weighted_adjacency_matrix,
-                            weighted = TRUE, mode = "undirected")
+    igraph::graph_from_adjacency_matrix(
+        as.matrix(weighted_adjacency_matrix),
+        weighted = TRUE,
+        mode = "undirected"
+    )
 }
 
 #' Extract adjacency matrix from a DAG skeleton.
