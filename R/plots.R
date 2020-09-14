@@ -86,7 +86,7 @@ nc_plot_network <- function(.tbl,
                    ))
 }
 
-.plot_external_var <-
+plot_external_var <-
     function(.tbl,
              .graph,
              .tbl_model,
@@ -106,10 +106,10 @@ nc_plot_network <- function(.tbl,
         mutate(
             to = as.numeric(as.factor(.data$index_node)),
             from = length(unique(.data[[external_var]])) + length(unique(.data$index_node)),
-            direct_effect = dplyr::na_if(.data$direct_effect, "none"),
-            estimate = if_else(is.na(.data$direct_effect), NA_real_, .data$estimate)
+            effect = dplyr::na_if(.data$effect, "none"),
+            estimate = if_else(is.na(.data$effect), NA_real_, .data$estimate)
         ) %>%
-        select(all_of(c("from", "to", "estimate", "p_value", "direct_effect")))
+        select(all_of(c("from", "to", "estimate", "p_value", "effect")))
 
     tbl_graph_edges <- tbl_graph %>%
         tidygraph::activate("edges")
@@ -127,11 +127,10 @@ nc_plot_network <- function(.tbl,
     ) %>%
         tidygraph::activate("edges") %>%
         mutate(
-            estimate = if_else(.data$direct_effect == "none", NA_real_,
+            estimate = if_else(.data$effect == "none", NA_real_,
                                .data$estimate),
             weight = if_else(is.na(.data$weight), .data$estimate, .data$weight),
-            direct_effect = if_else(is.na(.data$direct_effect),
-                                    "direct", .data$direct_effect)
+            effect = if_else(is.na(.data$effect), "direct", .data$effect)
         ) %>%
         .define_edge_label(.edge_label_threshold) %>%
         mutate(edge_label = if_else(is.na(.data$edge_label),
@@ -157,14 +156,15 @@ nc_plot_network <- function(.tbl,
                 label = "edge_label",
                 colour = "weight",
                 width = "abs(weight)",
-                linetype = ".fct_rev(direct_effect)",
-                alpha = "direct_effect"
+                linetype = ".fct_rev(effect)",
+                alpha = "effect"
             ),
             angle_calc = "along",
             label_dodge = grid::unit(0.25, "cm")
         ) +
         ggraph::geom_node_point(size = 2) +
-        ggraph::scale_edge_colour_distiller(palette = "RdBu") +
+        # ggraph::scale_edge_colour_distiller(palette = "RdBu") +
+        ggraph::scale_edge_colour_gradient2(mid = "gray80") +
         ggraph::scale_edge_alpha_discrete(guide = FALSE, range = c(0.7, 1)) +
         ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
         ggraph::geom_node_text(ggplot2::aes_string(label = "name"),
@@ -197,11 +197,13 @@ nc_plot_outcome_estimation <- function(.tbl,
                                        .graph,
                                        .tbl_model,
                                        .edge_label_threshold = 0.2) {
-    .plot_external_var(.tbl = .tbl,
-                       .graph = .graph,
-                       .tbl_model = .tbl_model,
-                       .edge_label_threshold = .edge_label_threshold,
-                       .external_var_side = "outcome")
+    plot_external_var(
+        .tbl = .tbl,
+        .graph = .graph,
+        .tbl_model = .tbl_model,
+        .edge_label_threshold = .edge_label_threshold,
+        .external_var_side = "outcome"
+    )
 
 }
 
@@ -211,9 +213,11 @@ nc_plot_exposure_estimation <- function(.tbl,
                                         .graph,
                                         .tbl_model,
                                         .edge_label_threshold = 0.2) {
-    .plot_external_var(.tbl = .tbl,
-                       .graph = .graph,
-                       .tbl_model = .tbl_model,
-                       .edge_label_threshold = .edge_label_threshold,
-                       .external_var_side = "exposure")
+    plot_external_var(
+        .tbl = .tbl,
+        .graph = .graph,
+        .tbl_model = .tbl_model,
+        .edge_label_threshold = .edge_label_threshold,
+        .external_var_side = "exposure"
+    )
 }
