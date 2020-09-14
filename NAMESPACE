@@ -2,6 +2,7 @@
 
 S3method(as_edge_tbl,data.frame)
 S3method(as_edge_tbl,default)
+S3method(as_edge_tbl,igraph)
 S3method(as_edge_tbl,pcAlgo)
 S3method(as_edge_tbl,tbl_graph)
 export("%>%")

@@ -7,14 +7,18 @@
 nc_plot_network(
   .tbl,
   .graph,
+  .vars = everything(),
   .edge_label_threshold = 0.2,
   .fn_node_rename = NULL
 )
 }
 \arguments{
-\item{.tbl}{The data containing only the metabolic variables.}
+\item{.tbl}{The data that was also used to generate the \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
 
 \item{.graph}{The network graph object of the metabolic variable network.}
+
+\item{.vars}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Variables to include
+by using \code{\link[dplyr:select]{dplyr::select()}} style selection.}
 
 \item{.edge_label_threshold}{Threshold set for edge weight value above which
 the edge label will be kept. This argument helps to reduce clutter in the
@@ -30,17 +34,6 @@ Outputs a \code{ggplot2} object of the metabolic network.
 \description{
 \lifecycle{experimental}
 }
-\examples{
-
-library(dplyr)
-metabolite_data <- simulated_data \%>\%
-  select(starts_with("metabolite"))
-network <- metabolite_data \%>\%
-  nc_create_network()
-nc_plot_network(
-  metabolite_data,
-  network,
-  .fn_node_rename = function(x) gsub("metabolite_", "M", x)
-)
-
+\seealso{
+\link{nc_model_estimates}
 }

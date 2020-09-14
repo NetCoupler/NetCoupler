@@ -4,7 +4,7 @@
 \alias{nc_standardize}
 \title{Standardize the metabolic variables.}
 \usage{
-nc_standardize(.tbl, .vars, .regressed_on = NULL)
+nc_standardize(.tbl, .vars = everything(), .regressed_on = NULL)
 }
 \arguments{
 \item{.tbl}{Data frame.}
