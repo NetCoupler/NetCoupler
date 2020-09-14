@@ -183,8 +183,15 @@ compute_model_estimates <-
     if (!is.null(.model_arg_list))
         other_args <- c(other_args, .model_arg_list)
 
+    var_to_extract <- 1
+    if (.external_side == "outcome")
+        var_to_extract <- 2
+    # Surv objects have two variables, time and case
+    if (grepl("survival::Surv\\(", .external_var))
+        var_to_extract <- 3
+
     network_index_nodes <- formula_list %>%
-        map(~all.vars(.)[1]) %>%
+        map(~all.vars(.)[var_to_extract]) %>%
         purrr::flatten_chr()
 
     model_map2_dfr <- purrr::map2_dfr
