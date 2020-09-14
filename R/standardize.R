@@ -30,7 +30,7 @@
 #' # Extract residuals by regressing on a variable
 #' simulated_data %>%
 #'   nc_standardize(matches("metabolite_"), "age")
-nc_standardize <- function(.tbl, .vars, .regressed_on = NULL) {
+nc_standardize <- function(.tbl, .vars = everything(), .regressed_on = NULL) {
     if (!is.null(.regressed_on)) {
         assertive.types::assert_is_character(.regressed_on)
         standardized_data <- replace_with_residuals(
