@@ -66,6 +66,7 @@ plot_external_var <-
         tidygraph::activate("edges")
 
     tbl_model_edges <- convert_model_data_to_model_edges(.tbl_model, external_var)
+
     tbl_edges <- dplyr::bind_rows(tbl_model_edges, as_tibble(tbl_graph_edges))
 
     tbl_graph_data <- tidygraph::tbl_graph(
@@ -88,8 +89,10 @@ plot_external_var <-
         ggraph::create_layout("stress") %>%
         mutate(y = if_else(.data$name == unique(.tbl_model[[external_var]]),
                            mean(.data$y), .data$y),
+               # Shift x axis over so nudge works
+               x = scale(.data$x, scale = FALSE),
                x = if_else(.data$name == unique(.tbl_model[[external_var]]),
-                           nudge_to_side(.data$x) * 2.25, .data$x))
+                           nudge_to_side(.data$x) * 2, .data$x))
 
     # TODO: Convert this into own geom object?
     tbl_graph_data %>%
