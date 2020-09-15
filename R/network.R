@@ -9,12 +9,14 @@
 #' Defaults to using the PC algorithm to calculate possible edges.
 #'
 #' @param .tbl Data of the metabolic variables.
+#' @param .vars <[`tidy-select`][dplyr::dplyr_tidy_select]> Variables to include
+#'   by using [dplyr::select()] style selection.
 #' @param .alpha The alpha level to set. Default is 0.05.
 #'
 #' @return Outputs a DAG skeleton.
 #' @export
 #'
-#' @seealso [nc_model_estimates]
+#' @seealso See [nc_model_estimates] for examples on using NetCoupler.
 #'
 nc_estimate_network <- function(.tbl, .vars = everything(), .alpha = 0.05) {
     assert_is_data.frame(.tbl)
@@ -39,7 +41,7 @@ nc_estimate_network <- function(.tbl, .vars = everything(), .alpha = 0.05) {
 #'
 #' @export
 #'
-#' @seealso [nc_model_estimates()].
+#' @seealso See [nc_model_estimates] for examples on using NetCoupler.
 #'
 as_edge_tbl <- function(.network) {
     UseMethod("as_edge_tbl", .network)
@@ -55,7 +57,7 @@ as_edge_tbl.igraph <- function(.network) {
 as_edge_tbl.tbl_graph <- function(.network) {
     nodes <- .network %>%
         tidygraph::activate("nodes") %>%
-        mutate(id = dplyr::row_number(name)) %>%
+        mutate(id = dplyr::row_number(.data$name)) %>%
         tidygraph::as_tibble()
 
     edges <- .network %>%
@@ -64,11 +66,11 @@ as_edge_tbl.tbl_graph <- function(.network) {
 
     tibble(
         source_node = edges %>%
-            left_join(nodes, by = c("from" = "id")) %>%
-            pull(name),
+            dplyr::left_join(nodes, by = c("from" = "id")) %>%
+            dplyr::pull(.data$name),
         target_node = edges %>%
-            left_join(nodes, by = c("to" = "id")) %>%
-            pull(name),
+            dplyr::left_join(nodes, by = c("to" = "id")) %>%
+            dplyr::pull(.data$name),
         adjacency_weight = edges$weight
     )
 }

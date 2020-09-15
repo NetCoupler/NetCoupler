@@ -1,5 +1,5 @@
 Package: NetCoupler
-Title: Inference of Causal Links Between a Network and an External Variable.
+Title: Inference of Causal Links Between a Network and an External Variable
 Version: 0.0.4
 Authors@R: 
     c(person(given = "Luke",

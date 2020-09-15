@@ -33,9 +33,9 @@ remove influence of potential confounding.
 
 # Don't regress on any variable
 simulated_data \%>\%
-  nc_standardize(matches("metabolite_"))
+  nc_standardize(starts_with("metabolite_"))
 
 # Extract residuals by regressing on a variable
 simulated_data \%>\%
-  nc_standardize(matches("metabolite_"), "age")
+  nc_standardize(starts_with("metabolite_"), "age")
 }

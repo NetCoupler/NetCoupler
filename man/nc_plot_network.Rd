@@ -31,5 +31,5 @@ Outputs a \code{ggplot2} object of the metabolic network.
 \lifecycle{experimental}
 }
 \seealso{
-\link{nc_model_estimates}
+See \link{nc_model_estimates} for examples on using NetCoupler.
 }

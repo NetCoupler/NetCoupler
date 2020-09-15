@@ -15,7 +15,7 @@
 #' @return Outputs a `ggplot2` object of the metabolic network.
 #' @export
 #'
-#' @seealso [nc_model_estimates]
+#' @seealso See [nc_model_estimates] for examples on using NetCoupler.
 #'
 nc_plot_network <- function(.tbl,
                             .graph,
@@ -204,7 +204,7 @@ discard_unconnected_nodes <- function(.tbl_graph) {
 
     .tbl_graph %>%
         tidygraph::activate("nodes") %>%
-        dplyr::filter(row_number() %in% connected_nodes)
+        dplyr::filter(dplyr::row_number() %in% connected_nodes)
 }
 
 convert_model_data_to_model_edges <- function(.tbl, .ext_var) {

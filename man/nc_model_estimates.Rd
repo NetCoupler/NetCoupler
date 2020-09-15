@@ -113,11 +113,11 @@ standardized_data \%>\%
   nc_exposure_estimates(
     .edge_tbl = edge_table,
     .exposure = "exposure",
-    .adjustment_vars = "age",
     .model_function = lm
    )
 
-simulated_data \%>\%
+# Using a logistic regression
+standardized_data \%>\%
   nc_outcome_estimates(
     .edge_tbl = edge_table,
     .outcome = "case_status",
@@ -127,11 +127,12 @@ simulated_data \%>\%
     .exponentiate = TRUE
   )
 
-multimodel_exposure <- simulated_data \%>\%
+# Adding random confounders to adjust for
+standardized_data \%>\%
   mutate(Random = rnorm(nrow(.)),
          Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) \%>\%
   nc_exposure_estimates(
-    .graph = metabolite_network,
+    .edge_tbl = edge_table,
     .exposure = "exposure",
     .adjustment_vars = c("age", "Random", "Sex"),
     .model_function = lm

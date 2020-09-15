@@ -4,7 +4,7 @@
 \name{NetCoupler-package}
 \alias{NetCoupler}
 \alias{NetCoupler-package}
-\title{NetCoupler: Inference of Causal Links Between a Network and an External Variable.}
+\title{NetCoupler: Inference of Causal Links Between a Network and an External Variable}
 \description{
 The NetCoupler algorithm identifies potential direct effects of 
     correlated, high-dimensional variables formed as a network with an external 

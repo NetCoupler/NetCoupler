@@ -20,5 +20,5 @@ A \link[tibble:tibble-package]{tibble}, with at least two columns:
 \lifecycle{experimental}
 }
 \seealso{
-\code{\link[=nc_model_estimates]{nc_model_estimates()}}.
+See \link{nc_model_estimates} for examples on using NetCoupler.
 }
