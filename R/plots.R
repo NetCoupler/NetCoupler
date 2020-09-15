@@ -69,25 +69,16 @@ plot_external_var <-
     tbl_edges <- dplyr::bind_rows(tbl_model_edges, as_tibble(tbl_graph_edges))
 
     tbl_graph_data <- tidygraph::tbl_graph(
-        nodes = tibble(name = tbl_graph_edges %>%
-                           tidygraph::activate("nodes") %>%
-                           dplyr::pull(.data$name) %>%
-                           dplyr::union(unique(
-                               .tbl_model[[external_var]]
-                           ))),
+        nodes = node_names_as_tibble(tbl_graph_edges, .tbl_model[[external_var]]),
         edges = tbl_edges
     ) %>%
-        tidygraph::activate("edges") %>%
-        mutate(
-            estimate = if_else(.data$effect == "none", NA_real_,
-                               .data$estimate),
-            weight = if_else(is.na(.data$weight), .data$estimate, .data$weight),
-            effect = if_else(is.na(.data$effect), "direct", .data$effect)
-        ) %>%
-        .define_edge_label(.edge_label_threshold) %>%
-        mutate(edge_label = if_else(is.na(.data$edge_label),
-                                    "",
-                                    .data$edge_label))
+        set_weights_and_tidy() %>%
+        define_edge_label(.edge_label_threshold) %>%
+        mutate(edge_label = if_else(
+            is.na(.data$edge_label) | .data$from == max(.data$from),
+            "",
+            .data$edge_label
+        ))
 
     nudge_to_side <- switch(.external_var_side,
                             exposure = min,
@@ -198,6 +189,10 @@ define_edge_label <- function(.tbl_graph, .edge_label_threshold = 0.2) {
                        ""
                    ))
 }
+
+    # node_with_edges <- .graph@graph@edgeL %>%
+    #     purrr::discard(~length(.x) == 0)
+
 discard_unconnected_nodes <- function(.tbl_graph) {
     .tbl_graph <- tidygraph::activate(.tbl_graph, "edges")
     edge_from <- dplyr::pull(.tbl_graph, .data$from)
@@ -222,3 +217,26 @@ convert_model_data_to_model_edges <- function(.tbl, .ext_var) {
         select(all_of(c("from", "to", "estimate", "effect")))
 }
 
+set_weights_and_tidy <- function(.tbl_graph) {
+    .tbl_graph %>%
+        tidygraph::activate("edges") %>%
+        mutate(
+            estimate = dplyr::case_when(
+                .data$effect == "ambiguous" & .data$estimate > 0 ~ 0.3,
+                .data$effect == "ambiguous" & .data$estimate < 0 ~ -0.3,
+                .data$effect == "direct" & .data$estimate > 0 ~ 0.7,
+                .data$effect == "direct" & .data$estimate < 0 ~ -0.7
+            ),
+            weight = if_else(is.na(.data$weight), .data$estimate, .data$weight),
+            effect = if_else(is.na(.data$effect), "direct", .data$effect)
+        )
+}
+
+node_names_as_tibble <- function(.tbl_edges, .ext_vars) {
+    tibble(
+        name = .tbl_edges %>%
+            tidygraph::activate("nodes") %>%
+            dplyr::pull(.data$name) %>%
+            dplyr::union(unique(.ext_vars))
+    )
+}
