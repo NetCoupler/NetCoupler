@@ -1,5 +1,8 @@
 suppressPackageStartupMessages(library(dplyr, quietly = TRUE))
 
+# Just in case
+set.seed(21451)
+
 metabolite_network <- simulated_data %>%
     nc_standardize(starts_with("metabolite")) %>%
     nc_estimate_network(starts_with("metabolite"))

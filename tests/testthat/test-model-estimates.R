@@ -127,6 +127,7 @@ test_that("assertion checks pass", {
 })
 
 test_that("missingness in data still provides results", {
+    set.seed(21451)
     missingness_data <- .insert_random_missingness(std_sim_data)
     metabolite_network <- missingness_data %>%
         select(starts_with("metabolite")) %>%
