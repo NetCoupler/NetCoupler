@@ -46,7 +46,7 @@ nc_plot_network <- function(.tbl,
             label_dodge = grid::unit(0.2, "cm")
         ) +
         ggraph::geom_node_point(size = 2) +
-        ggraph::scale_edge_colour_gradient2(mid = "gray80") +
+        ggraph::scale_edge_colour_gradient2(mid = "gray80", limits = c(-1, 1)) +
         ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
         ggraph::geom_node_text(ggplot2::aes_string(label = ".fn_node_rename(name)"),
                                repel = TRUE) +
@@ -107,8 +107,8 @@ plot_external_var <-
         ) +
         ggraph::geom_node_point(size = 2) +
         # ggraph::scale_edge_colour_distiller(palette = "RdBu") +
-        ggraph::scale_edge_colour_gradient2(mid = "gray80") +
-        ggraph::scale_edge_alpha_discrete(guide = FALSE, range = c(0.7, 1)) +
+        ggraph::scale_edge_colour_gradient2(mid = "gray80", limit = c(-1, 1)) +
+        ggraph::scale_edge_alpha_discrete(guide = FALSE, range = c(0.7, 0.9)) +
         ggraph::scale_edge_width(guide = FALSE, range = c(0.75, 2)) +
         ggraph::geom_node_text(ggplot2::aes_string(label = "name"),
                                repel = TRUE) +
