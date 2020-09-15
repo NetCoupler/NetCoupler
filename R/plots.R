@@ -60,22 +60,12 @@ plot_external_var <-
              .edge_label_threshold = 0.2,
              .external_var_side =c("outcome", "exposure")) {
 
-
-    external_var <- match.arg(.external_var_side)
-    # TODO: Extract the data processing from the plotting functionality
-
-    tbl_model_edges <- .tbl_model %>%
-        mutate(
-            to = as.numeric(as.factor(.data$index_node)),
-            from = length(unique(.data[[external_var]])) + length(unique(.data$index_node)),
-            effect = dplyr::na_if(.data$effect, "none"),
-            estimate = if_else(is.na(.data$effect), NA_real_, .data$estimate)
-        ) %>%
-        select(all_of(c("from", "to", "estimate", "p_value", "effect")))
+    external_var <- rlang::arg_match(.external_var_side)
 
     tbl_graph_edges <- nc_tbl_adjacency_graph(.tbl, .graph) %>%
         tidygraph::activate("edges")
 
+    tbl_model_edges <- convert_model_data_to_model_edges(.tbl_model, external_var)
     tbl_edges <- dplyr::bind_rows(tbl_model_edges, as_tibble(tbl_graph_edges))
 
     tbl_graph_data <- tidygraph::tbl_graph(
@@ -217,5 +207,18 @@ discard_unconnected_nodes <- function(.tbl_graph) {
     .tbl_graph %>%
         tidygraph::activate("nodes") %>%
         dplyr::filter(row_number() %in% connected_nodes)
+}
+
+convert_model_data_to_model_edges <- function(.tbl, .ext_var) {
+    .tbl %>%
+        dplyr::arrange(.data$index_node) %>%
+        mutate(
+            to = as.numeric(as.factor(.data$index_node)),
+            from = length(unique(.data[[.ext_var]])) + length(unique(.data$index_node)),
+            effect = dplyr::na_if(.data$effect, "none"),
+            estimate = if_else(is.na(.data$effect), NA_real_, .data$estimate)
+        ) %>%
+        dplyr::filter(!is.na(.data$effect)) %>%
+        select(all_of(c("from", "to", "estimate", "effect")))
 }
 
