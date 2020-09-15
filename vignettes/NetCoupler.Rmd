@@ -328,8 +328,7 @@ use the function `nc_plot_network()`.
 
 ```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5}
 std_metabolic_data %>%
-    nc_plot_network(metabolite_network, 
-                    starts_with("metabolite"))
+    nc_plot_network(metabolite_network)
 ```
 
 The plot is a bit crowded, but it provides a base to start tidying up from.
