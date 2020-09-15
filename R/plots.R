@@ -26,10 +26,7 @@ nc_plot_network <- function(.tbl,
         .fn_node_rename <- function(x) x
     assert_is_function(.fn_node_rename)
 
-
-    graph_data_prep <- .tbl %>%
-        compute_adjacency_graph(.graph = .graph) %>%
-        tidygraph::as_tbl_graph() %>%
+    graph_data_prep <- nc_tbl_adjacency_graph(.tbl, .graph) %>%
         tidygraph::activate("edges") %>%
         tidygraph::mutate(edge_label = dplyr::if_else(
             abs(.data$weight) > .edge_label_threshold,
@@ -66,7 +63,6 @@ plot_external_var <-
 
     external_var <- match.arg(.external_var_side)
     # TODO: Extract the data processing from the plotting functionality
-    tbl_graph <- .create_tbl_network_graph(.tbl, .graph)
 
     tbl_model_edges <- .tbl_model %>%
         mutate(
@@ -77,7 +73,7 @@ plot_external_var <-
         ) %>%
         select(all_of(c("from", "to", "estimate", "p_value", "effect")))
 
-    tbl_graph_edges <- tbl_graph %>%
+    tbl_graph_edges <- nc_tbl_adjacency_graph(.tbl, .graph) %>%
         tidygraph::activate("edges")
 
     tbl_edges <- dplyr::bind_rows(tbl_model_edges, as_tibble(tbl_graph_edges))
@@ -190,6 +186,12 @@ nc_plot_exposure_estimation <- function(.tbl,
 
 # Helpers -----------------------------------------------------------------
 
+nc_tbl_adjacency_graph <- function(.tbl, .graph) {
+    .tbl %>%
+        create_tbl_network_graph(.graph) %>%
+        discard_unconnected_nodes()
+}
+
 create_tbl_network_graph <- function(.tbl, .graph) {
     .tbl %>%
         select(all_of(names(.graph@graph@edgeL))) %>%
@@ -206,3 +208,14 @@ define_edge_label <- function(.tbl_graph, .edge_label_threshold = 0.2) {
                        ""
                    ))
 }
+discard_unconnected_nodes <- function(.tbl_graph) {
+    .tbl_graph <- tidygraph::activate(.tbl_graph, "edges")
+    edge_from <- dplyr::pull(.tbl_graph, .data$from)
+    edge_to <- dplyr::pull(.tbl_graph, .data$to)
+    connected_nodes <- unique(c(edge_from, edge_to))
+
+    .tbl_graph %>%
+        tidygraph::activate("nodes") %>%
+        dplyr::filter(row_number() %in% connected_nodes)
+}
+
