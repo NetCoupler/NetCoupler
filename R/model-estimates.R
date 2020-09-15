@@ -38,6 +38,7 @@
 #'
 #' @examples
 #'
+#' \dontrun{
 #' library(dplyr)
 #' standardized_data <- simulated_data %>%
 #'     nc_standardize(starts_with("metabolite"))
@@ -55,7 +56,6 @@
 #'     .model_function = lm
 #'    )
 #'
-#' \dontrun{
 #' # Using a logistic regression
 #' standardized_data %>%
 #'   nc_outcome_estimates(

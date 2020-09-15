@@ -141,18 +141,18 @@ test_that("missingness in data still provides results", {
     expect_correct_model_results(exposure_estimates, metabolite_names)
 })
 
-test_that("computes when using survival::Surv and coxph", {
-    skip_on_ci()
-    skip_if_not_installed("survival")
-    outcome_estimates <- std_sim_data %>%
-        nc_outcome_estimates(
-            .edge_tbl = as_edge_tbl(metabolite_network),
-            .outcome = "survival::Surv(survival_time, case_status)",
-            .model_function = survival::coxph
-        )
-
-    expect_correct_model_results(outcome_estimates, metabolite_names)
-})
+# test_that("computes when using survival::Surv and coxph", {
+#     skip_on_ci()
+#     skip_if_not_installed("survival")
+#     outcome_estimates <- std_sim_data %>%
+#         nc_outcome_estimates(
+#             .edge_tbl = as_edge_tbl(metabolite_network),
+#             .outcome = "survival::Surv(survival_time, case_status)",
+#             .model_function = survival::coxph
+#         )
+#
+#     expect_correct_model_results(outcome_estimates, metabolite_names)
+# })
 
 test_that("Factor confounders are extracted properly", {
     multimodel_exposure <- std_sim_data %>%
