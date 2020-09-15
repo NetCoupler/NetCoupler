@@ -5,8 +5,6 @@
 #'
 #' @param .tbl The data that was also used to generate the [nc_estimate_network()].
 #' @param .graph The network graph object of the metabolic variable network.
-#' @param .vars <[`tidy-select`][dplyr::dplyr_tidy_select]> Variables to include
-#'   by using [dplyr::select()] style selection.
 #' @param .edge_label_threshold Threshold set for edge weight value above which
 #'   the edge label will be kept. This argument helps to reduce clutter in the
 #'   graph.
@@ -21,17 +19,12 @@
 #'
 nc_plot_network <- function(.tbl,
                             .graph,
-                            .vars = everything(),
                             .edge_label_threshold = 0.2,
                             .fn_node_rename = NULL) {
 
     if (is.null(.fn_node_rename))
         .fn_node_rename <- function(x) x
     assert_is_function(.fn_node_rename)
-    .tbl <- select(.tbl, {{ .vars }})
-    node_names <- unique(as_edge_tbl(.graph)[[1]])
-    if (!all(names(.tbl) %in% node_names))
-        rlang::abort("Both the data (given with `.tbl` and `.vars`) and the network graph must have the same variables. Right now they are different.")
 
     # TODO: Fix this to be tidier, there should be a better way to do it.
     if (!requireNamespace("ggplot2", quietly = TRUE))
