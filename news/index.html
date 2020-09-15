@@ -120,6 +120,36 @@
     <div id="netcoupler-development-version" class="section level1">
 <h1 class="page-header" data-toc-text="development version">
 <a href="#netcoupler-development-version" class="anchor"></a>NetCoupler (development version)</h1>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h2>
+<ul>
+<li>Added two plotting functions for the model estimation side of things: <code><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_exposure_estimation()</a></code> and <code><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_outcome_estimation()</a></code>
+</li>
+<li>Added ability to parallelize code with furrr (<a href='https://github.com/NetCoupler/NetCoupler/issues/141'>#141</a>)</li>
+<li>Added a continuous outcome variable to simulated data that also links in with the DAG so that the linkage is more obvious (<a href='https://github.com/NetCoupler/NetCoupler/issues/97'>#97</a>)</li>
+<li>Added function to create an edge table (<a href='https://github.com/NetCoupler/NetCoupler/issues/117'>#117</a>)</li>
+<li>Incorporate tidyselect helpers into functions for selection of variables (<a href='https://github.com/NetCoupler/NetCoupler/issues/62'>#62</a>)</li>
+</ul>
+</div>
+<div id="removed-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#removed-features" class="anchor"></a>Removed features</h2>
+<ul>
+<li>Removed <code>nc_classify_effects()</code> and <code>nc_filter_estimates()</code>, merged them into the two main estimation functions instead</li>
+<li>Model summary statistics for <code>lm</code> and <code>glm</code> models were removed for improving computing speed (they slowed things down quite a bit)</li>
+</ul>
+</div>
+<div id="internal-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#internal-changes" class="anchor"></a>Internal changes</h2>
+<ul>
+<li>Tidied up the unit tests to run faster</li>
+<li>Removed duplicate or extra roxygen examples and instead referenced a common source with <code>@seealso</code>
+</li>
+<li>Removed survival dependency</li>
+</ul>
+</div>
 </div>
     <div id="netcoupler-004" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.4">
@@ -146,9 +176,9 @@
 <li>Input dataset can include missingness. Input data is treated as complete case for only the variables used in the modelling (<a href='https://github.com/NetCoupler/NetCoupler/issues/88'>#88</a>).</li>
 </ul>
 </div>
-<div id="internal-changes" class="section level2">
+<div id="internal-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#internal-changes" class="anchor"></a>Internal changes</h2>
+<a href="#internal-changes-1" class="anchor"></a>Internal changes</h2>
 <ul>
 <li>Rewrote underlying model estimation algorithm so it doesn’t use MuMIn and so there is one unified function for both outcome and exposure side estimation (<a href='https://github.com/NetCoupler/NetCoupler/issues/101'>#101</a>)</li>
 </ul>
