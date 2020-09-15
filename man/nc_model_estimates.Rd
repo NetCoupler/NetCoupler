@@ -116,6 +116,7 @@ standardized_data \%>\%
     .model_function = lm
    )
 
+\dontrun{
 # Using a logistic regression
 standardized_data \%>\%
   nc_outcome_estimates(
@@ -137,6 +138,7 @@ standardized_data \%>\%
     .adjustment_vars = c("age", "Random", "Sex"),
     .model_function = lm
    )
+}
 
 }
 \keyword{internal}
