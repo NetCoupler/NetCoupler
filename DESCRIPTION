@@ -41,8 +41,7 @@ Imports:
     ggplot2,
     utils,
     furrr,
-    tidygraph,
-    Matrix
+    tidygraph
 Suggests: 
     broom,
     covr,

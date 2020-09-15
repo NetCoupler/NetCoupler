@@ -1,5 +1,29 @@
 # NetCoupler (development version)
 
+## New features
+
+* Added two plotting functions for the model estimation side of things:
+`nc_plot_exposure_estimation()` and `nc_plot_outcome_estimation()`
+* Added ability to parallelize code with furrr (#141)
+* Added a continuous outcome variable to simulated data that also links in with
+the DAG so that the linkage is more obvious (#97)
+* Added function to create an edge table (#117)
+* Incorporate tidyselect helpers into functions for selection of variables (#62)
+
+## Removed features
+
+* Removed `nc_classify_effects()` and `nc_filter_estimates()`, merged them into
+the two main estimation functions instead
+* Model summary statistics for `lm` and `glm` models were removed for improving
+computing speed (they slowed things down quite a bit)
+
+## Internal changes
+
+* Tidied up the unit tests to run faster
+* Removed duplicate or extra roxygen examples and instead referenced a common 
+source with `@seealso`
+* Removed survival dependency
+
 # NetCoupler 0.0.4
 
 ## Added features
