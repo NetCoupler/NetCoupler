@@ -85,7 +85,7 @@ plot_external_var <-
                             outcome = max)
 
     node_positions <- tbl_graph_data %>%
-        ggraph::create_layout("gem") %>%
+        ggraph::create_layout("stress") %>%
         mutate(y = if_else(.data$name == unique(.tbl_model[[external_var]]),
                            mean(.data$y), .data$y),
                x = if_else(.data$name == unique(.tbl_model[[external_var]]),
