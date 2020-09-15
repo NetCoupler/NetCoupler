@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NetCoupler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
       </span>
     </div>
 
@@ -70,14 +70,14 @@
 
       
 
-      </header><div class="row">
+      </header><script src="NetCoupler_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to NetCoupler</h1>
                         <h4 class="author">Clemens Wittenbecher</h4>
                         <h4 class="author">Luke Johnston</h4>
             
-            <h4 class="date">2020-05-04</h4>
+            <h4 class="date">2020-09-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/NetCoupler/NetCoupler/blob/master/vignettes/NetCoupler.Rmd"><code>vignettes/NetCoupler.Rmd</code></a></small>
       <div class="hidden name"><code>NetCoupler.Rmd</code></div>
@@ -86,6 +86,19 @@
 
     
     
+<div id="goals" class="section level2">
+<h2 class="hasAnchor">
+<a href="#goals" class="anchor"></a>Goals</h2>
+<ul>
+<li>Work with pipe <code><a href="../reference/%&gt;%.html">%&gt;%</a></code> operator</li>
+<li>Work with tidyselect helpers</li>
+<li>Be autocomplete friendly (e.g. start function names with <code>nc_</code>)</li>
+<li>In general, output as tibble, or at least easily modified into a data.frame/tibble</li>
+<li>Arguments are prefixed with <code>.</code>
+</li>
+<li>Internal functions are prefixed with <code>.</code>?</li>
+</ul>
+</div>
 <div id="brief-description" class="section level2">
 <h2 class="hasAnchor">
 <a href="#brief-description" class="anchor"></a>Brief description</h2>
@@ -248,23 +261,35 @@ classification of every Mi from M as
 <div id="simple-example-of-use" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simple-example-of-use" class="anchor"></a>Simple example of use</h2>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">NetCoupler</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/NetCoupler/NetCoupler">NetCoupler</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org">dplyr</a></span>)
+</pre></div>
 <div id="estimating-the-metabolic-network" class="section level3">
 <h3 class="hasAnchor">
 <a href="#estimating-the-metabolic-network" class="anchor"></a>Estimating the metabolic network</h3>
-<p>For estimating the network, it’s (basically) required to standardize the metabolic variables before inputting into <code><a href="../reference/nc_create_network.html">nc_create_network()</a></code>. If you intend to also adjust for potential confounders when estimating the exposure or outcome side connections, you can include the potential impact these confounders may have on the network by regressing the confounders on the metabolic variables. Then the residuals can be extracted and used when constructing the network. You do this with the <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code> function. This function also log-transforms and scales (mean-center and z-score normalize) the values of the metabolic variables. We do this because the network estimation algorithm can sometimes be finicky about differences in variable numerical scale (mean of 1 vs mean of 1000).</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">std_metabolic_data</span> <span class="kw">&lt;-</span> <span class="no">simulated_data</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span>(<span class="fu"><a href="https://dplyr.tidyverse.org/reference/vars.html">vars</a></span>(<span class="fu"><a href="https://tidyselect.r-lib.org/reference/select_helpers.html">starts_with</a></span>(<span class="st">"metabolite"</span>)),
-                   <span class="kw">.regressed_on</span> <span class="kw">=</span> <span class="st">"age"</span>) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="fu"><a href="https://tidyselect.r-lib.org/reference/select_helpers.html">starts_with</a></span>(<span class="st">"metabolite"</span>))</pre></body></html></div>
+<p>For estimating the network, it’s (basically) required to standardize the metabolic variables before inputting into <code><a href="../reference/nc_estimate_network.html">nc_estimate_network()</a></code>. This function also log-transforms and scales (mean-center and z-score normalize) the values of the metabolic variables. We do this because the network estimation algorithm can sometimes be finicky about differences in variable numerical scale (mean of 1 vs mean of 1000).</p>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">std_metabolic_data</span> <span class="op">&lt;-</span> <span class="kw">simulated_data</span> <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span>(<span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">"metabolite"</span>))
+</pre></div>
+<p>If you intend to also adjust for potential confounders when estimating the exposure or outcome side connections, you can include the potential impact these confounders may have on the network by regressing the confounders on the metabolic variables. Then the residuals can be extracted and used when constructing the network. You do this also with the <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code> function.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="kw">std_metabolic_data</span> <span class="op">&lt;-</span> <span class="kw">simulated_data</span> <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span>(<span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">"metabolite"</span>),
+                   .regressed_on = <span class="st">"age"</span>)
+</pre></div>
 <p>After that, you can estimate the network.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co"># Make partial independence network from metabolite data</span>
-<span class="no">metabolite_network</span> <span class="kw">&lt;-</span> <span class="no">std_metabolic_data</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/nc_create_network.html">nc_create_network</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="co"># Make partial independence network from metabolite data</span>
+<span class="kw">metabolite_network</span> <span class="op">&lt;-</span> <span class="kw">std_metabolic_data</span> <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="../reference/nc_estimate_network.html">nc_estimate_network</a></span>(<span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">"metabolite"</span>))
+</pre></div>
 <p>To see what the network looks like, use the function <code><a href="../reference/nc_plot_network.html">nc_plot_network()</a></code>.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">std_metabolic_data</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/nc_plot_network.html">nc_plot_network</a></span>(<span class="no">metabolite_network</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="kw">std_metabolic_data</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/nc_plot_network.html">nc_plot_network</a></span>(<span class="kw">metabolite_network</span>)
+</pre></div>
 <p><img src="NetCoupler_files/figure-html/visualize-metabolic-network-1.png" width="537.6"></p>
 <p>The plot is a bit crowded, but it provides a base to start tidying up from.</p>
 </div>
@@ -272,126 +297,109 @@ classification of every Mi from M as
 <h3 class="hasAnchor">
 <a href="#estimating-exposure-and-outcome-side-connections" class="anchor"></a>Estimating exposure and outcome-side connections</h3>
 <p>For the exposure and outcome side, you should standardize the metabolic variables, but this time, we don’t regress on the confounders since they will be included in the models.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">standardized_data</span> <span class="kw">&lt;-</span> <span class="no">simulated_data</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span>(<span class="fu"><a href="https://dplyr.tidyverse.org/reference/vars.html">vars</a></span>(<span class="fu"><a href="https://tidyselect.r-lib.org/reference/select_helpers.html">starts_with</a></span>(<span class="st">"metabolite"</span>)))</pre></body></html></div>
-<p>Then estimate the outcome or exposure:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">outcome_estimates</span> <span class="kw">&lt;-</span> <span class="no">standardized_data</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/nc_model_estimates.html">nc_outcome_estimates</a></span>(
-        <span class="kw">.graph</span> <span class="kw">=</span> <span class="no">metabolite_network</span>,
-        <span class="kw">.outcome</span> <span class="kw">=</span> <span class="st">"survival::Surv(survival_time, case_status)"</span>,
-        <span class="kw">.adjustment_vars</span> <span class="kw">=</span> <span class="st">"age"</span>,
-        <span class="kw">.model_function</span> <span class="kw">=</span> <span class="kw pkg">survival</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/survival/man/coxph.html">coxph</a></span>
-    )
-
-<span class="no">outcome_estimates</span>
-<span class="co">#&gt; # A tibble: 788 x 11</span>
-<span class="co">#&gt;    outcome index_node model_id term  estimate std_error statistic  p_value</span>
-<span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 surviv… metabolit… 3db239c… meta…  -0.224    0.0717      -3.12 1.80e- 3</span>
-<span class="co">#&gt;  2 surviv… metabolit… 3db239c… age     0.0103   0.00714      1.44 1.51e- 1</span>
-<span class="co">#&gt;  3 surviv… metabolit… 3db239c… meta…  -0.471    0.0699      -6.74 1.55e-11</span>
-<span class="co">#&gt;  4 surviv… metabolit… d14e40c… meta…   0.597    0.0823       7.26 3.98e-13</span>
-<span class="co">#&gt;  5 surviv… metabolit… d14e40c… age     0.0105   0.00718      1.47 1.42e- 1</span>
-<span class="co">#&gt;  6 surviv… metabolit… d14e40c… meta…  -0.556    0.0620      -8.96 3.13e-19</span>
-<span class="co">#&gt;  7 surviv… metabolit… 7ccf9f1… meta…   0.379    0.0773       4.90 9.53e- 7</span>
-<span class="co">#&gt;  8 surviv… metabolit… 7ccf9f1… age     0.0144   0.00731      1.96 4.95e- 2</span>
-<span class="co">#&gt;  9 surviv… metabolit… 7ccf9f1… meta…  -0.568    0.0620      -9.16 4.97e-20</span>
-<span class="co">#&gt; 10 surviv… metabolit… 419ed36… meta…  -0.160    0.0684      -2.34 1.95e- 2</span>
-<span class="co">#&gt; # … with 778 more rows, and 3 more variables: conf_low &lt;dbl&gt;, conf_high &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   adjusted_vars &lt;chr&gt;</span>
-
-<span class="no">exposure_estimates</span> <span class="kw">&lt;-</span> <span class="no">standardized_data</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/nc_model_estimates.html">nc_exposure_estimates</a></span>(
-        <span class="kw">.graph</span> <span class="kw">=</span> <span class="no">metabolite_network</span>,
-        <span class="kw">.exposure</span> <span class="kw">=</span> <span class="st">"exposure"</span>,
-        <span class="kw">.adjustment_vars</span> <span class="kw">=</span> <span class="st">"age"</span>,
-        <span class="kw">.model_function</span> <span class="kw">=</span> <span class="no">lm</span>
-    )
-
-<span class="no">exposure_estimates</span>
-<span class="co">#&gt; # A tibble: 976 x 16</span>
-<span class="co">#&gt;    exposure index_node model_id term  estimate std_error statistic p_value</span>
-<span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 exposure metabolit… 424e0e8… (Int…  6.14e-4   0.0719    0.00855 9.93e-1</span>
-<span class="co">#&gt;  2 exposure metabolit… 424e0e8… meta…  7.50e-2   0.0155    4.84    1.39e-6</span>
-<span class="co">#&gt;  3 exposure metabolit… 424e0e8… age    4.79e-4   0.00142   0.338   7.36e-1</span>
-<span class="co">#&gt;  4 exposure metabolit… 424e0e8… expo… -7.57e-1   0.0156  -48.4     0.     </span>
-<span class="co">#&gt;  5 exposure metabolit… 3c753f3… (Int…  1.08e-3   0.0723    0.0149  9.88e-1</span>
-<span class="co">#&gt;  6 exposure metabolit… 3c753f3… meta… -1.26e-2   0.0139   -0.906   3.65e-1</span>
-<span class="co">#&gt;  7 exposure metabolit… 3c753f3… age    4.92e-4   0.00143   0.345   7.30e-1</span>
-<span class="co">#&gt;  8 exposure metabolit… 3c753f3… expo… -7.91e-1   0.0140  -56.6     0.     </span>
-<span class="co">#&gt;  9 exposure metabolit… aa246dd… (Int…  1.98e-4   0.0723    0.00273 9.98e-1</span>
-<span class="co">#&gt; 10 exposure metabolit… aa246dd… meta…  1.53e-2   0.0139    1.10    2.70e-1</span>
-<span class="co">#&gt; # … with 966 more rows, and 8 more variables: conf_low &lt;dbl&gt;, conf_high &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   df &lt;int&gt;, logLik &lt;dbl&gt;, AIC &lt;dbl&gt;, BIC &lt;dbl&gt;, sample_size &lt;int&gt;,</span>
-<span class="co">#&gt; #   adjusted_vars &lt;chr&gt;</span></pre></body></html></div>
-</div>
-<div id="classifying-direct-effects-on-exposure-or-outcome-side" class="section level3">
-<h3 class="hasAnchor">
-<a href="#classifying-direct-effects-on-exposure-or-outcome-side" class="anchor"></a>Classifying direct effects on exposure or outcome side</h3>
-<p>You can classify direct effects by using <code><a href="../reference/nc_classify_effects.html">nc_classify_effects()</a></code>, which works on both the exposure side (<code>exposure -&gt; metabolite</code>) and the outcome side (<code>metabolite -&gt; outcome</code>). The function applies a simple algorithm, described in more detail in <code>vignette("description")</code>. For the exposure side, the function identifies whether a link between the exposure and an index node (one metabolic variable in the network) exists, regardless of conditioning on potential confounders and on neighbouring nodes (other metabolic variables linked to the index variable). Depending on how consistent and strong the link is, the effect is classified as “direct”, “ambiguous”, or “none”.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="kw">standardized_data</span> <span class="op">&lt;-</span> <span class="kw">simulated_data</span> <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span>(<span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span>(<span class="st">"metabolite"</span>))
+</pre></div>
+<p>Now you can estimate the outcome or exposure and identify direct effects for either the exposure side (<code>exposure -&gt; metabolite</code>) or the outcome side (<code>metabolite -&gt; outcome</code>). For more detail on the algorithm, see the <code>vignette("description")</code>. For the exposure side, the function identifies whether a link between the exposure and an index node (one metabolic variable in the network) exists, regardless of conditioning on potential confounders and on neighbouring nodes (other metabolic variables linked to the index variable). Depending on how consistent and strong the link is, the effect is classified as “direct”, “ambiguous”, or “none”.</p>
 <p>In the example below, we specifically generated the simulated data so that the exposure associated with the metabolites 1, 8, and 12. And as we can see, those links have been correctly identified.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">exposure_direct_effects</span> <span class="kw">&lt;-</span> <span class="no">exposure_estimates</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/nc_classify_effects.html">nc_classify_effects</a></span>()
-<span class="no">exposure_direct_effects</span>
-<span class="co">#&gt; # A tibble: 12 x 14</span>
-<span class="co">#&gt;    exposure index_node estimate std_error p_value conf_low conf_high    df</span>
-<span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;</span>
-<span class="co">#&gt;  1 exposure metabolit… -0.791      0.0140 0        -0.819    -0.764      3</span>
-<span class="co">#&gt;  2 exposure metabolit…  0.499      0.0196 0         0.461     0.538      3</span>
-<span class="co">#&gt;  3 exposure metabolit…  0.286      0.0216 0         0.243     0.328      3</span>
-<span class="co">#&gt;  4 exposure metabolit… -0.460      0.0201 0        -0.500    -0.421      3</span>
-<span class="co">#&gt;  5 exposure metabolit…  0.246      0.0219 0         0.204     0.289      3</span>
-<span class="co">#&gt;  6 exposure metabolit…  0.0687     0.0225 0.0023    0.0246    0.113      3</span>
-<span class="co">#&gt;  7 exposure metabolit…  0.0262     0.0226 0.246    -0.0181    0.0704     3</span>
-<span class="co">#&gt;  8 exposure metabolit… -0.00586    0.0226 0.795    -0.0501    0.0384     3</span>
-<span class="co">#&gt;  9 exposure metabolit… -0.0166     0.0226 0.462    -0.0608    0.0276     3</span>
-<span class="co">#&gt; 10 exposure metabolit…  0.0659     0.0225 0.00345   0.0218    0.110      3</span>
-<span class="co">#&gt; 11 exposure metabolit…  0.827      0.0129 0         0.802     0.853      3</span>
-<span class="co">#&gt; 12 exposure metabolit…  0.378      0.0209 0         0.337     0.419      3</span>
-<span class="co">#&gt; # … with 6 more variables: logLik &lt;dbl&gt;, AIC &lt;dbl&gt;, BIC &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   sample_size &lt;int&gt;, adj_p_value &lt;dbl&gt;, direct_effect &lt;chr&gt;</span>
-<span class="no">exposure_direct_effects</span> <span class="kw">%&gt;%</span>
-    <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">direct_effect</span> <span class="kw">==</span> <span class="st">"direct"</span>)
-<span class="co">#&gt; # A tibble: 4 x 14</span>
-<span class="co">#&gt;   exposure index_node estimate std_error p_value conf_low conf_high    df logLik</span>
-<span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 exposure metabolit…   -0.791    0.0140       0   -0.819    -0.764     3 -1880.</span>
-<span class="co">#&gt; 2 exposure metabolit…    0.499    0.0196       0    0.461     0.538     3 -2555.</span>
-<span class="co">#&gt; 3 exposure metabolit…   -0.460    0.0201       0   -0.500    -0.421     3 -2603.</span>
-<span class="co">#&gt; 4 exposure metabolit…    0.827    0.0129       0    0.802     0.853     3 -1719.</span>
-<span class="co">#&gt; # … with 5 more variables: AIC &lt;dbl&gt;, BIC &lt;dbl&gt;, sample_size &lt;int&gt;,</span>
-<span class="co">#&gt; #   adj_p_value &lt;dbl&gt;, direct_effect &lt;chr&gt;</span></pre></body></html></div>
-<p>You can also classify direct effects with an outcome using the same function:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">outcome_direct_effects</span> <span class="kw">&lt;-</span> <span class="no">outcome_estimates</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/nc_classify_effects.html">nc_classify_effects</a></span>()
-<span class="no">outcome_direct_effects</span>
-<span class="co">#&gt; # A tibble: 12 x 9</span>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">outcome_estimates</span> <span class="op">&lt;-</span> <span class="kw">standardized_data</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/nc_model_estimates.html">nc_outcome_estimates</a></span>(
+        .edge_tbl = <span class="fu"><a href="../reference/as_edge_tbl.html">as_edge_tbl</a></span>(<span class="kw">metabolite_network</span>),
+        .outcome = <span class="st">"outcome_continuous"</span>,
+        .model_function = <span class="kw">lm</span>
+    )
+<span class="kw">outcome_estimates</span>
+<span class="co">#&gt; # A tibble: 11 x 9</span>
 <span class="co">#&gt;    outcome index_node estimate std_error p_value conf_low conf_high adj_p_value</span>
 <span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 surviv… metabolit…   -0.561    0.0624 0.      -0.683     -0.438   0         </span>
-<span class="co">#&gt;  2 surviv… metabolit…    0.424    0.0780 0.       0.271      0.577   0         </span>
-<span class="co">#&gt;  3 surviv… metabolit…    0.250    0.0752 9.05e-4  0.102      0.397   0.00144   </span>
-<span class="co">#&gt;  4 surviv… metabolit…   -0.424    0.0643 0.      -0.550     -0.298   0         </span>
-<span class="co">#&gt;  5 surviv… metabolit…    0.334    0.0781 1.90e-5  0.181      0.487   0.000038  </span>
-<span class="co">#&gt;  6 surviv… metabolit…    0.609    0.0810 0.       0.450      0.768   0         </span>
-<span class="co">#&gt;  7 surviv… metabolit…    0.590    0.0812 0.       0.431      0.750   0         </span>
-<span class="co">#&gt;  8 surviv… metabolit…    0.361    0.0773 3.00e-6  0.209      0.513   0.00000664</span>
-<span class="co">#&gt;  9 surviv… metabolit…   -0.145    0.0674 3.09e-2 -0.278     -0.0134  0.0400    </span>
-<span class="co">#&gt; 10 surviv… metabolit…    0.149    0.0733 4.19e-2  0.00543    0.293   0.0536    </span>
-<span class="co">#&gt; 11 surviv… metabolit…    0.820    0.0849 0.       0.654      0.987   0         </span>
-<span class="co">#&gt; 12 surviv… metabolit…    0.953    0.0888 0.       0.779      1.13    0         </span>
-<span class="co">#&gt; # … with 1 more variable: direct_effect &lt;chr&gt;</span>
-<span class="no">outcome_direct_effects</span> <span class="kw">%&gt;%</span>
-    <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">direct_effect</span> <span class="kw">==</span> <span class="st">"direct"</span>)
-<span class="co">#&gt; # A tibble: 3 x 9</span>
-<span class="co">#&gt;   outcome index_node estimate std_error p_value conf_low conf_high adj_p_value</span>
-<span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 surviv… metabolit…   -0.561    0.0624  0        -0.683   -0.438       0     </span>
-<span class="co">#&gt; 2 surviv… metabolit…   -0.145    0.0674  0.0309   -0.278   -0.0134      0.0400</span>
-<span class="co">#&gt; 3 surviv… metabolit…    0.953    0.0888  0         0.779    1.13        0     </span>
-<span class="co">#&gt; # … with 1 more variable: direct_effect &lt;chr&gt;</span></pre></body></html></div>
+<span class="co">#&gt;  1 outcom… metabolit… -0.00437    0.0223  0.845  -0.0481    0.0393       0.888 </span>
+<span class="co">#&gt;  2 outcom… metabolit… -0.129      0.0221  0      -0.173    -0.0861       0     </span>
+<span class="co">#&gt;  3 outcom… metabolit…  0.260      0.0215  0       0.218     0.302        0     </span>
+<span class="co">#&gt;  4 outcom… metabolit… -0.0350     0.0223  0.116  -0.0787    0.00865      0.180 </span>
+<span class="co">#&gt;  5 outcom… metabolit…  0.171      0.0220  0       0.128     0.214        0     </span>
+<span class="co">#&gt;  6 outcom… metabolit…  0.0491     0.0223  0.0275  0.00545   0.0928       0.0487</span>
+<span class="co">#&gt;  7 outcom… metabolit…  0.120      0.0221  0       0.0764    0.163        0     </span>
+<span class="co">#&gt;  8 outcom… metabolit… -0.0381     0.0223  0.0875 -0.0818    0.00560      0.143 </span>
+<span class="co">#&gt;  9 outcom… metabolit…  0.0149     0.0223  0.503  -0.0288    0.0586       0.589 </span>
+<span class="co">#&gt; 10 outcom… metabolit…  0.0338     0.0223  0.130  -0.00993   0.0775       0.196 </span>
+<span class="co">#&gt; 11 outcom… metabolit…  0.189      0.0219  0       0.147     0.232        0     </span>
+<span class="co">#&gt; # … with 1 more variable: effect &lt;chr&gt;</span>
+
+<span class="kw">exposure_estimates</span> <span class="op">&lt;-</span> <span class="kw">standardized_data</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/nc_model_estimates.html">nc_exposure_estimates</a></span>(
+        .edge_tbl = <span class="fu"><a href="../reference/as_edge_tbl.html">as_edge_tbl</a></span>(<span class="kw">metabolite_network</span>),
+        .exposure = <span class="st">"exposure"</span>,
+        .model_function = <span class="kw">lm</span>
+    )
+
+<span class="kw">exposure_estimates</span>
+<span class="co">#&gt; # A tibble: 11 x 9</span>
+<span class="co">#&gt;    exposure index_node estimate std_error p_value conf_low conf_high adj_p_value</span>
+<span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 exposure metabolit…  0.151      0.0215 0.        0.109     0.193     0       </span>
+<span class="co">#&gt;  2 exposure metabolit… -0.362      0.0202 0.       -0.402    -0.322     0       </span>
+<span class="co">#&gt;  3 exposure metabolit… -0.0171     0.0218 4.32e-1  -0.0598    0.0256    0.523   </span>
+<span class="co">#&gt;  4 exposure metabolit…  0.0189     0.0218 3.87e-1  -0.0239    0.0616    0.516   </span>
+<span class="co">#&gt;  5 exposure metabolit…  0.0279     0.0218 2.00e-1  -0.0148    0.0706    0.364   </span>
+<span class="co">#&gt;  6 exposure metabolit…  0.0207     0.0218 3.42e-1  -0.0220    0.0634    0.503   </span>
+<span class="co">#&gt;  7 exposure metabolit… -0.0230     0.0218 2.90e-1  -0.0658    0.0197    0.473   </span>
+<span class="co">#&gt;  8 exposure metabolit…  0.00157    0.0218 9.43e-1  -0.0412    0.0443    0.943   </span>
+<span class="co">#&gt;  9 exposure metabolit…  0.0198     0.0218 3.62e-1  -0.0229    0.0626    0.503   </span>
+<span class="co">#&gt; 10 exposure metabolit… -0.328      0.0205 0.       -0.368    -0.288     0       </span>
+<span class="co">#&gt; 11 exposure metabolit… -0.0780     0.0217 3.36e-4  -0.121    -0.0354    0.000868</span>
+<span class="co">#&gt; # … with 1 more variable: effect &lt;chr&gt;</span>
+</pre></div>
+<p>If you want to adjust for confounders and having already used <code>.regressed_on</code> in the <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code> function, add confounders to <code><a href="../reference/nc_model_estimates.html">nc_outcome_estimates()</a></code> or <code><a href="../reference/nc_model_estimates.html">nc_exposure_estimates()</a></code> with the <code>.adjustment_vars</code> argument:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="kw">outcome_estimates</span> <span class="op">&lt;-</span> <span class="kw">standardized_data</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/nc_model_estimates.html">nc_outcome_estimates</a></span>(
+        .edge_tbl = <span class="fu"><a href="../reference/as_edge_tbl.html">as_edge_tbl</a></span>(<span class="kw">metabolite_network</span>),
+        .outcome = <span class="st">"outcome_continuous"</span>,
+        .model_function = <span class="kw">lm</span>,
+        .adjustment_vars = <span class="st">"age"</span>
+    )
+</pre></div>
 </div>
+<div id="plotting" class="section level3">
+<h3 class="hasAnchor">
+<a href="#plotting" class="anchor"></a>Plotting</h3>
+<p>To visualize the results of the linked network graph and the effect classification, there are two functions to show the exposure and the outcome plots. In general, these plot functions are currently mostly for exploratory purposes and are too “busy” and crowded to be meaningful for presentation or publication. However, these are good starting points for making prettier, more legible plots.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="fu"><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_outcome_estimation</a></span>(
+    <span class="kw">standardized_data</span>,
+    <span class="kw">metabolite_network</span>,
+    <span class="kw">outcome_estimates</span>
+)
+</pre></div>
+<p><img src="NetCoupler_files/figure-html/plot-outcome-estimation-networks-1.png" width="672"></p>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="fu"><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_exposure_estimation</a></span>(
+    <span class="kw">standardized_data</span>,
+    <span class="kw">metabolite_network</span>,
+    <span class="kw">exposure_estimates</span>
+)
+</pre></div>
+<p><img src="NetCoupler_files/figure-html/plot-exposure-estimation-networks-1.png" width="672"></p>
+</div>
+</div>
+<div id="slow-code-use-parallel-processing-with-future" class="section level2">
+<h2 class="hasAnchor">
+<a href="#slow-code-use-parallel-processing-with-future" class="anchor"></a>Slow code? Use parallel processing with future</h2>
+<p>If the analysis is taking a while, you can use the future package to speed things up by implementing parallel processing. Set the <code>.parallel</code> argument to <code>TRUE</code> in either <code><a href="../reference/nc_model_estimates.html">nc_outcome_estimates()</a></code> or <code><a href="../reference/nc_model_estimates.html">nc_exposure_estimates()</a></code> and then use the future package with a given <code><a href="https://rdrr.io/pkg/future/man/plan.html">plan()</a></code>. If you use RStudio, the only usable strategy is <code>multisession</code>. After you run your code, close up the parallel processing by putting it back to normal with <code><a href="https://rdrr.io/pkg/future/man/plan.html">plan(sequential)</a></code>. Using the future package you can speed up the processing by almost 2.5 times.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/HenrikBengtsson/future">future</a></span>)
+<span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="kw">multisession</span>)
+<span class="kw">outcome_estimates</span> <span class="op">&lt;-</span> <span class="kw">standardized_data</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/nc_model_estimates.html">nc_outcome_estimates</a></span>(
+        .edge_tbl = <span class="fu"><a href="../reference/as_edge_tbl.html">as_edge_tbl</a></span>(<span class="kw">metabolite_network</span>),
+        .outcome = <span class="st">"outcome_continuous"</span>,
+        .model_function = <span class="kw">lm</span>,
+        .parallel = <span class="fl">TRUE</span>
+    )
+<span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="kw">sequential</span>)
+</pre></div>
 </div>
   </div>
 
@@ -410,7 +418,7 @@ classification of every Mi from M as
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

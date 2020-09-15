@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NetCoupler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plot of the network of the metabolic variables.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/NetCoupler/NetCoupler/blob/master/R/create-network.R'><code>R/create-network.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/NetCoupler/NetCoupler/blob/master/R/plots.R'><code>R/plots.R</code></a></small>
     <div class="hidden name"><code>nc_plot_network.Rd</code></div>
     </div>
 
@@ -124,10 +124,10 @@
     </div>
 
     <pre class="usage"><span class='fu'>nc_plot_network</span>(
-  <span class='no'>.tbl</span>,
-  <span class='no'>.graph</span>,
-  <span class='kw'>.edge_label_threshold</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>.node_rename_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>.tbl</span>,
+  <span class='kw'>.graph</span>,
+  .edge_label_threshold = <span class='fl'>0.2</span>,
+  .fn_node_rename = <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -135,7 +135,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.tbl</th>
-      <td><p>The data containing only the metabolic variables.</p></td>
+      <td><p>The data that was also used to generate the <code><a href='nc_estimate_network.html'>nc_estimate_network()</a></code>.</p></td>
     </tr>
     <tr>
       <th>.graph</th>
@@ -148,7 +148,7 @@ the edge label will be kept. This argument helps to reduce clutter in the
 graph.</p></td>
     </tr>
     <tr>
-      <th>.node_rename_fun</th>
+      <th>.fn_node_rename</th>
       <td><p>Function to pass to rename the metabolic variables.
 Preferably use functions that search and replace patterns, like <code><a href='https://rdrr.io/r/base/grep.html'>gsub()</a></code> or
 <code><a href='https://stringr.tidyverse.org/reference/str_replace.html'>stringr::str_replace()</a></code>.</p></td>
@@ -158,20 +158,10 @@ Preferably use functions that search and replace patterns, like <code><a href='h
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Outputs a <code>ggplot2</code> object of the metabolic network.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='no'>metabolite_data</span> <span class='kw'>&lt;-</span> <span class='no'>simulated_data</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='fu'><a href='https://tidyselect.r-lib.org/reference/select_helpers.html'>starts_with</a></span>(<span class='st'>"metabolite"</span>))
-<span class='no'>network</span> <span class='kw'>&lt;-</span> <span class='no'>metabolite_data</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='nc_create_network.html'>nc_create_network</a></span>()
-<span class='fu'>nc_plot_network</span>(
-  <span class='no'>metabolite_data</span>,
-  <span class='no'>network</span>,
-  <span class='kw'>.node_rename_fun</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span>(<span class='st'>"metabolite_"</span>, <span class='st'>"M"</span>, <span class='no'>x</span>)
-)</div><div class='img'><img src='nc_plot_network-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+    <div class='dont-index'><p>See <a href='nc_model_estimates.html'>nc_model_estimates</a> for examples on using NetCoupler.</p></div>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -187,7 +177,7 @@ Preferably use functions that search and replace patterns, like <code><a href='h
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

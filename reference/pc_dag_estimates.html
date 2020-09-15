@@ -73,7 +73,7 @@ skeleton." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NetCoupler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@ skeleton." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimate equivalence class of DAG from the PC algorithm.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/NetCoupler/NetCoupler/blob/master/R/dag-skeleton.R'><code>R/dag-skeleton.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/NetCoupler/NetCoupler/blob/master/R/network.R'><code>R/network.R</code></a></small>
     <div class="hidden name"><code>pc_dag_estimates.Rd</code></div>
     </div>
 
@@ -125,7 +125,7 @@ skeleton." />
 skeleton.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pc_dag_estimates</span>(<span class='no'>.tbl</span>, <span class='kw'>.alpha</span> <span class='kw'>=</span> <span class='fl'>0.01</span>)</pre>
+    <pre class="usage"><span class='fu'>pc_dag_estimates</span>(<span class='kw'>.tbl</span>, .alpha = <span class='fl'>0.01</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -144,14 +144,6 @@ skeleton.</p>
 
     <p>Outputs a <code>pcAlgo</code> object.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='no'>simulated_data</span> <span class='kw'>%&gt;%</span>
-<span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='fu'><a href='https://tidyselect.r-lib.org/reference/select_helpers.html'>contains</a></span>(<span class='st'>"metabolite"</span>)) <span class='kw'>%&gt;%</span>
-<span class='kw pkg'>NetCoupler</span><span class='kw ns'>:::</span><span class='fu'>pc_dag_estimates</span>()
-}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -167,7 +159,7 @@ skeleton.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NetCoupler: Inference of Causal Links Between a Network and an External Variable — NetCoupler-package • NetCoupler</title>
+<title>Estimate Pearson's partial correlation coefficients. — compute_partial_corr_matrix • NetCoupler</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,10 @@
 
 
 
-<meta property="og:title" content="NetCoupler: Inference of Causal Links Between a Network and an External Variable — NetCoupler-package" />
-<meta property="og:description" content="The NetCoupler algorithm identifies potential direct effects of 
-    correlated, high-dimensional variables formed as a network with an external 
-    variable. The external variable may act as the dependent/response variable 
-    or as an independent/predictor variable to the network." />
+<meta property="og:title" content="Estimate Pearson's partial correlation coefficients. — compute_partial_corr_matrix" />
+<meta property="og:description" content="
+This function is a wrapper around ppcor::pcor() that extracts correlation
+coefficient estimates, then adds the variable names to the column and row names." />
 
 
 
@@ -117,40 +116,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>NetCoupler: Inference of Causal Links Between a Network and an External Variable</h1>
-    <small class="dont-index">Source: <a href='https://github.com/NetCoupler/NetCoupler/blob/master/R/NetCoupler-package.R'><code>R/NetCoupler-package.R</code></a></small>
-    <div class="hidden name"><code>NetCoupler-package.Rd</code></div>
+    <h1>Estimate Pearson's partial correlation coefficients.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/NetCoupler/NetCoupler/blob/master/R/network.R'><code>R/network.R</code></a></small>
+    <div class="hidden name"><code>compute_partial_corr_matrix.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The NetCoupler algorithm identifies potential direct effects of 
-    correlated, high-dimensional variables formed as a network with an external 
-    variable. The external variable may act as the dependent/response variable 
-    or as an independent/predictor variable to the network.</p>
+    <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
+<p>This function is a wrapper around <code><a href='https://rdrr.io/pkg/ppcor/man/pcor.html'>ppcor::pcor()</a></code> that extracts correlation
+coefficient estimates, then adds the variable names to the column and row names.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>compute_partial_corr_matrix</span>(<span class='kw'>.tbl</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>.tbl</th>
+      <td><p>Input data of metabolic variables as matrix or data.frame.</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <div class='dont-index'><p>Useful links:</p><ul>
-<li><p><a href='https://github.com/NetCoupler/NetCoupler'>https://github.com/NetCoupler/NetCoupler</a></p></li>
-<li><p>Report bugs at <a href='https://github.com/NetCoupler/NetCoupler/issues'>https://github.com/NetCoupler/NetCoupler/issues</a></p></li>
-</ul>
-
-</div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p><strong>Maintainer</strong>: Luke Johnston <a href='mailto:lwjohnst@gmail.com'>lwjohnst@gmail.com</a></p>
-<p>Authors:</p><ul>
-<li><p>Clemens Wittenbecher <a href='mailto:Clemens.Wittenbecher@dife.de'>Clemens.Wittenbecher@dife.de</a></p></li>
-</ul>
-
-<p>Other contributors:</p><ul>
-<li><p>Helena Zacharias <a href='mailto:helena.zacharias@helmholtz-muenchen.de'>helena.zacharias@helmholtz-muenchen.de</a> [contributor]</p></li>
-</ul>
-
-
+    <p>Outputs a matrix of partial correlation coefficients.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NetCoupler: Inference of Causal Links Between a Network and an External Variable — NetCoupler-package • NetCoupler</title>
+<title>Plot of the outcome or exposure side model estimation. — nc_plot_outcome_estimation • NetCoupler</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,10 @@
 
 
 
-<meta property="og:title" content="NetCoupler: Inference of Causal Links Between a Network and an External Variable — NetCoupler-package" />
-<meta property="og:description" content="The NetCoupler algorithm identifies potential direct effects of 
-    correlated, high-dimensional variables formed as a network with an external 
-    variable. The external variable may act as the dependent/response variable 
-    or as an independent/predictor variable to the network." />
+<meta property="og:title" content="Plot of the outcome or exposure side model estimation. — nc_plot_outcome_estimation" />
+<meta property="og:description" content="
+Plots the results of the effect classification based on the model estimation,
+linking the results into the network graph." />
 
 
 
@@ -117,40 +116,65 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>NetCoupler: Inference of Causal Links Between a Network and an External Variable</h1>
-    <small class="dont-index">Source: <a href='https://github.com/NetCoupler/NetCoupler/blob/master/R/NetCoupler-package.R'><code>R/NetCoupler-package.R</code></a></small>
-    <div class="hidden name"><code>NetCoupler-package.Rd</code></div>
+    <h1>Plot of the outcome or exposure side model estimation.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/NetCoupler/NetCoupler/blob/master/R/plots.R'><code>R/plots.R</code></a></small>
+    <div class="hidden name"><code>nc_plot_outcome_estimation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The NetCoupler algorithm identifies potential direct effects of 
-    correlated, high-dimensional variables formed as a network with an external 
-    variable. The external variable may act as the dependent/response variable 
-    or as an independent/predictor variable to the network.</p>
+    <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
+<p>Plots the results of the effect classification based on the model estimation,
+linking the results into the network graph.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>nc_plot_outcome_estimation</span>(
+  <span class='kw'>.tbl</span>,
+  <span class='kw'>.graph</span>,
+  <span class='kw'>.tbl_model</span>,
+  .edge_label_threshold = <span class='fl'>0.2</span>
+)
 
+<span class='fu'>nc_plot_exposure_estimation</span>(
+  <span class='kw'>.tbl</span>,
+  <span class='kw'>.graph</span>,
+  <span class='kw'>.tbl_model</span>,
+  .edge_label_threshold = <span class='fl'>0.2</span>
+)</pre>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>.tbl</th>
+      <td><p>The original data, with the metabolic variables that have been
+standardized.</p></td>
+    </tr>
+    <tr>
+      <th>.graph</th>
+      <td><p>The graph object created from <code><a href='nc_estimate_network.html'>nc_estimate_network()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>.tbl_model</th>
+      <td><p>The tibble of the model results obtained from
+<code>nc_classify_effects()</code>.</p></td>
+    </tr>
+    <tr>
+      <th>.edge_label_threshold</th>
+      <td><p>Threshold to pass for the value to be added to
+the edge label.</p></td>
+    </tr>
+    </table>
 
-    <div class='dont-index'><p>Useful links:</p><ul>
-<li><p><a href='https://github.com/NetCoupler/NetCoupler'>https://github.com/NetCoupler/NetCoupler</a></p></li>
-<li><p>Report bugs at <a href='https://github.com/NetCoupler/NetCoupler/issues'>https://github.com/NetCoupler/NetCoupler/issues</a></p></li>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a <a href='https://ggplot2.tidyverse.org/reference/ggplot2-package.html'>ggplot2</a> object showing the model
+estimation results linked with the network graph.</p>
+    <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
+
+    
+<ul>
+<li><p><code>nc_plot_exposure_estimation</code>: Plots the exposure side estimation.</p></li>
 </ul>
-
-</div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p><strong>Maintainer</strong>: Luke Johnston <a href='mailto:lwjohnst@gmail.com'>lwjohnst@gmail.com</a></p>
-<p>Authors:</p><ul>
-<li><p>Clemens Wittenbecher <a href='mailto:Clemens.Wittenbecher@dife.de'>Clemens.Wittenbecher@dife.de</a></p></li>
-</ul>
-
-<p>Other contributors:</p><ul>
-<li><p>Helena Zacharias <a href='mailto:helena.zacharias@helmholtz-muenchen.de'>helena.zacharias@helmholtz-muenchen.de</a> [contributor]</p></li>
-</ul>
-
-
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
