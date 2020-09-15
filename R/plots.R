@@ -56,24 +56,6 @@ nc_plot_network <- function(.tbl,
         ggraph::theme_graph(base_family = 'Helvetica')
 }
 
-.create_tbl_network_graph <- function(.tbl, .graph) {
-    .tbl %>%
-        select(all_of(.graph@graph@nodes)) %>%
-        compute_adjacency_graph(.graph = .graph) %>%
-        tidygraph::as_tbl_graph() %>%
-        tidygraph::activate("edges")
-}
-
-.define_edge_label <- function(.tbl_graph, .edge_label_threshold = 0.2) {
-    .tbl_graph %>%
-        mutate(edge_label =
-                   if_else(
-                       abs(.data$weight) > .edge_label_threshold,
-                       as.character(round(.data$weight, 2)),
-                       ""
-                   ))
-}
-
 plot_external_var <-
     function(.tbl,
              .graph,
@@ -204,4 +186,23 @@ nc_plot_exposure_estimation <- function(.tbl,
         .edge_label_threshold = .edge_label_threshold,
         .external_var_side = "exposure"
     )
+}
+
+# Helpers -----------------------------------------------------------------
+
+create_tbl_network_graph <- function(.tbl, .graph) {
+    .tbl %>%
+        select(all_of(names(.graph@graph@edgeL))) %>%
+        compute_adjacency_graph(.graph = .graph) %>%
+        tidygraph::as_tbl_graph()
+}
+
+define_edge_label <- function(.tbl_graph, .edge_label_threshold = 0.2) {
+    .tbl_graph %>%
+        mutate(edge_label =
+                   if_else(
+                       abs(.data$weight) > .edge_label_threshold,
+                       as.character(round(.data$weight, 2)),
+                       ""
+                   ))
 }
