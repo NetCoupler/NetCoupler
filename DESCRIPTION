@@ -40,11 +40,11 @@ Imports:
     stats,
     tibble,
     tidyselect,
+    ggplot2,
     utils,
     furrr,
     tidygraph
 Suggests: 
-    ggplot2,
     broom,
     covr,
     knitr,

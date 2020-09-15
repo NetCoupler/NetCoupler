@@ -26,11 +26,6 @@ nc_plot_network <- function(.tbl,
         .fn_node_rename <- function(x) x
     assert_is_function(.fn_node_rename)
 
-    # TODO: Fix this to be tidier, there should be a better way to do it.
-    if (!requireNamespace("ggplot2", quietly = TRUE))
-        rlang::abort("Can't find ggplot2, please install it.")
-    if (!requireNamespace("tidygraph", quietly = TRUE))
-        rlang::abort("Can't find tidygraph, please install it.")
 
     graph_data_prep <- .tbl %>%
         compute_adjacency_graph(.graph = .graph) %>%
@@ -86,10 +81,6 @@ plot_external_var <-
              .edge_label_threshold = 0.2,
              .external_var_side =c("outcome", "exposure")) {
 
-    if (!requireNamespace("ggplot2", quietly = TRUE))
-        rlang::abort("Can't find ggplot2, please install it.")
-    if (!requireNamespace("tidygraph", quietly = TRUE))
-        rlang::abort("Can't find tidygraph, please install it.")
 
     external_var <- match.arg(.external_var_side)
     # TODO: Extract the data processing from the plotting functionality
