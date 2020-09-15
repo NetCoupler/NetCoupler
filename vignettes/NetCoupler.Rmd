@@ -404,7 +404,7 @@ purposes and are too "busy" and crowded to be meaningful for presentation or
 publication. However, these are good starting points for making prettier,
 more legible plots.
 
-```{r plot-outcome-estimation-networks, fig.width=9, fig.height=8}
+```{r plot-outcome-estimation-networks, fig.width=7, fig.height=6}
 nc_plot_outcome_estimation(
     standardized_data,
     metabolite_network,
@@ -412,11 +412,11 @@ nc_plot_outcome_estimation(
 )
 ```
 
-```{r plot-exposure-estimation-networks, fig.width=9, fig.height=8}
+```{r plot-exposure-estimation-networks, fig.width=7, fig.height=6}
 nc_plot_exposure_estimation(
     standardized_data,
     metabolite_network,
-    exposure_direct_effects
+    exposure_estimates
 )
 ```
 
