@@ -4,53 +4,54 @@
 \alias{nc_model_estimates}
 \alias{nc_exposure_estimates}
 \alias{nc_outcome_estimates}
-\alias{.compute_model_estimates}
+\alias{compute_model_estimates}
 \title{Compute model estimates between an external (exposure or outcome) variable
 and a network.}
 \usage{
 nc_exposure_estimates(
   .tbl,
-  .graph,
+  .edge_tbl,
   .exposure,
   .adjustment_vars = NA,
   .model_function,
   .model_arg_list = NULL,
-  .exponentiate = FALSE
+  .exponentiate = FALSE,
+  .parallel = FALSE
 )
 
 nc_outcome_estimates(
   .tbl,
-  .graph,
+  .edge_tbl,
   .outcome,
   .adjustment_vars = NA,
   .model_function,
   .model_arg_list = NULL,
-  .exponentiate = FALSE
+  .exponentiate = FALSE,
+  .parallel = FALSE
 )
 
-.compute_model_estimates(
+compute_model_estimates(
   .tbl,
-  .graph,
+  .edge_tbl,
   .external_var,
   .adjustment_vars = NA,
   .model_function,
   .model_arg_list = NULL,
   .exponentiate = FALSE,
-  .external_side = c("exposure", "outcome")
+  .external_side = c("exposure", "outcome"),
+  .parallel = FALSE
 )
 }
 \arguments{
 \item{.tbl}{The data.frame or tibble that contains the variables of interest,
 including the variables passed to the network.}
 
-\item{.graph}{Output graph object from \code{nc_create_network()}.}
-
 \item{.exposure, .outcome}{Character. The exposure or outcome variable of interest.}
 
 \item{.adjustment_vars}{Optional. Variables to adjust for in the models.}
 
 \item{.model_function}{A function for the model to use (e.g. \code{\link[stats:lm]{stats::lm()}},
-\code{\link[stats:glm]{stats::glm()}}, \code{\link[survival:coxph]{survival::coxph()}}). Can be any model as long as the
+\code{\link[stats:glm]{stats::glm()}}, survival::coxph()). Can be any model as long as the
 function has the arguments \code{formula} and \code{data}.}
 
 \item{.model_arg_list}{Optional. A list containing the named arguments that
@@ -74,6 +75,8 @@ variable to the network variable.
 \item Outcome indicating the implied directionality is from the network variable
 to the external variable.
 }}
+
+\item{.graph}{Output graph object from \code{nc_estimate_network()}.}
 }
 \value{
 Outputs a \link[tibble:tibble-package]{tibble} that contains the model
@@ -90,33 +93,52 @@ TODO: Describe more here (fill out vignette first).
 
 \item \code{nc_outcome_estimates}: Computes the model estimates for the exposure side.
 
-\item \code{.compute_model_estimates}: Internal function. Included to document algorithm.
+\item \code{compute_model_estimates}: Internal function. Included to document
+algorithm.
 }}
 
 \examples{
 
+\dontrun{
 library(dplyr)
-metabolite_network <- simulated_data \%>\%
-  select(matches("metabolite")) \%>\%
-  nc_create_network()
+standardized_data <- simulated_data \%>\%
+    nc_standardize(starts_with("metabolite"))
 
-simulated_data \%>\%
+metabolite_network <- simulated_data \%>\%
+    nc_standardize(starts_with("metabolite"),
+                   .regressed_on = "age") \%>\%
+    nc_estimate_network(starts_with("metabolite"))
+edge_table <- as_edge_tbl(metabolite_network)
+
+standardized_data \%>\%
   nc_exposure_estimates(
-    .graph = metabolite_network,
+    .edge_tbl = edge_table,
     .exposure = "exposure",
-    .adjustment_vars = "age",
     .model_function = lm
    )
 
-simulated_data \%>\%
+# Using a logistic regression
+standardized_data \%>\%
   nc_outcome_estimates(
-    .graph = metabolite_network,
+    .edge_tbl = edge_table,
     .outcome = "case_status",
     .model_function = glm,
     .adjustment_vars = "age",
     .model_arg_list = list(family = binomial(link = "logit")),
     .exponentiate = TRUE
   )
+
+# Adding random confounders to adjust for
+standardized_data \%>\%
+  mutate(Random = rnorm(nrow(.)),
+         Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) \%>\%
+  nc_exposure_estimates(
+    .edge_tbl = edge_table,
+    .exposure = "exposure",
+    .adjustment_vars = c("age", "Random", "Sex"),
+    .model_function = lm
+   )
+}
 
 }
 \keyword{internal}

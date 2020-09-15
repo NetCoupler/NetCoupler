@@ -2,10 +2,11 @@ context("Create metabolic variable network")
 
 # Making partial independence network from metabolite data
 metabolite_data <- simulated_data %>%
-    dplyr::select(dplyr::matches("metabolite"))
+    select(starts_with("metabolite"))
 
 metabolite_network <- metabolite_data %>%
-    nc_create_network()
+    nc_standardize() %>%
+    nc_estimate_network()
 
 test_that("network is created", {
     # TODO: This might not always be this class.
@@ -14,25 +15,24 @@ test_that("network is created", {
     # For number of neighbours, etc
     edges <- metabolite_network@graph@edgeL
     expect_equal(names(edges), names(metabolite_data))
-    expect_true(all(purrr::map(edges, ~ length(.$edges)) > 0))
 
     # For data frame
     expect_error(
         metabolite_data$metabolite_1 %>%
-            nc_create_network()
+            nc_estimate_network()
     )
 
     # For alpha number
     expect_error(
         metabolite_data %>%
-            nc_create_network("0.05")
+            nc_estimate_network("0.05")
     )
 })
 
 test_that("adjacency graph object is constructed", {
     # Based on adjacency matrix and partial correlation matrix
-    adj_graph <- nc_adjacency_graph(metabolite_data,
-                                    metabolite_network)
+    adj_graph <- compute_adjacency_graph(metabolite_data,
+                                         metabolite_network)
 
     expect_identical(class(adj_graph), "igraph")
 })
@@ -40,13 +40,15 @@ test_that("adjacency graph object is constructed", {
 test_that("network is constructed even with missingness", {
     metabolite_network_na <- simulated_data %>%
         .insert_random_missingness() %>%
-        dplyr::select(dplyr::matches("metabolite")) %>%
-        nc_create_network()
+        nc_estimate_network(starts_with("metabolite"))
 
     expect_s4_class(metabolite_network_na, "pcAlgo")
 
     # For number of neighbours, etc
     edges <- metabolite_network_na@graph@edgeL
     expect_equal(names(edges), names(metabolite_data))
-    expect_true(all(purrr::map(edges, ~ length(.$edges)) > 0))
 })
+
+# test_that("edge table generates correct output", {
+#     # TODO: Fill this out
+# })

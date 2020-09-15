@@ -18,6 +18,15 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Goals
+
+- Work with pipe `%>%` operator
+- Work with tidyselect helpers
+- Be autocomplete friendly (e.g. start function names with `nc_`)
+- In general, output as tibble, or at least easily modified into a data.frame/tibble
+- Arguments are prefixed with `.`
+- Internal functions are prefixed with `.`?
+
 ## Brief description
 
 The *NetCoupler*-algorithm operates by taking the following steps:
@@ -282,23 +291,28 @@ library(dplyr)
 ### Estimating the metabolic network
 
 For estimating the network, it's (basically) required to standardize
-the metabolic variables before inputting into `nc_create_network()`.
-If you intend to also adjust for potential confounders when estimating
-the exposure or outcome side connections,
-you can include the potential impact these confounders may have on 
-the network by regressing the confounders on the metabolic variables.
-Then the residuals can be extracted and used when constructing the network.
-You do this with the `nc_standardize()` function. 
+the metabolic variables before inputting into `nc_estimate_network()`.
 This function also log-transforms and scales 
 (mean-center and z-score normalize) the values of the metabolic variables.
 We do this because the network estimation algorithm can sometimes be finicky
 about differences in variable numerical scale (mean of 1 vs mean of 1000).
 
-```{r metabolic-residuals}
+```{r metabolic-standardize}
 std_metabolic_data <- simulated_data %>% 
-    nc_standardize(starts_with("metabolite"), 
-                   .regressed_on = "age") %>% 
-    select(starts_with("metabolite"))
+    nc_standardize(starts_with("metabolite"))
+```
+
+If you intend to also adjust for potential confounders when estimating
+the exposure or outcome side connections,
+you can include the potential impact these confounders may have on 
+the network by regressing the confounders on the metabolic variables.
+Then the residuals can be extracted and used when constructing the network.
+You do this also with the `nc_standardize()` function. 
+
+```{r metabolic-standardize-residuals, eval=FALSE}
+std_metabolic_data <- simulated_data %>% 
+    nc_standardize(starts_with("metabolite"),
+                   .regressed_on = "age")
 ```
 
 After that, you can estimate the network.
@@ -306,7 +320,7 @@ After that, you can estimate the network.
 ```{r create-network}
 # Make partial independence network from metabolite data
 metabolite_network <- std_metabolic_data %>% 
-    nc_create_network()
+    nc_estimate_network(starts_with("metabolite"))
 ```
 
 To see what the network looks like,
@@ -331,38 +345,10 @@ standardized_data <- simulated_data %>%
     nc_standardize(starts_with("metabolite"))
 ```
 
-Then estimate the outcome or exposure:
-
-```{r example-use, cache=TRUE}
-outcome_estimates <- standardized_data %>%
-    nc_outcome_estimates(
-        .graph = metabolite_network,
-        .outcome = "case_status",
-        .model_function = glm,
-        .model_arg_list = list(family = binomial(link = "logit")),
-        .exponentiate = TRUE
-    )
-
-outcome_estimates
-
-exposure_estimates <- standardized_data %>%
-    nc_exposure_estimates(
-        .graph = metabolite_network,
-        .exposure = "exposure",
-        .adjustment_vars = "age",
-        .model_function = lm
-    )
-
-exposure_estimates
-```
-
-### Classifying direct effects on exposure or outcome side
-
-You can classify direct effects by using `nc_classify_effects()`,
-which works on both the exposure side (`exposure -> metabolite`) 
-and the outcome side (`metabolite -> outcome`).
-The function applies a simple algorithm, described in more
-detail in `vignette("description")`.
+Now you can estimate the outcome or exposure and identify direct effects
+for either the exposure side (`exposure -> metabolite`) 
+or the outcome side (`metabolite -> outcome`).
+For more detail on the algorithm, see the `vignette("description")`.
 For the exposure side, 
 the function identifies whether a link between the exposure 
 and an index node (one metabolic variable in the network) exists,
@@ -375,22 +361,37 @@ In the example below, we specifically generated the simulated data so that
 the exposure associated with the metabolites 1, 8, and 12.
 And as we can see, those links have been correctly identified.
 
-```{r classify-exposure-effects}
-exposure_direct_effects <- exposure_estimates %>% 
-    nc_classify_effects()
-exposure_direct_effects
-exposure_direct_effects %>% 
-    dplyr::filter(direct_effect == "direct")
+```{r example-use, cache=TRUE}
+outcome_estimates <- standardized_data %>%
+    nc_outcome_estimates(
+        .edge_tbl = as_edge_tbl(metabolite_network),
+        .outcome = "outcome_continuous",
+        .model_function = lm
+    )
+outcome_estimates
+
+exposure_estimates <- standardized_data %>%
+    nc_exposure_estimates(
+        .edge_tbl = as_edge_tbl(metabolite_network),
+        .exposure = "exposure",
+        .model_function = lm
+    )
+
+exposure_estimates
 ```
 
-You can also classify direct effects with an outcome using the same function:
+If you want to adjust for confounders and having already used `.regressed_on` in
+the `nc_standardize()` function, add confounders to `nc_outcome_estimates()`
+or `nc_exposure_estimates()` with the `.adjustment_vars` argument:
 
-```{r classify-outcome-effects}
-outcome_direct_effects <- outcome_estimates %>% 
-    nc_classify_effects()
-outcome_direct_effects
-outcome_direct_effects %>% 
-    dplyr::filter(direct_effect == "direct")
+```{r estimation-adjustment, eval=FALSE}
+outcome_estimates <- standardized_data %>%
+    nc_outcome_estimates(
+        .edge_tbl = as_edge_tbl(metabolite_network),
+        .outcome = "outcome_continuous",
+        .model_function = lm,
+        .adjustment_vars = "age"
+    )
 ```
 
 ### Plotting 
@@ -402,19 +403,41 @@ purposes and are too "busy" and crowded to be meaningful for presentation or
 publication. However, these are good starting points for making prettier,
 more legible plots.
 
-```{r plot-outcome-estimation-networks, fig.width=9, fig.height=8}
+```{r plot-outcome-estimation-networks, fig.width=7, fig.height=6}
 nc_plot_outcome_estimation(
     standardized_data,
     metabolite_network,
-    outcome_direct_effects
+    outcome_estimates
 )
 ```
 
-```{r plot-exposure-estimation-networks, fig.width=9, fig.height=8}
+```{r plot-exposure-estimation-networks, fig.width=7, fig.height=6}
 nc_plot_exposure_estimation(
     standardized_data,
     metabolite_network,
-    exposure_direct_effects
+    exposure_estimates
 )
 ```
 
+## Slow code? Use parallel processing with future
+
+If the analysis is taking a while, you can use the future package to speed things
+up by implementing parallel processing. Set the `.parallel` argument to `TRUE`
+in either `nc_outcome_estimates()` or `nc_exposure_estimates()` and then use
+the future package with a given `plan()`. If you use RStudio, the only usable
+strategy is `multisession`. After you run your code, close up the parallel
+processing by putting it back to normal with `plan(sequential)`. Using the future
+package you can speed up the processing by almost 2.5 times.
+
+```{r future-parallel-processing, eval=FALSE}
+library(future)
+plan(multisession)
+outcome_estimates <- standardized_data %>%
+    nc_outcome_estimates(
+        .edge_tbl = as_edge_tbl(metabolite_network),
+        .outcome = "outcome_continuous",
+        .model_function = lm,
+        .parallel = TRUE
+    )
+plan(sequential)
+```

@@ -23,7 +23,7 @@ nc_plot_exposure_estimation(
 \item{.tbl}{The original data, with the metabolic variables that have been
 standardized.}
 
-\item{.graph}{The graph object created from \code{nc_create_network()}.}
+\item{.graph}{The graph object created from \code{nc_estimate_network()}.}
 
 \item{.tbl_model}{The tibble of the model results obtained from
 \code{nc_classify_effects()}.}

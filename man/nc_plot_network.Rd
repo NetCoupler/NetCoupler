@@ -12,7 +12,7 @@ nc_plot_network(
 )
 }
 \arguments{
-\item{.tbl}{The data containing only the metabolic variables.}
+\item{.tbl}{The data that was also used to generate the \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
 
 \item{.graph}{The network graph object of the metabolic variable network.}
 
@@ -30,17 +30,6 @@ Outputs a \code{ggplot2} object of the metabolic network.
 \description{
 \lifecycle{experimental}
 }
-\examples{
-
-library(dplyr)
-metabolite_data <- simulated_data \%>\%
-  select(starts_with("metabolite"))
-network <- metabolite_data \%>\%
-  nc_create_network()
-nc_plot_network(
-  metabolite_data,
-  network,
-  .fn_node_rename = function(x) gsub("metabolite_", "M", x)
-)
-
+\seealso{
+See \link{nc_model_estimates} for examples on using NetCoupler.
 }

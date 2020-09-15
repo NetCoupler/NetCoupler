@@ -4,14 +4,12 @@
 \name{NetCoupler-package}
 \alias{NetCoupler}
 \alias{NetCoupler-package}
-\title{NetCoupler: Inference of Causal Links Between Metabolomics and
-    Disease Incidence}
+\title{NetCoupler: Inference of Causal Links Between a Network and an External Variable}
 \description{
-The NetCoupler algorithm identifies direct effects
-    of correlated, high-dimensional exposures on time-to-event data. It
-    can also be used with an external exposure that may effect the -omic
-    network (e.g. lifestyle), to be used to identify indirect pathways
-    between the external exposure and an outcome.
+The NetCoupler algorithm identifies potential direct effects of 
+    correlated, high-dimensional variables formed as a network with an external 
+    variable. The external variable may act as the dependent/response variable 
+    or as an independent/predictor variable to the network.
 }
 \seealso{
 Useful links:

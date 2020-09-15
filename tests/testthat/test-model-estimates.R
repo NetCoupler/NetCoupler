@@ -1,103 +1,124 @@
 context("Exposure and outcome multiple model estimates.")
 
-test_that("exposure side estimation outputs correctly", {
-    exposure_estimates <- simulated_data %>%
+std_sim_data <- simulated_data %>%
+    nc_standardize(starts_with("metabolite"))
+
+metabolite_names <- simulated_data %>%
+    select(starts_with("metabolite")) %>%
+    names()
+
+exposure_estimates <- std_sim_data %>%
+    nc_exposure_estimates(
+        .edge_tbl = as_edge_tbl(metabolite_network),
+        .exposure = "exposure",
+        .model_function = lm
+    )
+
+outcome_estimates <- std_sim_data %>%
+    nc_outcome_estimates(
+        .edge_tbl = as_edge_tbl(metabolite_network),
+        .outcome = "outcome_continuous",
+        .model_function = lm
+    )
+
+test_that("Correct metabolites are classified as direct", {
+    exposure_direct_effect_vars <- exposure_estimates %>%
+        dplyr::filter(effect == "direct") %>%
+        pull(index_node)
+
+    expected_exposure_associations <- paste0("metabolite_", c(1, 10, 8))
+    expect_identical(sort(exposure_direct_effect_vars),
+                     sort(expected_exposure_associations))
+
+    outcome_direct_effect_vars <- outcome_estimates %>%
+        dplyr::filter(effect == "direct") %>%
+        pull(index_node)
+
+    expected_outcome_associations <- paste0("metabolite_", c(3, 9, 12))
+    expect_identical(sort(outcome_direct_effect_vars),
+                     sort(expected_outcome_associations))
+})
+
+test_that("estimations outputs as correct class", {
+    expect_correct_model_results(exposure_estimates, metabolite_names)
+    expect_correct_model_results(outcome_estimates, metabolite_names)
+})
+
+test_that("one or more adjustment variables can be added", {
+    one_adj <- std_sim_data %>%
         nc_exposure_estimates(
-            .graph = metabolite_network,
+            .edge_tbl = as_edge_tbl(metabolite_network),
             .exposure = "exposure",
-            .model_function = lm
-        )
-
-    expect_type(exposure_estimates, "list")
-    expect_identical(class(exposure_estimates)[1], "tbl_df")
-})
-
-test_that("outcome side estimation outputs correctly", {
-    outcome_estimates <- simulated_data %>%
-        nc_outcome_estimates(
-            .graph = metabolite_network,
-            .outcome = "case_status",
-            .model_function = glm,
-            .model_arg_list = list(family = binomial(link = "logit")),
-            .exponentiate = TRUE
-        )
-
-    expect_type(outcome_estimates, "list")
-    expect_identical(class(outcome_estimates)[1], "tbl_df")
-})
-
-test_that("one or more adjustment variable can be added", {
-    one_adj <- simulated_data %>%
-        .compute_model_estimates(
-            .graph = metabolite_network,
-            .external_var = "exposure",
-            .external_side = "exposure",
             .adjustment_vars = "age",
             .model_function = lm
         )
 
-    expect_type(one_adj, "list")
-    expect_identical(class(one_adj)[1], "tbl_df")
+    expect_correct_model_results(one_adj, metabolite_names)
 
-    two_adj <- simulated_data %>%
+    two_adj <- std_sim_data %>%
         mutate(Random = rnorm(nrow(.))) %>%
-        .compute_model_estimates(
-            .graph = metabolite_network,
-            .external_var = "exposure",
-            .external_side = "exposure",
+        nc_exposure_estimates(
+            .edge_tbl = as_edge_tbl(metabolite_network),
+            .exposure = "exposure",
             .adjustment_vars = c("age", "Random"),
             .model_function = lm
         )
 
-    expect_type(two_adj, "list")
-    expect_identical(class(two_adj)[1], "tbl_df")
+    expect_correct_model_results(two_adj, metabolite_names)
 
-    adjusted_variables <- unique(two_adj$adjusted_vars)
-    adjusted_variables <- strsplit(adjusted_variables, ", ")[[1]]
-    expect_identical(adjusted_variables, c("age", "Random"))
+    two_adj_outcome <- std_sim_data %>%
+        mutate(Random = rnorm(nrow(.))) %>%
+        nc_outcome_estimates(
+            .edge_tbl = as_edge_tbl(metabolite_network),
+            .outcome = "outcome_continuous",
+            .adjustment_vars = c("age", "Random"),
+            .model_function = lm
+        )
+
+    expect_correct_model_results(two_adj, metabolite_names)
 })
 
 test_that("assertion checks pass", {
     # for model_function
-    expect_error(simulated_data %>%
+    expect_error(std_sim_data %>%
         nc_exposure_estimates(
-            .graph = metabolite_network,
+            .edge_tbl = as_edge_tbl(metabolite_network),
             .exposure = "exposure",
             .model_function = "lm"
         )
     )
 
     # for exposure
-    expect_error(simulated_data %>%
+    expect_error(std_sim_data %>%
         nc_exposure_estimates(
-            .graph = metabolite_network,
+            .edge_tbl = as_edge_tbl(metabolite_network),
             .exposure = c("exposure", "SomethingElse"),
             .model_function = lm
         )
     )
 
     # for graph
-    expect_error(simulated_data %>%
+    expect_error(std_sim_data %>%
         nc_exposure_estimates(
-            .graph = swiss,
+            .edge_tbl = swiss,
             .exposure = "exposure",
             .model_function = lm
         )
     )
 
     # for adjustment
-    expect_error(simulated_data %>%
+    expect_error(std_sim_data %>%
         nc_exposure_estimates(
-            .graph = metabolite_network,
+            .edge_tbl = as_edge_tbl(metabolite_network),
             .exposure = "exposure",
             .adjustment_vars = 1,
             .model_function = lm
         )
     )
 
-    expect_error(simulated_data %>%
+    expect_error(std_sim_data %>%
         nc_exposure_estimates(
-            .graph = metabolite_network,
+            .edge_tbl = as_edge_tbl(metabolite_network),
             .exposure = "exposure",
             .adjustment_vars = swiss,
             .model_function = lm
@@ -106,31 +127,51 @@ test_that("assertion checks pass", {
 })
 
 test_that("missingness in data still provides results", {
-    missingness_data <- .insert_random_missingness(simulated_data)
+    set.seed(21451)
+    missingness_data <- .insert_random_missingness(std_sim_data)
     metabolite_network <- missingness_data %>%
-        select(matches("metabolite")) %>%
-        nc_create_network()
+        select(starts_with("metabolite")) %>%
+        nc_estimate_network()
     exposure_estimates <- missingness_data %>%
         nc_exposure_estimates(
-            .graph = metabolite_network,
+            .edge_tbl = as_edge_tbl(metabolite_network),
             .exposure = "exposure",
             .model_function = lm
         )
 
-    expect_type(exposure_estimates, "list")
-    expect_identical(class(exposure_estimates)[1], "tbl_df")
+    expect_correct_model_results(exposure_estimates, metabolite_names)
 })
 
-test_that("computes when using survival::Surv and coxph", {
-    skip_on_ci()
-    skip_if_not_installed("survival")
-    outcome_estimates <- simulated_data %>%
-        nc_outcome_estimates(
-            .graph = metabolite_network,
-            .outcome = "survival::Surv(survival_time, case_status)",
-            .model_function = survival::coxph
+# test_that("computes when using survival::Surv and coxph", {
+#     skip_on_ci()
+#     skip_if_not_installed("survival")
+#     outcome_estimates <- std_sim_data %>%
+#         nc_outcome_estimates(
+#             .edge_tbl = as_edge_tbl(metabolite_network),
+#             .outcome = "survival::Surv(survival_time, case_status)",
+#             .model_function = survival::coxph
+#         )
+#
+#     expect_correct_model_results(outcome_estimates, metabolite_names)
+# })
+
+test_that("Factor confounders are extracted properly", {
+    multimodel_exposure <- std_sim_data %>%
+        mutate(Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) %>%
+        nc_exposure_estimates(
+            .edge_tbl = as_edge_tbl(metabolite_network),
+            .exposure = "exposure",
+            .adjustment_vars = c("age", "Sex"),
+            .model_function = lm
         )
 
-    expect_type(outcome_estimates, "list")
-    expect_identical(class(outcome_estimates)[1], "tbl_df")
+    expect_correct_model_results(multimodel_exposure, metabolite_names)
+
+    # Same expected metabolites
+    exposure_direct_effect_vars <- multimodel_exposure %>%
+        dplyr::filter(effect == "direct") %>%
+        pull(index_node)
+
+    expected_exposure_associations <- paste0("metabolite_", c(1, 10, 8))
+    expect_identical(exposure_direct_effect_vars, expected_exposure_associations)
 })

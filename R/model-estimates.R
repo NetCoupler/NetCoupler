@@ -4,11 +4,11 @@
 #' @name nc_model_estimates
 #' @param .tbl The data.frame or tibble that contains the variables of interest,
 #'   including the variables passed to the network.
-#' @param .graph Output graph object from `nc_create_network()`.
+#' @param .graph Output graph object from `nc_estimate_network()`.
 #' @param .exposure,.outcome Character. The exposure or outcome variable of interest.
 #' @param .adjustment_vars Optional. Variables to adjust for in the models.
 #' @param .model_function A function for the model to use (e.g. [stats::lm()],
-#'   [stats::glm()], [survival::coxph()]). Can be any model as long as the
+#'   [stats::glm()], survival::coxph()). Can be any model as long as the
 #'   function has the arguments `formula` and `data`.
 #' @param .model_arg_list Optional. A list containing the named arguments that
 #'   will be passed to the model function. A simple example would be
@@ -38,22 +38,28 @@
 #'
 #' @examples
 #'
+#' \dontrun{
 #' library(dplyr)
-#' metabolite_network <- simulated_data %>%
-#'   select(matches("metabolite")) %>%
-#'   nc_create_network()
+#' standardized_data <- simulated_data %>%
+#'     nc_standardize(starts_with("metabolite"))
 #'
-#' simulated_data %>%
+#' metabolite_network <- simulated_data %>%
+#'     nc_standardize(starts_with("metabolite"),
+#'                    .regressed_on = "age") %>%
+#'     nc_estimate_network(starts_with("metabolite"))
+#' edge_table <- as_edge_tbl(metabolite_network)
+#'
+#' standardized_data %>%
 #'   nc_exposure_estimates(
-#'     .graph = metabolite_network,
+#'     .edge_tbl = edge_table,
 #'     .exposure = "exposure",
-#'     .adjustment_vars = "age",
 #'     .model_function = lm
 #'    )
 #'
-#' simulated_data %>%
+#' # Using a logistic regression
+#' standardized_data %>%
 #'   nc_outcome_estimates(
-#'     .graph = metabolite_network,
+#'     .edge_tbl = edge_table,
 #'     .outcome = "case_status",
 #'     .model_function = glm,
 #'     .adjustment_vars = "age",
@@ -61,82 +67,92 @@
 #'     .exponentiate = TRUE
 #'   )
 #'
+#' # Adding random confounders to adjust for
+#' standardized_data %>%
+#'   mutate(Random = rnorm(nrow(.)),
+#'          Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) %>%
+#'   nc_exposure_estimates(
+#'     .edge_tbl = edge_table,
+#'     .exposure = "exposure",
+#'     .adjustment_vars = c("age", "Random", "Sex"),
+#'     .model_function = lm
+#'    )
+#' }
+#'
 NULL
 
 #' @describeIn nc_model_estimates Computes the model estimates for the exposure side.
 #' @export
 nc_exposure_estimates <-
     function(.tbl,
-             .graph,
+             .edge_tbl,
              .exposure,
              .adjustment_vars = NA,
              .model_function,
              .model_arg_list = NULL,
-             .exponentiate = FALSE) {
-        multiple_models <- .compute_model_estimates(
+             .exponentiate = FALSE,
+             .parallel = FALSE) {
+        multiple_models <- compute_model_estimates(
             .tbl = .tbl,
-            .graph = .graph,
+            .edge_tbl = .edge_tbl,
             .external_var = .exposure,
             .adjustment_vars = .adjustment_vars,
             .model_function = .model_function,
             .model_arg_list = .model_arg_list,
             .exponentiate = .exponentiate,
-            .external_side = "exposure"
+            .external_side = "exposure",
+            .parallel = .parallel
         )
         multiple_models %>%
-            dplyr::rename("exposure" = "external_var")
+            dplyr::rename("exposure" = "external_var") %>%
+            classify_effects()
+
     }
 
 #' @describeIn nc_model_estimates Computes the model estimates for the exposure side.
 #' @export
 nc_outcome_estimates <-
     function(.tbl,
-             .graph,
+             .edge_tbl,
              .outcome,
              .adjustment_vars = NA,
              .model_function,
              .model_arg_list = NULL,
-             .exponentiate = FALSE) {
-        multiple_models <- .compute_model_estimates(
+             .exponentiate = FALSE,
+             .parallel = FALSE) {
+        multiple_models <- compute_model_estimates(
             .tbl = .tbl,
-            .graph = .graph,
+            .edge_tbl = .edge_tbl,
             .external_var = .outcome,
             .adjustment_vars = .adjustment_vars,
             .model_function = .model_function,
             .model_arg_list = .model_arg_list,
             .exponentiate = .exponentiate,
-            .external_side = "outcome"
+            .external_side = "outcome",
+            .parallel = .parallel
         )
         multiple_models %>%
-            dplyr::rename("outcome" = "external_var")
+            dplyr::rename("outcome" = "external_var") %>%
+            classify_effects()
 }
 
-as_edge_tbl <- function(.edge_list) {
-    nodes <- names(.edge_list)
-    edge_table <- purrr::map_dfr(
-        .edge_list,
-        .single_edge_list_to_tbl,
-        .id = "source_node",
-        .nodes = nodes
-    )
-    return(edge_table)
-}
-
-#' @describeIn nc_model_estimates Internal function. Included to document algorithm.
+#' @describeIn nc_model_estimates Internal function. Included to document
+#'   algorithm.
 #' @keywords internal
-.compute_model_estimates <-
+compute_model_estimates <-
     function(.tbl,
-             .graph,
+             .edge_tbl,
              .external_var,
              .adjustment_vars = NA,
              .model_function,
              .model_arg_list = NULL,
              .exponentiate = FALSE,
-             .external_side = c("exposure", "outcome")) {
+             .external_side = c("exposure", "outcome"),
+             .parallel = FALSE) {
 
     # TODO: Use tidy eval style input for variables.
     assert_is_data.frame(.tbl)
-    assert_is_s4(.graph)
+    assert_is_data.frame(.edge_tbl)
     assert_is_a_string(.external_var)
     # TODO: This check needs to be better constructed
     if (!any(is.na(.adjustment_vars)))
@@ -146,13 +162,10 @@ as_edge_tbl <- function(.edge_list) {
     assert_is_logical(.exponentiate)
     assert_is_function(.model_function)
 
-    # TODO: Convert this .graph to an edge table from the beginning (as an input)
-    edge_table <- as_edge_tbl(.graph@graph@edgeL)
-
-    network_combinations <- .generate_all_network_combinations(edge_table)
+    network_combinations <- generate_all_network_combinations(.edge_tbl)
 
     .external_side <- rlang::arg_match(.external_side)
-    formula_list <- .generate_formula_list(
+    formula_list <- generate_formula_list(
         .network_tbl = network_combinations,
         .ext_var = .external_var,
         .ext_side = .external_side,
@@ -173,10 +186,26 @@ as_edge_tbl <- function(.edge_list) {
     if (!is.null(.model_arg_list))
         other_args <- c(other_args, .model_arg_list)
 
+    var_to_extract <- 1
+    if (.external_side == "outcome")
+        var_to_extract <- 2
+    # Surv objects have two variables, time and case
+    if (grepl("survival::Surv\\(", .external_var))
+        var_to_extract <- 3
+
+    network_index_nodes <- formula_list %>%
+        map(~all.vars(.)[var_to_extract]) %>%
+        purrr::flatten_chr()
+
+    model_map2_dfr <- purrr::map2_dfr
+    if (.parallel) {
+        model_map2_dfr <- furrr::future_map2_dfr
+    }
+
     model_tbl <- model_arg_list %>%
         purrr::pmap(purrr::lift_dl(.model_function), other_args) %>%
-        purrr::map2_dfr(network_combinations$index_node,
-                 .tidy_models, .exponentiate = .exponentiate)
+        model_map2_dfr(network_index_nodes,
+                       tidy_models, .exponentiate = .exponentiate)
 
     tidied_models <- model_tbl %>%
         mutate(
@@ -193,11 +222,9 @@ as_edge_tbl <- function(.edge_list) {
     return(tidied_models)
 }
 
-.single_edge_list_to_tbl <- function(.edges, .nodes) {
-    tibble(target_node = .nodes[.edges$edges])
-}
+# Helpers -----------------------------------------------------------------
 
-.all_neighbour_combinations <- function(.edge_table) {
+all_neighbour_combinations <- function(.edge_table) {
     neighbours <- .edge_table$target_node
     all_combinations <- lapply(seq_along(neighbours),
                                utils::combn,
@@ -206,7 +233,7 @@ as_edge_tbl <- function(.edge_list) {
     unlist(all_combinations, recursive = FALSE)
 }
 
-.tidy_models <- function(.object, .index_node, .exponentiate) {
+tidy_models <- function(.object, .index_node, .exponentiate) {
     model_id <- ids::random_id(1, bytes = 8)
     model_estimates <- .object %>%
         broom::tidy(exponentiate = .exponentiate, conf.int = TRUE) %>%
@@ -214,11 +241,13 @@ as_edge_tbl <- function(.edge_list) {
         mutate(model_id = model_id,
                index_node = .index_node)
 
-    model_estimates %>%
-        .conditionally_add_model_summary(.object)
+    model_estimates
+    # For now, this code increases computing time for not much benefit (that I see)
+    # model_estimates %>%
+    #     conditionally_add_model_summary(.object)
 }
 
-.conditionally_add_model_summary <- function(.tbl, .object) {
+conditionally_add_model_summary <- function(.tbl, .object) {
     if (!any(class(.object) %in% c("lm", "glm"))) {
         return(.tbl)
     }
@@ -242,20 +271,21 @@ as_edge_tbl <- function(.edge_list) {
     }
 }
 
-.generate_all_network_combinations <- function(.edge_tbl) {
+generate_all_network_combinations <- function(.edge_tbl) {
     split(.edge_tbl, .edge_tbl$source_node) %>%
-        map(.all_neighbour_combinations) %>%
+        map(all_neighbour_combinations) %>%
         imap_dfr(
             ~ tibble(index_node = .y, neighbours = .x) %>%
                 dplyr::add_row(index_node = .y, neighbours = NULL)
         )
 }
 
-.generate_formula_list <-
+generate_formula_list <-
     function(.network_tbl, .ext_var, .ext_side, .adj_vars) {
         xvars_prep <-
             list(.network_tbl$neighbours) %>%
-            purrr::pmap(c, .adj_vars)
+            purrr::pmap(c, .adj_vars) %>%
+            map(sort)
 
         external_input <- switch(
             .ext_side,
@@ -265,13 +295,52 @@ as_edge_tbl <- function(.edge_list) {
                            y = .ext_var)
         )
 
-        xvar_input <-
-            list(xvars_prep, external_input$x) %>%
+        xvar_input <- list(external_input$x, xvars_prep) %>%
             purrr::pmap(c) %>%
+            map(unique) %>%
+            map2(external_input$y, ~.x[!.x %in% .y]) %>%
             map(stats::na.omit)
 
-        map2(xvar_input,
-             external_input$y,
+        unique_formulas_df <- tibble(
+            yvar = external_input$y,
+            xvar = xvar_input
+        ) %>%
+            dplyr::distinct()
+
+        map2(unique_formulas_df$xvar,
+             unique_formulas_df$yvar,
              stats::reformulate)
     }
 
+
+# Putting this on hold, but keeping for now.
+# de_vars <- NA
+# exposure_estimates <- list()
+# edge_table <- list()
+# count <- 1
+# while (length(de_vars) > 0) {
+#     browser()
+#     print(count)
+#
+#     edge_table[[count]] <- as_edge_tbl(metabolite_network) %>%
+#         filter(!source_node %in% de_vars)
+#
+#     exposure_estimates[[count]] <- standardized_data %>%
+#         nc_exposure_estimates(
+#             .edge_tbl = edge_table[[count]],
+#             .exposure = "exposure",
+#             .adjustment_vars = "age",
+#             .direct_effect_vars = de_vars,
+#             .model_function = lm
+#         ) %>%
+#         nc_classify_effects()
+#
+#     de_vars_current <- exposure_estimates[[count]] %>%
+#         filter(effect == "direct") %>%
+#         pull(index_node) %>%
+#         unique()
+#
+#     de_vars <- na.omit(c(de_vars, de_vars_current))
+#
+#     count <- count + 1
+# }
