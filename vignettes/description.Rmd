@@ -49,52 +49,51 @@ algorithms are needed, one for the exposure side and one for the disease/outcome
 side. The explanation and description of NetCoupler are taken heavily from
 Clemens Wittenbecher's PhD thesis [@Wittenbecher2017].
 
+### Metabolic network estimation
+
+TODO: Explain PC algorithm..?
+
 ### Exposure-side network effect estimation
 
 The exposure-side network retrieves a range of potential direct effects of
-exogenous {{word?}} factors on the metabolite network. The general algorithm for
-the exposure-side estimation is:
+exogenous {{word?}} factors on the metabolite network. The 
+algorithmic pseudocode from functional programming perspective
+for the exposure-side estimation is:
 
 ```
-input: DAG-skeleton (G)
-observations on: network variables (M), exogenous exposures (X), confounders (C)
+input DAG skeleton
+input data with network variables (M), exposure (X), 
+    and confounder (C) variables
 
-begin with empty direct effect (DE)
-repeat until no further ith M (Mi) is classified as DE
-    add new DE to DE
-    begin where AMB = M
-    repeat until all Mi that are elements of AMB have been selected
-        select a variable Mi from AMB
-        select all nodes adjacent to Mi in G, adj(G, Mi)
-        repeat until no further non-redundant subset (S) can be selected from adj(G, Mi)
-            select a S that is an element of adj(G, Mi)
-            estimate the predicted Mi as a function of (~) {{confirm}} X
-                conditional on S, DE, and C
-            add effect estimate PR for X on Mi to the ith confidence set (CS) {{confirm}}
-        end
-        if the lower bound of CSi > 0 or the upper bound CSi < 0 and
-                sign(pe1) = sign(pe2) {{meaning?}} for every pair of estimates in CSi
-            classify Mi as affected by X
-        else if the lower bound of CSi > 0 or the upper bound of CSi < 0 and 
-                0 is an element of CSi or 
-                the sign(pe1) is not = sign(pe2) for every pair of estimates in CSi
-            classify Mi as ambiguous with respect to X
-        else 
-            classify Mi as non-affected by X
-    end
-end
+set index nodes as list of all M
+set neighbour nodes as list of M with an edge to the index node
+    extract from DAG skeleton
 
-output: CS for effects of X on M based on G
-            
-classification of every Mi that is an element of M as 
-    affected (X -> Mi)
-    non-affected (X  Mi)
-    ambiguous (X -- Mi)
+set direct effect as empty
+for each index node in all index nodes
+    assign new direct effects from previous loop
+    skip if index node is already set as direct effects
+    extract all possible combinations of neighbour nodes from index node
+        set as node combinations
+    map model onto node combinations
+        model formulas as index node on X conditioned on:
+            node combinations, confounders, and direct effects
+        set as model list with estimate and p-value
+    set base model as model without neighbour nodes
+    classify as direct effect if:
+        (minimum estimate is > 0 or
+            maximum estimate is < 0) and
+        sign of p-value = sign of base model p-value
+    classify as ambigious if:
+        (minimum estimate is > 0 or
+            maximum estimate is < 0) and
+        (any estimate = 0 and
+            sign of p-value is not = sign of base model p-value)
+    classify as no effect otherwise
+
+output confidence set of effects of X on M, based on DAG skeleton
+    where each index node has a classification
 ```
-
-Where `AMB` is {{meaning?}}, `PE` is {{meaning?}}, `adj(G, Mi)` is the set of
-nodes adjust to `Mi` in `G` that are congruent ($\equiv$) to direct neighbors of
-`Mi` in `G`.
 
 This assumes full source population information. For applications to a sample of
 the population, the following decision rules were applied:
@@ -153,7 +152,10 @@ of spurious associations (`metabolite <- confounding metabolite -> outcome`).
 The general algorithm for the outcome-side estimation is:
 
 ```
-input: DAG-skeleton G (Graphical model)
+Aim: To estimate independentdirect effects between a network
+INPUT graphical DAG skeleton model (G) 
+INPUT data with network variables (M), outcome (O), and confounders (C)
+
 observations on: network variables (M), outcome (O), confounders (C)
 
 begin with empty direct effect (DE)
@@ -187,6 +189,8 @@ classification of every Mi from M as
     non-effector on O (Mi  O)
     ambiguous (Mi -- O)
 ```
+
+
 
 Where `AMB` is {{meaning?}}, `PE` is {{meaning?}}, `adj(G, Mi)` is the set of
 nodes adjust to `Mi` in `G` that are congruent ($\equiv$) to direct neighbors of

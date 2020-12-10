@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+![](https://img.shields.io/badge/document%20status-rough%20draft-red?style=flat-square)
+
 ## Goals
 
 - Work with pipe `%>%` operator
