@@ -10,3 +10,6 @@
 ^\.github$
 ^appveyor\.yml$
 ^vignettes/description\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

@@ -8,12 +8,8 @@
 [![Join the chat at
 https://gitter.im/NetCoupler/Lobby](https://badges.gitter.im/NetCoupler/Lobby.svg)](https://gitter.im/NetCoupler/Lobby)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![Travis build
-status](https://travis-ci.org/NetCoupler/NetCoupler.svg?branch=master)](https://travis-ci.org/NetCoupler/NetCoupler)
-[![Codecov test
-coverage](https://codecov.io/gh/NetCoupler/NetCoupler/branch/master/graph/badge.svg)](https://codecov.io/gh/NetCoupler/NetCoupler?branch=master)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/NetCoupler/NetCoupler?branch=master&svg=true)](https://ci.appveyor.com/project/NetCoupler/NetCoupler)
+[![R build
+status](https://github.com/NetCoupler/NetCoupler/workflows/R-CMD-check/badge.svg)](https://github.com/NetCoupler/NetCoupler/actions)
 <!-- badges: end -->
 
 The goal of NetCoupler is to estimate causal links between a set of

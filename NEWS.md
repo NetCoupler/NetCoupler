@@ -1,5 +1,65 @@
-# NetCoupler 0.0.3.9000 (development version)
+# NetCoupler (development version)
 
+## New features
+
+* Added two plotting functions for the model estimation side of things:
+`nc_plot_exposure_estimation()` and `nc_plot_outcome_estimation()`
+* Added ability to parallelize code with furrr (#141)
+* Added a continuous outcome variable to simulated data that also links in with
+the DAG so that the linkage is more obvious (#97)
+* Added function to create an edge table (#117)
+* Incorporate tidyselect helpers into functions for selection of variables (#62)
+
+## Removed features
+
+* Removed `nc_classify_effects()` and `nc_filter_estimates()`, merged them into
+the two main estimation functions instead
+* Model summary statistics for `lm` and `glm` models were removed for improving
+computing speed (they slowed things down quite a bit)
+
+## Internal changes
+
+* Tidied up the unit tests to run faster
+* Removed duplicate or extra roxygen examples and instead referenced a common 
+source with `@seealso`
+* Removed survival dependency
+
+# NetCoupler 0.0.4
+
+## Added features
+
+* For `lm` and `glm` models, model summary statistics are added (#88).
+* Add a function to classify the direct effects between outcome or exposure and 
+the network (#98).
+* Add function to plot network graph: `nc_plot_network()` (#89, #110).
+* Added helper functions `nc_adjacency_graph()`,
+`nc_adjacency_matrix()`, and `nc_partial_corr_matrix()` 
+to help create the weights for the network plot.
+(Issue #80, PR #89).
+* Removed soft deprecated functions. Using MuMIn over glmulti doesn't change the
+results too much, see #60 for details (#83).
+* Removed stringr dependency (#65, #83).
+
+## Fixed bugs and other problems
+
+* Fix bug where too many digits caused a problem for `pcor()` (#125, #131).
+* Fix bug that didn't properly filter variables nor identify neighbour nodes
+in `nc_filter_estimates()` (#109).
+* Fix problem with `nc_standardize()` that prevented the ability to use the `.regressed_on`.
+argument to extract residuals (#108).
+* Input dataset can include missingness. Input data is treated as complete case
+for only the variables used in the modelling (#88).
+
+## Internal changes
+
+* Rewrote underlying model estimation algorithm so it doesn't use MuMIn and
+so there is one unified function for both outcome and exposure side estimation
+(#101)
+
+# NetCoupler 0.0.3.9000
+
+* Add `nc_standardize()` function to standardize the metabolic variables (#73).
+* Export tidyselect functions like `matches()` or `starts_with()` (#73).
 * Add CONTRIBUTING guidelines (#56).
 * Add lifecycle badges to functions, soft deprecating `net_coupler_out()`,
 `getExp.coef.permetabolite()`, and `getExp.coef.out()` (#59)
