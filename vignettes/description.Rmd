@@ -53,6 +53,15 @@ Clemens Wittenbecher's PhD thesis [@Wittenbecher2017].
 
 TODO: Explain PC algorithm..?
 
+#### Directed acyclic graph skeleton estimation
+
+The estimate the underlying directed acyclic graph (DAG) skeleton of the
+metabolite network, NetCoupler uses an implementation of the PC-algorithm 
+[@Kalisch2012;@Maathuis2010;@Spirtes2001;@Colombo2014]. Because of this, the
+assumptions from the PC-algorithm apply to NetCoupler. The output of this
+algorithm is a graphical model (`G`) of the underlying network that is used by
+NetCoupler.
+
 ### Exposure-side network effect estimation
 
 The exposure-side network retrieves a range of potential direct effects of
