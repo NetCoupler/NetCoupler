@@ -9,6 +9,8 @@
 the DAG so that the linkage is more obvious (#97)
 * Added function to create an edge table (#117)
 * Incorporate tidyselect helpers into functions for selection of variables (#62)
+* Added Getting Started vignette as well as a more detailed article on the
+implementation of NetCoupler (#70)
 
 ## Removed features
 
