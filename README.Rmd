@@ -26,9 +26,9 @@ Clemens Wittenbecher and converted into an R package by Luke Johnston, links
 conditional dependency networks with an external outcome or exposure to identify
 direct effects between them.
 
-TODO: Add figure demonstrating NetCoupler
+<!-- TODO: Add figure demonstrating NetCoupler -->
 
-See the `vignette("netcoupler.Rmd")` for getting started.
+See the `vignette("NetCoupler")` for getting started.
 
 # Installation
 
@@ -38,12 +38,6 @@ So far there is only the development version.
 # install.packages("remotes")
 remotes::install_github("NetCoupler/NetCoupler")
 ```
-
-# Questions? Comments?
-
-- Do you have an informal question, interested in contributing/collaborating, or
-want to learn more about NetCoupler? Check out our 
-[Gitter Chat Room](https://gitter.im/NetCoupler/Lobby).
 
 # Contributing and Code of Conduct
 

@@ -13,16 +13,16 @@ status](https://github.com/NetCoupler/NetCoupler/workflows/R-CMD-check/badge.svg
 <!-- badges: end -->
 
 The goal of NetCoupler is to estimate causal links between a set of
--omic ( e.g. metabolomics, lipidomics) or other high-dimensional
+-omic (e.g. metabolomics, lipidomics) or other high-dimensional
 metabolic data and either a disease outcome, an exposure, or both. The
 NetCoupler-algorithm, formulated by Clemens Wittenbecher and converted
 into an R package by Luke Johnston, links conditional dependency
 networks with an external outcome or exposure to identify direct effects
 between them.
 
-TODO: Add figure demonstrating NetCoupler
+<!-- TODO: Add figure demonstrating NetCoupler -->
 
-See the `vignette("netcoupler.Rmd")` for getting started.
+See the `vignette("NetCoupler")` for getting started.
 
 # Installation
 
@@ -32,13 +32,6 @@ So far there is only the development version.
 # install.packages("remotes")
 remotes::install_github("NetCoupler/NetCoupler")
 ```
-
-# Questions? Comments?
-
-  - Do you have an informal question, interested in
-    contributing/collaborating, or want to learn more about NetCoupler?
-    Check out our [Gitter Chat
-    Room](https://gitter.im/NetCoupler/Lobby).
 
 # Contributing and Code of Conduct
 
