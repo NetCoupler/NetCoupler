@@ -1,12 +1,13 @@
 ---
-title: "Introduction to NetCoupler"
+title: "Getting started with NetCoupler"
 author: 
     - "Clemens Wittenbecher"
     - "Luke Johnston"
 date: "`r Sys.Date()`"
+bibliography: references.bib
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to NetCoupler}
+  %\VignetteIndexEntry{Getting started with NetCoupler}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,275 +19,72 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Goals
+![](https://img.shields.io/badge/document%20status-rough%20draft-red?style=flat-square)
 
-- Work with pipe `%>%` operator
-- Work with tidyselect helpers
-- Be autocomplete friendly (e.g. start function names with `nc_`)
-- In general, output as tibble, or at least easily modified into a data.frame/tibble
-- Arguments are prefixed with `.`
-- Internal functions are prefixed with `.`?
+The goal of NetCoupler is to estimate causal links between a set of -omic (e.g.
+metabolomics, lipidomics) or other high-dimensional data and an external variable,
+such as a disease outcome, an exposure, or both. The NetCoupler-algorithm,
+initially formulated by Clemens Wittenbecher [@Wittenbecher2017], links a conditional
+dependency network with an external variable (i.e. an outcome or exposure) to
+identify network-independent associations between the network variables and the
+external variable, classified as direct effects.
 
-## Brief description
+The input given to NetCoupler include:
 
-The *NetCoupler*-algorithm operates by taking the following steps:
+1. Standardized metabolic or other high-dimensional data.
+2. Exposure or outcome data.
+3. Network estimating method (default is the PC algorithm [@Colombo2014] from
+the [pcalg](https://CRAN.R-project.org/package=pcalg) package).
+3. Modeling method (e.g. linear regression with `lm()`), including confounders
+to adjust for.
 
-1. The implementation of the PC-algorithm [1] in the pcalg package [@Kalisch2012] is
-applied to estimate the skeleton of the underlying directed acyclic graph (DAG)
-that generated the complex exposure data (e.g., metabolomics data).
-1. For each network variable (e.g., metabolite), the adjacency set (all direct
-neighbors) is extracted from this undirected network. Assuming complete coverage
-of the measurements, the Markov parents of the network variable are necessarily
-a subset of its direct network neighbors. Adjustment for the Markov parents is
-sufficient to block all confounding influences by other network-variables
-(d-separation). Adjusting for descendants should be avoided because it can
-potentially introduce collider bias.
-1. A multi-model procedure is applied. The relation of each network variable
-with time-to-the event of interest is adjusted for every possible subset of
-direct neighbors. Thereby, a confidence set of estimates is generated, which
-necessarily contains the valid direct effect estimate.
-1. Network variables are classified based on the bounds of this confidence set
-of possible direct effects. As default, network variables are classified as
-directly affecting the outcome only if the confidence set of possible direct
-effects contains exclusively significant and consistent effect estimates.
-1. The multi-model procedure is looped with adjusting all models for the
-previously identified direct effects (because these are potential confounders
-but cannot be colliders) until no further direct effects are identified.
+<!-- TODO: Add figure demonstrating NetCoupler -->
 
-A similar procedure is provided to identify direct influences of external
-factors on network variables.
+The final output is the modeling results along with the results from
+NetCoupler's classification. Results can be displayed as a joint network model
+in graphical form.
+
+## Overall framework
+
+NetCoupler has several frameworks in mind:
+
+- Works with [magrittr](https://magrittr.tidyverse.org/) `%>%` or base R
+`|>` operator.
+- Works with [tidyselect](https://tidyselect.r-lib.org/) helpers (e.g.
+`starts_with()`, `contains()`).
+- Is auto-complete friendly (e.g. start function names with `nc_`).
+- Inputs and outputs of functions are in general
+[tibbles](https://tibble.tidyverse.org/)/dataframes or [tidygraph tibbles](https://tidygraph.data-imaginist.com/).
+- Generic modeling approach by using model and settings as function argument
+inputs.
 
 ## Workflow
 
-The general workflow for using NetCoupler is to:
+The general workflow for using NetCoupler revolves around the five main
+functions:
 
-- Take the metabolomics data and run the PC-alg on it
-- Select a subset of variables or clusters from the PC-alg
-- Then run NetCoupler on that subset
+- `nc_standardize()`: The algorithm in general, but especially the network
+estimation method, is sensitive to the values and distribution of the variables.
+Scaling the variables by standardizing, mean-centering, and natural log
+transforming them are important to making sure more accurate estimations.
+- `nc_estimate_network()`: Estimate the connections between metabolic variables
+as a undirected graph based on dependencies between variables. This network is
+used to identify metabolic variables that are connected to each other as
+neighbours.
+- `nc_plot_network()`: Visualize the connections estimated from
+`nc_estimate_network()`.
+- `nc_estimate_exposure_links()` and `nc_estimate_outcome_links()`: Uses the
+standardized data and the estimated network to classify the conditionally
+independent relationship between each metabolic variable and an external
+variable (e.g. an outcome or an exposure) as either being a direct, ambiguous,
+or no effect relationship.
+- `nc_plot_links()`: Plots the results from the
+`nc_estimate_exposure_links()` or 
+`nc_estimate_outcome_links()`.
 
-## Data pre-processing
+## Simple example
 
-Metabolic variables should be log-transformed and standardized on potential
-confounders {{this the best way?}} by regressing on age, sex, BMI, and prevalence
-of hypertension and using the residual variance in further models. Metabolites were
-then scaled (mean of zero and standard deviation of one). {{both regressed and
-scaled?}} 
-
-## Directed acyclic graph skeleton estimation
-
-The estimate the underlying directed acyclic graph (DAG) skeleton of the
-metabolite network, NetCoupler uses an implementation of the PC-algorithm 
-[@Kalisch2012;@Maathuis2010;@Spirtes2001;@Colombo2014]. Because of this, the
-assumptions from the PC-algorithm apply to NetCoupler. The output of this
-algorithm is a graphical model (`G`) of the underlying network that is used by
-NetCoupler.
-
-## Confidence ranges based on multi-model procedures
-
-The estimated DAG skeleton ... {{complete later. Not clear about this right now.
-(page 43 of thesis)}}
-
-## Explanation of NetCoupler
-
-Given that 1) an exposure can potentially affect metabolite concentrations
-(`exposure -> metabolomics network`) and that 2) metabolites can potentially
-affect the development of a disease (`metabolomic network -> outcome`), two initial
-algorithms are needed: One for the exposure side (`nc_exposure_network`) and one
-for the disease/outcome (`nc_outcome_network`) side. The explanation and
-description of NetCoupler are taken heavily from Clemens Wittenbecher's PhD
-thesis [@Wittenbecher2017].
-
-### Exposure-side network effect estimation
-
-The exposure-side network retrieves a range of potential direct effects of
-exogenous {{word?}} factors on the metabolite network. The general algorithm for
-the exposure-side estimation is:
-
-```
-input: DAG-skeleton (G)
-observations on: network variables (M), exogenous exposures (X), confounders (C)
-
-begin with empty direct effect (DE)
-repeat until no further ith M (Mi) is classified as DE
-    add new DE to DE
-    begin where AMB = M
-    repeat until all Mi that are elements of AMB have been selected
-        select a variable Mi from AMB
-        select all nodes adjacent to Mi in G, adj(G, Mi)
-        repeat until no further non-redundant subset (S) can be selected from adj(G, Mi)
-            select a S that is an element of adj(G, Mi)
-            estimate the predicted Mi as a function of (~) {{confirm}} X
-                conditional on S, DE, and C
-            add effect estimate PR for X on Mi to the ith confidence set (CS) {{confirm}}
-        end
-        if the lower bound of CSi > 0 or the upper bound CSi < 0 and
-                sign(pe1) = sign(pe2) {{meaning?}} for every pair of estimates in CSi
-            classify Mi as affected by X
-        else if the lower bound of CSi > 0 or the upper bound of CSi < 0 and 
-                0 is an element of CSi or 
-                the sign(pe1) is not = sign(pe2) for every pair of estimates in CSi
-            classify Mi as ambiguous with respect to X
-        else 
-            classify Mi as non-affected by X
-    end
-end
-
-output: CS for effects of X on M based on G
-            
-classification of every Mi that is an element of M as 
-    affected (X -> Mi)
-    non-affected (X  Mi)
-    ambiguous (X -- Mi)
-```
-
-Where `AMB` is {{meaning?}}, `PE` is {{meaning?}}, `adj(G, Mi)` is the set of
-nodes adjust to `Mi` in `G` that are congruent ($\equiv$) to direct neighbors of
-`Mi` in `G`.
-
-This assumes full source population information. For applications to a sample of
-the population, the following decision rules were applied:
-
-1. Consider the exposure-metabolite pair only if associated at a false discovery
-rate (FDR) controlled p-value <0.01 based on a model *not adjusted* for the adjacent
-metabolites (`S` is empty {{correct?}}, the marginal model).
-2. Consider the effect estimates as zero (0) if the p-value is >0.05.
-
-For a given exposure, a metabolite would be classified as non-affected if the
-FDR-adjusted p-value was non-significant in the marginal model. If there was
-a significant FDR-controlled p-value in the marginal model and all estimates in
-the confidence set (`CS` {{? correct?}}) were significant and consistent, then
-the metabolite would be classified as affected by the exposure. Other metabolites
-would be classified as ambiguous with respect to the exposure.
-
-{{TODO: reduce reliance on p-values or use another metric? Or do some bootstrapping/CV?}}
-
-The outer loop includes identifying directly affected metabolites into the fixed
-model part. Then the procedure was repeated on the still ambiguous metabolites 
-to check whether further unambiguous classification was possible based on the
-additional information. In the applied version of NetCoupler, this was limited
-to metabolites in the same connected components, which are defined as a group of
-two or more directly linked metabolites that were all associated with the
-exposure in the marginal model.
-
-The rationale was that indirect effects could only be mediated by metabolites
-that were themselves (directly or indirectly) affected by the exposure. These
-metabolites were expected to be marginally associated with the exposure.
-In theory, there could be possible scenarios where the incidental cancellation
-of several direct and indirect effects concealed exposure-dependency in the 
-marginal model [@Pearl2009]
-
-Still, high abundance of incidental cancellations are considered unlikely based
-on observed correlation structures and the chance to unambiguously resolve such
-complicated scenarios in the applied modelling approach is low {{proof of
-claim?}}. Therefore, the pragmatic decision was taken to adjust remaining
-ambiguous metabolites only for directly affected metabolites identified within
-the same connected component.
-
-{{TODO: rearrange this}}
-
-Network adjustments were used to resolve indirect effects mediated by another
-network variable (e.g. `exposure -> mediating metabolite -> metabolite`).
-
-### Outcome-side network effect estimation
-
-The outcome-side network retrieves direct effects of network variables on later
-occurring events.
-
-There are similarities to the exposure-side algorithm for the outcome-side
-algorithm, except that the directionality is reversed (`metabolite -> outcome`).
-This change in directionality also has implications on the decision rules.
-There may also be potential network-variable confounders and introduction
-of spurious associations (`metabolite <- confounding metabolite -> outcome`).
-The general algorithm for the outcome-side estimation is:
-
-```
-input: DAG-skeleton G (Graphical model)
-observations on: network variables (M), outcome (O), confounders (C)
-
-begin with empty direct effect (DE)
-repeat until no further ith M (Mi) is classified as DE
-    add new DE to DE
-    begin where AMB = M
-    repeat until all Mi have been selected
-        select a variable Mi from M {{not AMB?}}
-        select all nodes adjacent to Mi in G, adj(G, Mi)
-        repeat until no further non-redundant subset (S) can be selected from adj(G, Mi)
-            select a S from adj(G, Mi)
-            estimate outcome as a function of Mi conditional on S, C
-            add effect estimate PE for Mi on O to confidence set (CSi)
-        end
-        if the lower bound of CSi > 0 or upper bound of CSi < 0 and
-                sign(pe1) = sign(pe2) for every pair of estimates in CSi
-            classify Mi as affecting risk of O
-        else if lower bound of CSi > 0 or upper bound of CSi < 0 and
-                0 is in CSi or 
-                sign(pe1) = sign(pe2) for any pair of estimates in CSi
-            classify Mi as ambiguous with respect to risk of O
-        else
-            classify Mi as non-affecting risk to O
-    end
-end
-
-output: CS for effects of M on O based on G
-
-classification of every Mi from M as 
-    effector on O (Mi -> O)
-    non-effector on O (Mi  O)
-    ambiguous (Mi -- O)
-```
-
-Where `AMB` is {{meaning?}}, `PE` is {{meaning?}}, `adj(G, Mi)` is the set of
-nodes adjust to `Mi` in `G` that are congruent ($\equiv$) to direct neighbors of
-`Mi` in `G`.
-
-An indirect effect, unlike confounding, is not biased. Decision rules were adjusted
-to avoid bias:
-
-1. Consider a metabolite-outcome pair only if significantly associated at a
-FDR-adjusted p-value <0.1 based on a model adjusted for all adjacent metabolites
-(`S = adj(Mi)`)
-1. Consider effect estimates as 0 if p-value is >0.05
-
-Metabolites are classified as affecting the outcome if the FDR-adjusted p-value
-was significant in the model adjusted for the full adjacency set and all estimates
-in the confidence set are significant and consistent. Metabolites are considered
-not directly affecting the outcome if they were not significantly associated in
-the model adjusted for the full adjacency set. All others were considered
-ambiguous.
-
-### Step-wise iteration for full network estimation
-
-1. The DAG skeleton of the metabolite network is estimated
-2. Initial, tentative links are formed with the exposure-side of the network.
-3. Direct effects are estimated between exposure and network.
-4. Repeat identification of links, classifying as unaffected or ambiguous and 
-deleting indirect links.
-5. Initial, tentative links are formed with the outcome-side of the network.
-6. Direct effects are estimated between the network and the outcome.
-7. Repeat link identification, deleting indirect links and classifying others as
-unaffected or ambiguous.
-8. Combine the exposure-side and outcome-side network estimates into a joint 
-graphical model.
-
-
-<!-- TODO: Put this into a bib file. -->
-
-1. *Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse Causal Graphs.
-Social Science Computer Review 1991;9:62-72.*
-
-<!-- thesis https://publishup.uni-potsdam.de/frontdoor/index/index/searchtype/collection/id/17105/start/1/rows/10/facetNumber_author_facet/all/doctypefq/doctoralthesis/docId/40459 -->
-
-2 *Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis, Peter
-Buehlmann (2012). Causal Inference Using Graphical Models with the R Package
-pcalg. Journal of Statistical Software, 47(11), 1-26. URL
-http://www.jstatsoft.org/v47/i11/.*
-
-## Simple example of use
-
-```{r load-packages, message=FALSE, warning=FALSE}
-library(NetCoupler)
-library(dplyr)
-```
+The below is an example using a simulated dataset for demonstrating NetCoupler.
 
 ### Estimating the metabolic network
 
@@ -298,6 +96,7 @@ We do this because the network estimation algorithm can sometimes be finicky
 about differences in variable numerical scale (mean of 1 vs mean of 1000).
 
 ```{r metabolic-standardize}
+library(NetCoupler)
 std_metabolic_data <- simulated_data %>% 
     nc_standardize(starts_with("metabolite"))
 ```
@@ -331,7 +130,8 @@ std_metabolic_data %>%
     nc_plot_network(metabolite_network)
 ```
 
-The plot is a bit crowded, but it provides a base to start tidying up from.
+While the plot is a bit crowded, it at least provides a base to start tidying up
+from.
 
 ### Estimating exposure and outcome-side connections
 
@@ -348,17 +148,17 @@ standardized_data <- simulated_data %>%
 Now you can estimate the outcome or exposure and identify direct effects
 for either the exposure side (`exposure -> metabolite`) 
 or the outcome side (`metabolite -> outcome`).
-For more detail on the algorithm, see the `vignette("description")`.
+For more details on the algorithm, see the `vignette("description")`.
 For the exposure side, 
 the function identifies whether a link between the exposure 
 and an index node (one metabolic variable in the network) exists,
-regardless of conditioning on potential confounders 
-and on neighbouring nodes (other metabolic variables linked to the index variable).
+independent of potential confounders 
+and from neighbouring nodes (other metabolic variables linked to the index variable).
 Depending on how consistent and strong the link is,
 the effect is classified as "direct", "ambiguous", or "none".
 
 In the example below, we specifically generated the simulated data so that
-the exposure associated with the metabolites 1, 8, and 12.
+the exposure is associated with metabolites 1, 8, and 12.
 And as we can see, those links have been correctly identified.
 
 ```{r example-use, cache=TRUE}
@@ -376,13 +176,12 @@ exposure_estimates <- standardized_data %>%
         .exposure = "exposure",
         .model_function = lm
     )
-
 exposure_estimates
 ```
 
-If you want to adjust for confounders and having already used `.regressed_on` in
-the `nc_standardize()` function, add confounders to `nc_outcome_estimates()`
-or `nc_exposure_estimates()` with the `.adjustment_vars` argument:
+If you want to adjust for confounders and have already used `.regressed_on` in
+the `nc_standardize()` function, add confounders to `nc_estimate_outcome_links()`
+or `nc_estimate_exposure_links()` with the `.adjustment_vars` argument:
 
 ```{r estimation-adjustment, eval=FALSE}
 outcome_estimates <- standardized_data %>%
@@ -419,25 +218,25 @@ nc_plot_exposure_estimation(
 )
 ```
 
-## Slow code? Use parallel processing with future
+<!-- ## Slow code? Use parallel processing with future -->
 
-If the analysis is taking a while, you can use the future package to speed things
-up by implementing parallel processing. Set the `.parallel` argument to `TRUE`
-in either `nc_outcome_estimates()` or `nc_exposure_estimates()` and then use
-the future package with a given `plan()`. If you use RStudio, the only usable
-strategy is `multisession`. After you run your code, close up the parallel
-processing by putting it back to normal with `plan(sequential)`. Using the future
-package you can speed up the processing by almost 2.5 times.
+<!-- If the analysis is taking a while, you can use the future package to speed things -->
+<!-- up by implementing parallel processing. Set the `.parallel` argument to `TRUE` -->
+<!-- in either `nc_outcome_estimates()` or `nc_exposure_estimates()` and then use -->
+<!-- the future package with a given `plan()`. If you use RStudio, the only usable -->
+<!-- strategy is `multisession`. After you run your code, close up the parallel -->
+<!-- processing by putting it back to normal with `plan(sequential)`. Using the future -->
+<!-- package you can speed up the processing by almost 2.5 times. -->
 
-```{r future-parallel-processing, eval=FALSE}
-library(future)
-plan(multisession)
-outcome_estimates <- standardized_data %>%
-    nc_outcome_estimates(
-        .edge_tbl = as_edge_tbl(metabolite_network),
-        .outcome = "outcome_continuous",
-        .model_function = lm,
-        .parallel = TRUE
-    )
-plan(sequential)
-```
+<!-- ```{r future-parallel-processing, eval=FALSE} -->
+<!-- library(future) -->
+<!-- plan(multisession) -->
+<!-- outcome_estimates <- standardized_data %>% -->
+<!--     nc_outcome_estimates( -->
+<!--         .edge_tbl = as_edge_tbl(metabolite_network), -->
+<!--         .outcome = "outcome_continuous", -->
+<!--         .model_function = lm, -->
+<!--         .parallel = TRUE -->
+<!--     ) -->
+<!-- plan(sequential) -->
+<!-- ``` -->

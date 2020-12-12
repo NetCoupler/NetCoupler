@@ -9,6 +9,7 @@
 ^CODE_OF_CONDUCT\.md$
 ^\.github$
 ^appveyor\.yml$
+^vignettes/description\.Rmd$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

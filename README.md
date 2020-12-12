@@ -12,30 +12,17 @@ https://gitter.im/NetCoupler/Lobby](https://badges.gitter.im/NetCoupler/Lobby.sv
 status](https://github.com/NetCoupler/NetCoupler/workflows/R-CMD-check/badge.svg)](https://github.com/NetCoupler/NetCoupler/actions)
 <!-- badges: end -->
 
-The goal of NetCoupler is to estimate causal links between metabolomics
-and disease incidence. The *NetCoupler-algorithm*, which was formulated
-by Clemens Wittenbecher and converted into an R package by Luke
-Johnston, links conditional dependency networks with time-to-event data
-and identifies direct effects of correlated, high-dimensional exposures
-on time-to-event data.
+The goal of NetCoupler is to estimate causal links between a set of
+-omic (e.g. metabolomics, lipidomics) or other high-dimensional
+metabolic data and either a disease outcome, an exposure, or both. The
+NetCoupler-algorithm, formulated by Clemens Wittenbecher and converted
+into an R package by Luke Johnston, links conditional dependency
+networks with an external outcome or exposure to identify direct effects
+between them.
 
-The NetCoupler’s input is multi-layer information from prospective
-studies, including interdependent variables that constitute the central
-network of interest (e.g., metabolomics data), time-to-disease
-incidence, and optionally information on factors that influence the
-network (such as lifestyle variables, or genetic determinants).
+<!-- TODO: Add figure demonstrating NetCoupler -->
 
-The output is a list of network variables that directly (independent of
-other network variables) influence time-to-disease incidence.
-Optionally, NetCoupler also identifies the sensitivity of network
-variables to exogenous challenges (such as genetic variation or
-lifestyle).
-
-Results can be graphically displayed as joint network model. For
-example, to a data-driven metabolomics network links can be added that
-reflect network-independent associations of metabolites with disease
-risk and lifestyle habits (or genetics) with these disease-related
-metabolites.
+See the `vignette("NetCoupler")` for getting started.
 
 # Installation
 
@@ -45,13 +32,6 @@ So far there is only the development version.
 # install.packages("remotes")
 remotes::install_github("NetCoupler/NetCoupler")
 ```
-
-# Questions? Comments?
-
-  - Do you have an informal question, interested in
-    contributing/collaborating, or want to learn more about NetCoupler?
-    Check out our [Gitter Chat
-    Room](https://gitter.im/NetCoupler/Lobby).
 
 # Contributing and Code of Conduct
 
