@@ -34,23 +34,29 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">NetCoupler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="articles/NetCoupler.html">Get started</a>
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/description.html">Implementation details of NetCoupler</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="news/index.html">Changelog</a>
@@ -81,26 +87,17 @@
 <a href="#netcoupler" class="anchor"></a>NetCoupler</h1></div>
 <!-- badges: start -->
 
-<p>The goal of NetCoupler is to estimate causal links between metabolomics and disease incidence. The <em>NetCoupler-algorithm</em>, which was formulated by Clemens Wittenbecher and converted into an R package by Luke Johnston, links conditional dependency networks with time-to-event data and identifies direct effects of correlated, high-dimensional exposures on time-to-event data.</p>
-<p>The NetCoupler’s input is multi-layer information from prospective studies, including interdependent variables that constitute the central network of interest (e.g., metabolomics data), time-to-disease incidence, and optionally information on factors that influence the network (such as lifestyle variables, or genetic determinants).</p>
-<p>The output is a list of network variables that directly (independent of other network variables) influence time-to-disease incidence. Optionally, NetCoupler also identifies the sensitivity of network variables to exogenous challenges (such as genetic variation or lifestyle).</p>
-<p>Results can be graphically displayed as joint network model. For example, to a data-driven metabolomics network links can be added that reflect network-independent associations of metabolites with disease risk and lifestyle habits (or genetics) with these disease-related metabolites.</p>
+<p>The goal of NetCoupler is to estimate causal links between a set of -omic (e.g. metabolomics, lipidomics) or other high-dimensional metabolic data and either a disease outcome, an exposure, or both. The NetCoupler-algorithm, formulated by Clemens Wittenbecher and converted into an R package by Luke Johnston, links conditional dependency networks with an external outcome or exposure to identify direct effects between them.</p>
+<!-- TODO: Add figure demonstrating NetCoupler -->
+<p>See the <code><a href="articles/NetCoupler.html">vignette("NetCoupler")</a></code> for getting started.</p>
 </div>
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h1>
 <p>So far there is only the development version.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># install.packages("remotes")</span>
-<span class="kw">remotes</span>::<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"NetCoupler/NetCoupler"</span>)
-</pre></div>
-</div>
-<div id="questions-comments" class="section level1">
-<h1 class="hasAnchor">
-<a href="#questions-comments" class="anchor"></a>Questions? Comments?</h1>
-<ul>
-<li>Do you have an informal question, interested in contributing/collaborating, or want to learn more about NetCoupler? Check out our <a href="https://gitter.im/NetCoupler/Lobby">Gitter Chat Room</a>.</li>
-</ul>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"NetCoupler/NetCoupler"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="contributing-and-code-of-conduct" class="section level1">
 <h1 class="hasAnchor">
