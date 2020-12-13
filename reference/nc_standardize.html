@@ -42,9 +42,9 @@
 <meta property="og:title" content="Standardize the metabolic variables. — nc_standardize" />
 <meta property="og:description" content="
 Can standardize by either 1) log()-transforming and then applying scale()
-(mean-center and scaled by standard deviation), or 2) if .regressed_on
+(mean-center and scaled by standard deviation), or 2) if regressed_on
 variables are given, then log-transforming, running a linear regression to obtain
-the stats::residuals(), and finally scaled. Use .regressed_on to try to
+the stats::residuals(), and finally scaled. Use regressed_on to try to
 remove influence of potential confounding." />
 
 
@@ -133,27 +133,27 @@ remove influence of potential confounding." />
     <div class="ref-description">
     <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
 <p>Can standardize by either 1) <code><a href='https://rdrr.io/r/base/Log.html'>log()</a></code>-transforming and then applying <code><a href='https://rdrr.io/r/base/scale.html'>scale()</a></code>
-(mean-center and scaled by standard deviation), or 2) if <code>.regressed_on</code>
+(mean-center and scaled by standard deviation), or 2) if <code>regressed_on</code>
 variables are given, then log-transforming, running a linear regression to obtain
-the <code><a href='https://rdrr.io/r/stats/residuals.html'>stats::residuals()</a></code>, and finally scaled. Use <code>.regressed_on</code> to try to
+the <code><a href='https://rdrr.io/r/stats/residuals.html'>stats::residuals()</a></code>, and finally scaled. Use <code>regressed_on</code> to try to
 remove influence of potential confounding.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>nc_standardize</span><span class='op'>(</span><span class='va'>.tbl</span>, .vars <span class='op'>=</span> <span class='fu'><a href='https://tidyselect.r-lib.org/reference/everything.html'>everything</a></span><span class='op'>(</span><span class='op'>)</span>, .regressed_on <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>nc_standardize</span><span class='op'>(</span><span class='va'>data</span>, cols <span class='op'>=</span> <span class='fu'><a href='https://tidyselect.r-lib.org/reference/everything.html'>everything</a></span><span class='op'>(</span><span class='op'>)</span>, regressed_on <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.tbl</th>
+      <th>data</th>
       <td><p>Data frame.</p></td>
     </tr>
     <tr>
-      <th>.vars</th>
+      <th>cols</th>
       <td><p>Metabolic variables that will make up the network.</p></td>
     </tr>
     <tr>
-      <th>.regressed_on</th>
+      <th>regressed_on</th>
       <td><p>Optional. A character vector of variables to regress the
 metabolic variables on. Use if you want to standardize the metabolic variables
 on variables that are known to influence them, e.g. sex or age. Calculates

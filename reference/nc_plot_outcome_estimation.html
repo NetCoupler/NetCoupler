@@ -134,38 +134,38 @@ linking the results into the network graph.</p>
     </div>
 
     <pre class="usage"><span class='fu'>nc_plot_outcome_estimation</span><span class='op'>(</span>
-  <span class='va'>.tbl</span>,
-  <span class='va'>.graph</span>,
-  <span class='va'>.tbl_model</span>,
-  .edge_label_threshold <span class='op'>=</span> <span class='fl'>0.2</span>
+  <span class='va'>data</span>,
+  <span class='va'>edge_tbl</span>,
+  <span class='va'>data_model</span>,
+  edge_label_threshold <span class='op'>=</span> <span class='fl'>0.2</span>
 <span class='op'>)</span>
 
 <span class='fu'>nc_plot_exposure_estimation</span><span class='op'>(</span>
-  <span class='va'>.tbl</span>,
-  <span class='va'>.graph</span>,
-  <span class='va'>.tbl_model</span>,
-  .edge_label_threshold <span class='op'>=</span> <span class='fl'>0.2</span>
+  <span class='va'>data</span>,
+  <span class='va'>edge_tbl</span>,
+  <span class='va'>data_model</span>,
+  edge_label_threshold <span class='op'>=</span> <span class='fl'>0.2</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.tbl</th>
+      <th>data</th>
       <td><p>The original data, with the metabolic variables that have been
 standardized.</p></td>
     </tr>
     <tr>
-      <th>.graph</th>
+      <th>edge_tbl</th>
       <td><p>The graph object created from <code><a href='nc_estimate_network.html'>nc_estimate_network()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>.tbl_model</th>
+      <th>data_model</th>
       <td><p>The tibble of the model results obtained from
 <code>nc_classify_effects()</code>.</p></td>
     </tr>
     <tr>
-      <th>.edge_label_threshold</th>
+      <th>edge_label_threshold</th>
       <td><p>Threshold to pass for the value to be added to
 the edge label.</p></td>
     </tr>

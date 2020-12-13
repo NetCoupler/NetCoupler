@@ -130,31 +130,31 @@
     </div>
 
     <pre class="usage"><span class='fu'>nc_plot_network</span><span class='op'>(</span>
-  <span class='va'>.tbl</span>,
-  <span class='va'>.graph</span>,
-  .edge_label_threshold <span class='op'>=</span> <span class='fl'>0.2</span>,
-  .fn_node_rename <span class='op'>=</span> <span class='cn'>NULL</span>
+  <span class='va'>data</span>,
+  <span class='va'>edge_tbl</span>,
+  edge_label_threshold <span class='op'>=</span> <span class='fl'>0.2</span>,
+  fn_node_rename <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.tbl</th>
+      <th>data</th>
       <td><p>The data that was also used to generate the <code><a href='nc_estimate_network.html'>nc_estimate_network()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>.graph</th>
+      <th>edge_tbl</th>
       <td><p>The network graph object of the metabolic variable network.</p></td>
     </tr>
     <tr>
-      <th>.edge_label_threshold</th>
+      <th>edge_label_threshold</th>
       <td><p>Threshold set for edge weight value above which
 the edge label will be kept. This argument helps to reduce clutter in the
 graph.</p></td>
     </tr>
     <tr>
-      <th>.fn_node_rename</th>
+      <th>fn_node_rename</th>
       <td><p>Function to pass to rename the metabolic variables.
 Preferably use functions that search and replace patterns, like <code><a href='https://rdrr.io/r/base/grep.html'>gsub()</a></code> or
 <code><a href='https://stringr.tidyverse.org/reference/str_replace.html'>stringr::str_replace()</a></code>.</p></td>
@@ -166,7 +166,7 @@ Preferably use functions that search and replace patterns, like <code><a href='h
     <p>Outputs a <code>ggplot2</code> object of the metabolic network.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>See <a href='nc_model_estimates.html'>nc_model_estimates</a> for examples on using NetCoupler.</p></div>
+    <div class='dont-index'><p>See <a href='nc_estimate_links.html'>nc_estimate_links</a> for examples on using NetCoupler.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

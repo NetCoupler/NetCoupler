@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Classify direct, ambiguous, or no effect between exposure and network nodes. — classify_effects" />
 <meta property="og:description" content="
-Using the output of the nc_exposure_estimates() or nc_outcome_estimates(),
+Using the output of the nc_estimate_exposure_links() or nc_estimate_outcome_links(),
 classify whether the exposure variable has a direct, ambiguous, or no link
 with the index node metabolic variable, conditional on neighbouring metablic
 variables and on potential confounders." />
@@ -131,21 +131,21 @@ variables and on potential confounders." />
 
     <div class="ref-description">
     <p><a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a></p>
-<p>Using the output of the <code><a href='nc_model_estimates.html'>nc_exposure_estimates()</a></code> or <code><a href='nc_model_estimates.html'>nc_outcome_estimates()</a></code>,
+<p>Using the output of the <code><a href='nc_estimate_links.html'>nc_estimate_exposure_links()</a></code> or <code><a href='nc_estimate_links.html'>nc_estimate_outcome_links()</a></code>,
 classify whether the exposure variable has a direct, ambiguous, or no link
 with the index node metabolic variable, conditional on neighbouring metablic
 variables and on potential confounders.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>classify_effects</span><span class='op'>(</span><span class='va'>.tbl</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>classify_effects</span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.tbl</th>
-      <td><p>Multi-model estimates generated from <code><a href='nc_model_estimates.html'>nc_exposure_estimates()</a></code> or
-<code><a href='nc_model_estimates.html'>nc_outcome_estimates()</a></code> that contain the model summaries.</p></td>
+      <th>data</th>
+      <td><p>Multi-model estimates generated from <code><a href='nc_estimate_links.html'>nc_estimate_exposure_links()</a></code> or
+<code><a href='nc_estimate_links.html'>nc_estimate_outcome_links()</a></code> that contain the model summaries.</p></td>
     </tr>
     </table>
 
@@ -158,7 +158,7 @@ classification of direct effect or not.</p>
 
     <div class='dont-index'><p>See the <code><a href='../articles/description.html'>vignette("description")</a></code> for a
 detailed description of the algorithm used to classify direct effects.
-See <a href='nc_model_estimates.html'>nc_model_estimates</a> for examples on using NetCoupler.</p></div>
+See <a href='nc_estimate_links.html'>nc_estimate_links</a> for examples on using NetCoupler.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
