@@ -6,7 +6,7 @@ metabolite_data <- simulated_data %>%
 standardized <- nc_standardize(metabolite_data)
 
 standardized_with_residuals <- simulated_data %>%
-    nc_standardize(starts_with("metabolite"), .regressed_on = "age") %>%
+    nc_standardize(starts_with("metabolite"), regressed_on = "age") %>%
     select(starts_with("metabolite"))
 
 test_that("logging and scaling works", {
@@ -40,5 +40,5 @@ test_that("standardization with residuals works", {
 
 # simulated_data %>%
 #   mutate(Random = rnorm(n(), 10, 2)) %>%
-#   .insert_random_missingness() %>%
+#   insert_random_missingness() %>%
 #   nc_standardize(matches("metabolite_"), c("age", "Random"))

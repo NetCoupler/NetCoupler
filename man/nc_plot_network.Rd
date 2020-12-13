@@ -5,22 +5,22 @@
 \title{Plot of the network of the metabolic variables.}
 \usage{
 nc_plot_network(
-  .tbl,
-  .graph,
-  .edge_label_threshold = 0.2,
-  .fn_node_rename = NULL
+  data,
+  edge_tbl,
+  edge_label_threshold = 0.2,
+  fn_node_rename = NULL
 )
 }
 \arguments{
-\item{.tbl}{The data that was also used to generate the \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
+\item{data}{The data that was also used to generate the \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
 
-\item{.graph}{The network graph object of the metabolic variable network.}
+\item{edge_tbl}{The network graph object of the metabolic variable network.}
 
-\item{.edge_label_threshold}{Threshold set for edge weight value above which
+\item{edge_label_threshold}{Threshold set for edge weight value above which
 the edge label will be kept. This argument helps to reduce clutter in the
 graph.}
 
-\item{.fn_node_rename}{Function to pass to rename the metabolic variables.
+\item{fn_node_rename}{Function to pass to rename the metabolic variables.
 Preferably use functions that search and replace patterns, like \code{\link[=gsub]{gsub()}} or
 \code{\link[stringr:str_replace]{stringr::str_replace()}}.}
 }
@@ -31,5 +31,5 @@ Outputs a \code{ggplot2} object of the metabolic network.
 \lifecycle{experimental}
 }
 \seealso{
-See \link{nc_model_estimates} for examples on using NetCoupler.
+See \link{nc_estimate_links} for examples on using NetCoupler.
 }

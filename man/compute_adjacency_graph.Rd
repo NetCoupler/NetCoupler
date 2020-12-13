@@ -4,12 +4,12 @@
 \alias{compute_adjacency_graph}
 \title{Compute the adjacency matrix of the graph with the data.}
 \usage{
-compute_adjacency_graph(.tbl, .graph)
+compute_adjacency_graph(data, edge_tbl)
 }
 \arguments{
-\item{.tbl}{The data that was also used to generate the \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
+\item{data}{The data that was also used to generate the \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
 
-\item{.graph}{The network graph object of the metabolic variable network.}
+\item{edge_tbl}{The network graph object of the metabolic variable network.}
 }
 \value{
 Outputs an \code{igraph} object from \code{\link[igraph:graph_from_adjacency_matrix]{igraph::graph_from_adjacency_matrix()}}.

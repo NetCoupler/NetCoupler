@@ -111,7 +111,7 @@ You do this also with the `nc_standardize()` function.
 ```{r metabolic-standardize-residuals, eval=FALSE}
 std_metabolic_data <- simulated_data %>% 
     nc_standardize(starts_with("metabolite"),
-                   .regressed_on = "age")
+                   regressed_on = "age")
 ```
 
 After that, you can estimate the network.
@@ -163,33 +163,33 @@ And as we can see, those links have been correctly identified.
 
 ```{r example-use, cache=TRUE}
 outcome_estimates <- standardized_data %>%
-    nc_outcome_estimates(
-        .edge_tbl = as_edge_tbl(metabolite_network),
-        .outcome = "outcome_continuous",
-        .model_function = lm
+    nc_estimate_outcome_links(
+        edge_tbl = as_edge_tbl(metabolite_network),
+        outcome = "outcome_continuous",
+        model_function = lm
     )
 outcome_estimates
 
 exposure_estimates <- standardized_data %>%
-    nc_exposure_estimates(
-        .edge_tbl = as_edge_tbl(metabolite_network),
-        .exposure = "exposure",
-        .model_function = lm
+    nc_estimate_exposure_links(
+        edge_tbl = as_edge_tbl(metabolite_network),
+        exposure = "exposure",
+        model_function = lm
     )
 exposure_estimates
 ```
 
-If you want to adjust for confounders and have already used `.regressed_on` in
+If you want to adjust for confounders and have already used `regressed_on` in
 the `nc_standardize()` function, add confounders to `nc_estimate_outcome_links()`
-or `nc_estimate_exposure_links()` with the `.adjustment_vars` argument:
+or `nc_estimate_exposure_links()` with the `adjustement_vars` argument:
 
 ```{r estimation-adjustment, eval=FALSE}
 outcome_estimates <- standardized_data %>%
-    nc_outcome_estimates(
-        .edge_tbl = as_edge_tbl(metabolite_network),
-        .outcome = "outcome_continuous",
-        .model_function = lm,
-        .adjustment_vars = "age"
+    nc_estimate_outcome_links(
+        edge_tbl = as_edge_tbl(metabolite_network),
+        outcome = "outcome_continuous",
+        model_function = lm,
+        adjustement_vars = "age"
     )
 ```
 
@@ -222,7 +222,7 @@ nc_plot_exposure_estimation(
 
 <!-- If the analysis is taking a while, you can use the future package to speed things -->
 <!-- up by implementing parallel processing. Set the `.parallel` argument to `TRUE` -->
-<!-- in either `nc_outcome_estimates()` or `nc_exposure_estimates()` and then use -->
+<!-- in either `nc_estimate_outcome_links()` or `nc_estimate_exposure_links()` and then use -->
 <!-- the future package with a given `plan()`. If you use RStudio, the only usable -->
 <!-- strategy is `multisession`. After you run your code, close up the parallel -->
 <!-- processing by putting it back to normal with `plan(sequential)`. Using the future -->
@@ -232,10 +232,10 @@ nc_plot_exposure_estimation(
 <!-- library(future) -->
 <!-- plan(multisession) -->
 <!-- outcome_estimates <- standardized_data %>% -->
-<!--     nc_outcome_estimates( -->
-<!--         .edge_tbl = as_edge_tbl(metabolite_network), -->
-<!--         .outcome = "outcome_continuous", -->
-<!--         .model_function = lm, -->
+<!--     nc_estimate_outcome_links( -->
+<!--         edge_tbl = as_edge_tbl(metabolite_network), -->
+<!--         outcome = "outcome_continuous", -->
+<!--         model_function = lm, -->
 <!--         .parallel = TRUE -->
 <!--     ) -->
 <!-- plan(sequential) -->

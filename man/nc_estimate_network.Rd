@@ -4,15 +4,15 @@
 \alias{nc_estimate_network}
 \title{Create an estimate of the metabolic network skeleton.}
 \usage{
-nc_estimate_network(.tbl, .vars = everything(), .alpha = 0.05)
+nc_estimate_network(data, cols = everything(), alpha = 0.05)
 }
 \arguments{
-\item{.tbl}{Data of the metabolic variables.}
+\item{data}{Data of the metabolic variables.}
 
-\item{.vars}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Variables to include
+\item{cols}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Variables to include
 by using \code{\link[dplyr:select]{dplyr::select()}} style selection.}
 
-\item{.alpha}{The alpha level to set. Default is 0.05.}
+\item{alpha}{The alpha level to set. Default is 0.05.}
 }
 \value{
 Outputs a DAG skeleton.
@@ -25,5 +25,5 @@ Estimates the skeleton based on a family of DAGs without specifying the directio
 Defaults to using the PC algorithm to calculate possible edges.
 }
 \seealso{
-See \link{nc_model_estimates} for examples on using NetCoupler.
+See \link{nc_estimate_links} for examples on using NetCoupler.
 }

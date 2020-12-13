@@ -1,6 +1,6 @@
 
-.insert_random_missingness <- function(.tbl) {
-    purrr::map_df(.tbl, ~ .[sample(
+insert_random_missingness <- function(data) {
+    purrr::map_df(data, ~ .[sample(
         c(TRUE, NA),
         prob = c(0.98, 0.02),
         size = length(.),
@@ -9,19 +9,19 @@
 }
 
 # Taken from forcats
-.lvls_reorder <- function (f, idx, ordered = NA) {
+lvls_reorder <- function (f, idx, ordered = NA) {
     if (!is.numeric(idx)) {
         stop("`idx` must be numeric", call. = FALSE)
     }
-    if (!setequal(idx, .lvls_seq(f)) || length(idx) != nlevels(f)) {
+    if (!setequal(idx, lvls_seq(f)) || length(idx) != nlevels(f)) {
         stop("`idx` must contain one integer for each level of `f`",
              call. = FALSE)
     }
-    .refactor(f, levels(f)[idx], ordered = ordered)
+    refactor(f, levels(f)[idx], ordered = ordered)
 }
 
 # Taken from forcats
-.refactor <- function (f, new_levels, ordered = NA) {
+refactor <- function (f, new_levels, ordered = NA) {
     if (is.na(ordered)) {
         ordered <- is.ordered(f)
     }
@@ -31,12 +31,12 @@
 }
 
 # Taken from forcats
-.fct_rev <- function(f) {
+fct_rev <- function(f) {
     f <- factor(f)
-    .lvls_reorder(f, rev(.lvls_seq(f)))
+    lvls_reorder(f, rev(lvls_seq(f)))
 }
 
 # Taken from forcats
-.lvls_seq <- function(f) {
+lvls_seq <- function(f) {
     seq_along(levels(f))
 }

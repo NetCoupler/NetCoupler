@@ -4,10 +4,10 @@
 \alias{compute_adjacency_matrix}
 \title{Extract adjacency matrix from a DAG skeleton.}
 \usage{
-compute_adjacency_matrix(.dag_skeleton)
+compute_adjacency_matrix(dag_skeleton)
 }
 \arguments{
-\item{.dag_skeleton}{The PC DAG skeleton object.}
+\item{dag_skeleton}{The PC DAG skeleton object.}
 }
 \value{
 Outputs an adjacency matrix of the DAG skeleton.
