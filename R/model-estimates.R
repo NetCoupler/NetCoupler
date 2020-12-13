@@ -189,7 +189,7 @@ compute_model_estimates <-
         var_to_extract <- 3
 
     network_index_nodes <- formula_list %>%
-        map(~allcols(.)[var_to_extract]) %>%
+        map(~all.vars(.)[var_to_extract]) %>%
         purrr::flatten_chr()
 
     # TODO: Fix to use parallel processing?
