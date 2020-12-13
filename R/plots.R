@@ -15,7 +15,7 @@
 #' @return Outputs a `ggplot2` object of the metabolic network.
 #' @export
 #'
-#' @seealso See [nc_model_estimates] for examples on using NetCoupler.
+#' @seealso See [nc_estimate_links] for examples on using NetCoupler.
 #'
 nc_plot_network <- function(data,
                             edge_tbl,

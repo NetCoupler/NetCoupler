@@ -26,6 +26,6 @@ variables and on potential confounders.
 \seealso{
 See the \code{vignette("description")} for a
 detailed description of the algorithm used to classify direct effects.
-See \link{nc_model_estimates} for examples on using NetCoupler.
+See \link{nc_estimate_links} for examples on using NetCoupler.
 }
 \keyword{internal}

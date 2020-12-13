@@ -25,5 +25,5 @@ Estimates the skeleton based on a family of DAGs without specifying the directio
 Defaults to using the PC algorithm to calculate possible edges.
 }
 \seealso{
-See \link{nc_model_estimates} for examples on using NetCoupler.
+See \link{nc_estimate_links} for examples on using NetCoupler.
 }

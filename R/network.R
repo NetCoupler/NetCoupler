@@ -16,7 +16,7 @@
 #' @return Outputs a DAG skeleton.
 #' @export
 #'
-#' @seealso See [nc_model_estimates] for examples on using NetCoupler.
+#' @seealso See [nc_estimate_links] for examples on using NetCoupler.
 #'
 nc_estimate_network <- function(data, cols = everything(), alpha = 0.05) {
     assert_is_data.frame(data)
@@ -41,7 +41,7 @@ nc_estimate_network <- function(data, cols = everything(), alpha = 0.05) {
 #'
 #' @export
 #'
-#' @seealso See [nc_model_estimates] for examples on using NetCoupler.
+#' @seealso See [nc_estimate_links] for examples on using NetCoupler.
 #'
 as_edge_tbl <- function(network_object) {
     UseMethod("as_edge_tbl", network_object)

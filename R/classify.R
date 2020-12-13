@@ -17,7 +17,7 @@
 #' @keywords internal
 #' @seealso See the `vignette("description")` for a
 #'   detailed description of the algorithm used to classify direct effects.
-#'   See [nc_model_estimates] for examples on using NetCoupler.
+#'   See [nc_estimate_links] for examples on using NetCoupler.
 #'
 classify_effects <- function(data) {
     # TODO: Use an attribute as a "check"
