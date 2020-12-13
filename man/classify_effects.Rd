@@ -4,11 +4,11 @@
 \alias{classify_effects}
 \title{Classify direct, ambiguous, or no effect between exposure and network nodes.}
 \usage{
-classify_effects(.tbl)
+classify_effects(data)
 }
 \arguments{
-\item{.tbl}{Multi-model estimates generated from \code{\link[=nc_exposure_estimates]{nc_exposure_estimates()}} or
-\code{\link[=nc_outcome_estimates]{nc_outcome_estimates()}} that contain the model summaries.}
+\item{data}{Multi-model estimates generated from \code{\link[=nc_estimate_exposure_links]{nc_estimate_exposure_links()}} or
+\code{\link[=nc_estimate_outcome_links]{nc_estimate_outcome_links()}} that contain the model summaries.}
 }
 \value{
 Outputs a \link[tibble:tibble-package]{tibble} with model estimates
@@ -18,7 +18,7 @@ classification of direct effect or not.
 \description{
 \lifecycle{experimental}
 
-Using the output of the \code{\link[=nc_exposure_estimates]{nc_exposure_estimates()}} or \code{\link[=nc_outcome_estimates]{nc_outcome_estimates()}},
+Using the output of the \code{\link[=nc_estimate_exposure_links]{nc_estimate_exposure_links()}} or \code{\link[=nc_estimate_outcome_links]{nc_estimate_outcome_links()}},
 classify whether the exposure variable has a direct, ambiguous, or no link
 with the index node metabolic variable, conditional on neighbouring metablic
 variables and on potential confounders.

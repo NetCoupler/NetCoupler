@@ -4,12 +4,12 @@
 \alias{pc_skeleton_estimates}
 \title{Estimate order-independent PC-stable skeleton of a DAG.}
 \usage{
-pc_skeleton_estimates(.tbl, .alpha = 0.01)
+pc_skeleton_estimates(data, alpha = 0.01)
 }
 \arguments{
-\item{.tbl}{Input metabolic data.}
+\item{data}{Input metabolic data.}
 
-\item{.alpha}{Significance level threshold applied to each test.}
+\item{alpha}{Significance level threshold applied to each test.}
 }
 \value{
 A DAG skeleton object.

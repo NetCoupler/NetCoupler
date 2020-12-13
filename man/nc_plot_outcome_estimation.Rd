@@ -6,29 +6,29 @@
 \title{Plot of the outcome or exposure side model estimation.}
 \usage{
 nc_plot_outcome_estimation(
-  .tbl,
-  .graph,
-  .tbl_model,
-  .edge_label_threshold = 0.2
+  data,
+  edge_tbl,
+  data_model,
+  edge_label_threshold = 0.2
 )
 
 nc_plot_exposure_estimation(
-  .tbl,
-  .graph,
-  .tbl_model,
-  .edge_label_threshold = 0.2
+  data,
+  edge_tbl,
+  data_model,
+  edge_label_threshold = 0.2
 )
 }
 \arguments{
-\item{.tbl}{The original data, with the metabolic variables that have been
+\item{data}{The original data, with the metabolic variables that have been
 standardized.}
 
-\item{.graph}{The graph object created from \code{nc_estimate_network()}.}
+\item{edge_tbl}{The graph object created from \code{nc_estimate_network()}.}
 
-\item{.tbl_model}{The tibble of the model results obtained from
+\item{data_model}{The tibble of the model results obtained from
 \code{nc_classify_effects()}.}
 
-\item{.edge_label_threshold}{Threshold to pass for the value to be added to
+\item{edge_label_threshold}{Threshold to pass for the value to be added to
 the edge label.}
 }
 \value{

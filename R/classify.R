@@ -3,13 +3,13 @@
 #' @description
 #' \lifecycle{experimental}
 #'
-#' Using the output of the [nc_exposure_estimates()] or [nc_outcome_estimates()],
+#' Using the output of the [nc_estimate_exposure_links()] or [nc_estimate_outcome_links()],
 #' classify whether the exposure variable has a direct, ambiguous, or no link
 #' with the index node metabolic variable, conditional on neighbouring metablic
 #' variables and on potential confounders.
 #'
-#' @param .tbl Multi-model estimates generated from [nc_exposure_estimates()] or
-#'   [nc_outcome_estimates()] that contain the model summaries.
+#' @param data Multi-model estimates generated from [nc_estimate_exposure_links()] or
+#'   [nc_estimate_outcome_links()] that contain the model summaries.
 #'
 #' @return Outputs a [tibble][tibble::tibble-package] with model estimates
 #'   between the exposure and the individual index network nodes, along with the
@@ -19,14 +19,14 @@
 #'   detailed description of the algorithm used to classify direct effects.
 #'   See [nc_model_estimates] for examples on using NetCoupler.
 #'
-classify_effects <- function(.tbl) {
+classify_effects <- function(data) {
     # TODO: Use an attribute as a "check"
-    assert_is_data.frame(.tbl)
-    check_tbl(.tbl)
+    assert_is_data.frame(data)
+    check_tbl(data)
 
-    external_variable <- identify_external_variable(.tbl)
+    external_variable <- identify_external_variable(data)
 
-    xvar_model_estimates <- .tbl %>%
+    xvar_model_estimates <- data %>%
         round_p_values() %>%
         keep_xvar_model_estimates(external_variable)
 
@@ -50,12 +50,12 @@ classify_effects <- function(.tbl) {
 
 # Helpers -----------------------------------------------------------------
 
-keep_xvar_model_estimates <- function(.tbl, main_x_var) {
+keep_xvar_model_estimates <- function(data, main_x_var) {
     switch(main_x_var,
-           outcome = .tbl %>%
+           outcome = data %>%
                add_neighbours_by_model("index_node") %>%
                keep_main_x_var_estimates("index_node"),
-           exposure = .tbl %>%
+           exposure = data %>%
                add_neighbours_by_model(main_x_var) %>%
                keep_main_x_var_estimates(main_x_var)
            )
@@ -90,12 +90,12 @@ identify_external_variable <- function(x) {
 
 # Need to round since some p-values can be really small (basically zero),
 # and others can be exactly zero. So need to assume both are same.
-round_p_values <- function(.tbl) {
-    mutate(.tbl, dplyr::across("p_value", ~ round(., 6)))
+round_p_values <- function(data) {
+    mutate(data, dplyr::across("p_value", ~ round(., 6)))
 }
 
-add_neighbours_by_model <- function(.tbl, main_x_var) {
-    .tbl %>%
+add_neighbours_by_model <- function(data, main_x_var) {
+    data %>%
         dplyr::group_by(.data$model_id) %>%
         mutate(
             neighbour_vars = extract_neighbour_nodes(
@@ -107,15 +107,15 @@ add_neighbours_by_model <- function(.tbl, main_x_var) {
         dplyr::ungroup()
 }
 
-keep_main_x_var_estimates <- function(.tbl, main_x_var) {
-    .tbl %>%
+keep_main_x_var_estimates <- function(data, main_x_var) {
+    data %>%
         dplyr::filter(.data[[main_x_var]] == .data$term) %>%
         mutate(adj_p_value = stats::p.adjust(.data$p_value, "fdr")) %>%
         select(-all_of(c("term", "model_id")))
 }
 
-keep_no_neighbour_models <- function(.tbl, main_x_var) {
-    .tbl %>%
+keep_no_neighbour_models <- function(data, main_x_var) {
+    data %>%
         dplyr::filter(dplyr::across(all_of("neighbour_vars"), ~ . == "")) %>%
         dplyr::rename(
             no_neighbours_adj_p_value = .data$adj_p_value,
@@ -134,8 +134,8 @@ keep_no_neighbour_models <- function(.tbl, main_x_var) {
 }
 
 # TODO: Use another comparator here, like AIC or something?
-add_comparison_columns <- function(.tbl) {
-    .tbl %>%
+add_comparison_columns <- function(data) {
+    data %>%
         mutate(
             # nnm = no neighbour models
             # nm = neighbour models
@@ -157,8 +157,8 @@ add_comparison_columns <- function(.tbl) {
         )
 }
 
-add_effects_column <- function(.tbl, ext_var, pvalue_threshold = 0.001) {
-    .tbl %>%
+add_effects_column <- function(data, ext_var, pvalue_threshold = 0.001) {
+    data %>%
         dplyr::group_by(.data[[ext_var]], .data$index_node) %>%
         mutate(effect = dplyr::case_when(
             direct_effect_logic(.data$nnm_has_bigger_pval_than_nm,
@@ -188,8 +188,8 @@ ambigious_effect_logic <- function(bigger_pval, same_dir, pvalue, pvalue_thresho
         any(pvalue <= pvalue_threshold)
 }
 
-keep_relevant_data <- function(.tbl) {
-    .tbl %>%
+keep_relevant_data <- function(data) {
+    data %>%
         dplyr::filter(.data$neighbour_vars == "") %>%
         select(-matches("no_neighbour|nnm_"),
                -all_of(c(
@@ -199,11 +199,11 @@ keep_relevant_data <- function(.tbl) {
                )))
 }
 
-check_tbl <- function(.tbl) {
-    if (!all(c("index_node", "estimate", "std_error") %in% names(.tbl))) {
+check_tbl <- function(data) {
+    if (!all(c("index_node", "estimate", "std_error") %in% names(data))) {
         rlang::abort(c("The data frame provided does not contain the proper columns. Make sure to use the data frame generated from either of these:",
-                       "nc_exposure_estimates()",
-                       "nc_outcome_estimates()"))
+                       "nc_estimate_exposure_links()",
+                       "nc_estimate_outcome_links()"))
     }
 }
 

@@ -4,10 +4,10 @@
 \alias{as_edge_tbl}
 \title{Convert network graph to edge table.}
 \usage{
-as_edge_tbl(.network)
+as_edge_tbl(network_object)
 }
 \arguments{
-\item{.network}{Network graph from e.g. \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
+\item{network_object}{Network graph from e.g. \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
 }
 \value{
 A \link[tibble:tibble-package]{tibble}, with at least two columns:

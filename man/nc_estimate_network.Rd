@@ -4,15 +4,15 @@
 \alias{nc_estimate_network}
 \title{Create an estimate of the metabolic network skeleton.}
 \usage{
-nc_estimate_network(.tbl, .vars = everything(), .alpha = 0.05)
+nc_estimate_network(data, cols = everything(), alpha = 0.05)
 }
 \arguments{
-\item{.tbl}{Data of the metabolic variables.}
+\item{data}{Data of the metabolic variables.}
 
-\item{.vars}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Variables to include
+\item{cols}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Variables to include
 by using \code{\link[dplyr:select]{dplyr::select()}} style selection.}
 
-\item{.alpha}{The alpha level to set. Default is 0.05.}
+\item{alpha}{The alpha level to set. Default is 0.05.}
 }
 \value{
 Outputs a DAG skeleton.

@@ -39,7 +39,7 @@ test_that("adjacency graph object is constructed", {
 
 test_that("network is constructed even with missingness", {
     metabolite_network_na <- simulated_data %>%
-        .insert_random_missingness() %>%
+        insert_random_missingness() %>%
         nc_estimate_network(starts_with("metabolite"))
 
     expect_s4_class(metabolite_network_na, "pcAlgo")
