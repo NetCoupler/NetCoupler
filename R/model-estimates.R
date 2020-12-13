@@ -176,10 +176,10 @@ compute_model_estimates <-
         select(all_of(variables_to_keep)) %>%
         stats::na.omit()
 
-    model_arg_list <- list(formula = formula_list)
     other_args <- list(data = model_data)
     if (!is.null(model_arg_list))
         other_args <- c(other_args, model_arg_list)
+    model_formula_list <- list(formula = formula_list)
 
     var_to_extract <- 1
     if (external_side == "outcome")
@@ -198,9 +198,10 @@ compute_model_estimates <-
     #     model_map2_dfr <- furrr::future_map2_dfr
     # }
 
-    model_tbl <- model_arg_list %>%
+    # TODO: Move the modeling and tidying into same step
+    model_tbl <- model_formula_list %>%
         purrr::pmap(purrr::lift_dl(model_function), other_args) %>%
-        model_map2_dfr(network_index_nodes,
+        purrr::map2_dfr(network_index_nodes,
                        tidy_models, exponentiate = exponentiate)
 
     tidied_models <- model_tbl %>%
@@ -232,7 +233,7 @@ all_neighbour_combinations <- function(edge_tbl) {
 tidy_models <- function(model_object, index_node, exponentiate) {
     model_id <- ids::random_id(1, bytes = 8)
     model_estimates <- model_object %>%
-        broom::tidy(exponentiate = exponentiate, conf.int = TRUE) %>%
+        broom::tidy(exponentiate = exponentiate, conf.int = FALSE) %>%
         # Give a unique id for the model.
         mutate(model_id = model_id,
                index_node = index_node)
