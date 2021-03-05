@@ -43,7 +43,11 @@ and a network. — nc_estimate_links • NetCoupler</title>
 <meta property="og:title" content="Compute model estimates between an external (exposure or outcome) variable
 and a network. — nc_estimate_links" />
 <meta property="og:description" content="
-TODO: Describe more here (fill out vignette first)." />
+TODO: Describe more here (fill out vignette first).
+nc_estimate_exposure_links(): Computes the model estimates for the exposure side.
+nc_estimate_outcome_links(): Computes the model estimates for the exposure side.
+
+" />
 
 
 
@@ -139,7 +143,11 @@ and a network.</h1>
 
     <div class="ref-description">
     <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a></p>
-<p>TODO: Describe more here (fill out vignette first).</p>
+<p>TODO: Describe more here (fill out vignette first).</p><ul>
+<li><p><code>nc_estimate_exposure_links()</code>: Computes the model estimates for the exposure side.</p></li>
+<li><p><code>nc_estimate_outcome_links()</code>: Computes the model estimates for the exposure side.</p></li>
+</ul>
+
     </div>
 
     <pre class="usage"><span class='fu'>nc_estimate_exposure_links</span><span class='op'>(</span>
@@ -149,7 +157,8 @@ and a network.</h1>
   adjustment_vars <span class='op'>=</span> <span class='cn'>NA</span>,
   <span class='va'>model_function</span>,
   model_arg_list <span class='op'>=</span> <span class='cn'>NULL</span>,
-  exponentiate <span class='op'>=</span> <span class='cn'>FALSE</span>
+  exponentiate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  implementation <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"updated"</span>, <span class='st'>"original"</span><span class='op'>)</span>
 <span class='op'>)</span>
 
 <span class='fu'>nc_estimate_outcome_links</span><span class='op'>(</span>
@@ -159,18 +168,8 @@ and a network.</h1>
   adjustment_vars <span class='op'>=</span> <span class='cn'>NA</span>,
   <span class='va'>model_function</span>,
   model_arg_list <span class='op'>=</span> <span class='cn'>NULL</span>,
-  exponentiate <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span>
-
-<span class='fu'>compute_model_estimates</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  <span class='va'>edge_tbl</span>,
-  <span class='va'>external_var</span>,
-  adjustment_vars <span class='op'>=</span> <span class='cn'>NA</span>,
-  <span class='va'>model_function</span>,
-  model_arg_list <span class='op'>=</span> <span class='cn'>NULL</span>,
   exponentiate <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  external_side <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"exposure"</span>, <span class='st'>"outcome"</span><span class='op'>)</span>
+  implementation <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"updated"</span>, <span class='st'>"original"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -234,15 +233,6 @@ to the external variable.</p></li>
 
     <p>Outputs a <a href='https://tibble.tidyverse.org/reference/tibble-package.html'>tibble</a> that contains the model
 estimates from either the exposure or outcome side of the network.</p>
-    <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
-
-    
-<ul>
-<li><p><code>nc_estimate_exposure_links</code>: Computes the model estimates for the exposure side.</p></li>
-<li><p><code>nc_estimate_outcome_links</code>: Computes the model estimates for the exposure side.</p></li>
-<li><p><code>compute_model_estimates</code>: Internal function. Included to document
-algorithm.</p></li>
-</ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
