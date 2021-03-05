@@ -12,7 +12,7 @@ nc_estimate_exposure_links(
   data,
   edge_tbl,
   exposure,
-  adjustement_vars = NA,
+  adjustment_vars = NA,
   model_function,
   model_arg_list = NULL,
   exponentiate = FALSE
@@ -22,7 +22,7 @@ nc_estimate_outcome_links(
   data,
   edge_tbl,
   outcome,
-  adjustement_vars = NA,
+  adjustment_vars = NA,
   model_function,
   model_arg_list = NULL,
   exponentiate = FALSE
@@ -32,7 +32,7 @@ compute_model_estimates(
   data,
   edge_tbl,
   external_var,
-  adjustement_vars = NA,
+  adjustment_vars = NA,
   model_function,
   model_arg_list = NULL,
   exponentiate = FALSE,
@@ -47,7 +47,7 @@ including the variables passed to the network.}
 
 \item{exposure, outcome}{Character. The exposure or outcome variable of interest.}
 
-\item{adjustement_vars}{Optional. Variables to adjust for in the models.}
+\item{adjustment_vars}{Optional. Variables to adjust for in the models.}
 
 \item{model_function}{A function for the model to use (e.g. \code{\link[stats:lm]{stats::lm()}},
 \code{\link[stats:glm]{stats::glm()}}, survival::coxph()). Can be any model as long as the
@@ -120,7 +120,7 @@ standardized_data \%>\%
     edge_tbl = edge_table,
     outcome = "case_status",
     model_function = glm,
-    adjustement_vars = "age",
+    adjustment_vars = "age",
     model_arg_list = list(family = binomial(link = "logit")),
     exponentiate = TRUE
   )
@@ -132,7 +132,7 @@ standardized_data \%>\%
   nc_estimate_exposure_links(
     edge_tbl = edge_table,
     exposure = "exposure",
-    adjustement_vars = c("age", "Random", "Sex"),
+    adjustment_vars = c("age", "Random", "Sex"),
     model_function = lm
    )
 }

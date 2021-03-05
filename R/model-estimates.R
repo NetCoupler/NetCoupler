@@ -6,7 +6,7 @@
 #'   including the variables passed to the network.
 #' @param edge_tbl Output graph object from `nc_estimate_network()`.
 #' @param exposure,outcome Character. The exposure or outcome variable of interest.
-#' @param adjustement_vars Optional. Variables to adjust for in the models.
+#' @param adjustment_vars Optional. Variables to adjust for in the models.
 #' @param model_function A function for the model to use (e.g. [stats::lm()],
 #'   [stats::glm()], survival::coxph()). Can be any model as long as the
 #'   function has the arguments `formula` and `data`.
@@ -62,7 +62,7 @@
 #'     edge_tbl = edge_table,
 #'     outcome = "case_status",
 #'     model_function = glm,
-#'     adjustement_vars = "age",
+#'     adjustment_vars = "age",
 #'     model_arg_list = list(family = binomial(link = "logit")),
 #'     exponentiate = TRUE
 #'   )
@@ -74,7 +74,7 @@
 #'   nc_estimate_exposure_links(
 #'     edge_tbl = edge_table,
 #'     exposure = "exposure",
-#'     adjustement_vars = c("age", "Random", "Sex"),
+#'     adjustment_vars = c("age", "Random", "Sex"),
 #'     model_function = lm
 #'    )
 #' }
@@ -87,7 +87,7 @@ nc_estimate_exposure_links <-
     function(data,
              edge_tbl,
              exposure,
-             adjustement_vars = NA,
+             adjustment_vars = NA,
              model_function,
              model_arg_list = NULL,
              exponentiate = FALSE) {
@@ -95,7 +95,7 @@ nc_estimate_exposure_links <-
             data = data,
             edge_tbl = edge_tbl,
             external_var = exposure,
-            adjustement_vars = adjustement_vars,
+            adjustment_vars = adjustment_vars,
             model_function = model_function,
             model_arg_list = model_arg_list,
             exponentiate = exponentiate,
@@ -113,7 +113,7 @@ nc_estimate_outcome_links <-
     function(data,
              edge_tbl,
              outcome,
-             adjustement_vars = NA,
+             adjustment_vars = NA,
              model_function,
              model_arg_list = NULL,
              exponentiate = FALSE) {
@@ -121,7 +121,7 @@ nc_estimate_outcome_links <-
             data = data,
             edge_tbl = edge_tbl,
             external_var = outcome,
-            adjustement_vars = adjustement_vars,
+            adjustment_vars = adjustment_vars,
             model_function = model_function,
             model_arg_list = model_arg_list,
             exponentiate = exponentiate,
@@ -139,7 +139,7 @@ compute_model_estimates <-
     function(data,
              edge_tbl,
              external_var,
-             adjustement_vars = NA,
+             adjustment_vars = NA,
              model_function,
              model_arg_list = NULL,
              exponentiate = FALSE,
@@ -150,8 +150,8 @@ compute_model_estimates <-
     assert_is_data.frame(edge_tbl)
     assert_is_a_string(external_var)
     # TODO: This check needs to be better constructed
-    if (!any(is.na(adjustement_vars)))
-        assert_is_character(adjustement_vars)
+    if (!any(is.na(adjustment_vars)))
+        assert_is_character(adjustment_vars)
     if (!is.null(model_arg_list))
         assert_is_list(model_arg_list)
     assert_is_logical(exponentiate)
@@ -164,7 +164,7 @@ compute_model_estimates <-
         network_object_tbl = network_combinations,
         ext_var = external_var,
         ext_side = external_side,
-        adj_vars = adjustement_vars
+        adj_vars = adjustment_vars
     )
 
     variables_to_keep <- formula_list %>%
@@ -208,8 +208,8 @@ compute_model_estimates <-
         mutate(
             external_var = external_var,
             adjusted_vars = dplyr::if_else(
-                !any(is.na(adjustement_vars)),
-                paste(adjustement_vars, collapse = ", "),
+                !any(is.na(adjustment_vars)),
+                paste(adjustment_vars, collapse = ", "),
                 NA_character_
             )
         ) %>%
@@ -326,7 +326,7 @@ generate_formula_list <-
 #         nc_estimate_exposure_links(
 #             edge_tbl = edge_table[[count]],
 #             exposure = "exposure",
-#             adjustement_vars = "age",
+#             adjustment_vars = "age",
 #             .direct_effect_vars = de_vars,
 #             model_function = lm
 #         ) %>%

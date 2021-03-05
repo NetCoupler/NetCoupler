@@ -49,7 +49,7 @@ test_that("one or more adjustment variables can be added", {
         nc_estimate_exposure_links(
             edge_tbl = as_edge_tbl(metabolite_network),
             exposure = "exposure",
-            adjustement_vars = "age",
+            adjustment_vars = "age",
             model_function = lm
         )
 
@@ -60,7 +60,7 @@ test_that("one or more adjustment variables can be added", {
         nc_estimate_exposure_links(
             edge_tbl = as_edge_tbl(metabolite_network),
             exposure = "exposure",
-            adjustement_vars = c("age", "Random"),
+            adjustment_vars = c("age", "Random"),
             model_function = lm
         )
 
@@ -71,7 +71,7 @@ test_that("one or more adjustment variables can be added", {
         nc_estimate_outcome_links(
             edge_tbl = as_edge_tbl(metabolite_network),
             outcome = "outcome_continuous",
-            adjustement_vars = c("age", "Random"),
+            adjustment_vars = c("age", "Random"),
             model_function = lm
         )
 
@@ -111,7 +111,7 @@ test_that("assertion checks pass", {
         nc_estimate_exposure_links(
             edge_tbl = as_edge_tbl(metabolite_network),
             exposure = "exposure",
-            adjustement_vars = 1,
+            adjustment_vars = 1,
             model_function = lm
         )
     )
@@ -120,7 +120,7 @@ test_that("assertion checks pass", {
         nc_estimate_exposure_links(
             edge_tbl = as_edge_tbl(metabolite_network),
             exposure = "exposure",
-            adjustement_vars = swiss,
+            adjustment_vars = swiss,
             model_function = lm
         )
     )
@@ -161,7 +161,7 @@ test_that("Factor confounders are extracted properly", {
         nc_estimate_exposure_links(
             edge_tbl = as_edge_tbl(metabolite_network),
             exposure = "exposure",
-            adjustement_vars = c("age", "Sex"),
+            adjustment_vars = c("age", "Sex"),
             model_function = lm
         )
 
