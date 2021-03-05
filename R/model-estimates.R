@@ -137,9 +137,6 @@ nc_estimate_outcome_links <-
             classify_effects(implementation = implementation)
 }
 
-#' @describeIn nc_estimate_links Internal function. Included to document
-#'   algorithm.
-#' @keywords internal
 compute_model_estimates <-
     function(data,
              edge_tbl,

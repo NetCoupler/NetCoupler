@@ -4,7 +4,6 @@
 \alias{nc_estimate_links}
 \alias{nc_estimate_exposure_links}
 \alias{nc_estimate_outcome_links}
-\alias{compute_model_estimates}
 \title{Compute model estimates between an external (exposure or outcome) variable
 and a network.}
 \usage{
@@ -28,17 +27,6 @@ nc_estimate_outcome_links(
   model_arg_list = NULL,
   exponentiate = FALSE,
   implementation = c("updated", "original")
-)
-
-compute_model_estimates(
-  data,
-  edge_tbl,
-  external_var,
-  adjustment_vars = NA,
-  model_function,
-  model_arg_list = NULL,
-  exponentiate = FALSE,
-  external_side = c("exposure", "outcome")
 )
 }
 \arguments{
@@ -90,12 +78,6 @@ TODO: Describe more here (fill out vignette first).
 \item \code{nc_estimate_outcome_links()}: Computes the model estimates for the exposure side.
 }
 }
-\section{Functions}{
-\itemize{
-\item \code{compute_model_estimates}: Internal function. Included to document
-algorithm.
-}}
-
 \examples{
 
 \dontrun{
@@ -140,4 +122,3 @@ standardized_data \%>\%
 }
 
 }
-\keyword{internal}
