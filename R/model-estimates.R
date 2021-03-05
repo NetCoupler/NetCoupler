@@ -33,6 +33,9 @@
 #'
 #' TODO: Describe more here (fill out vignette first).
 #'
+#' - `nc_estimate_exposure_links()`: Computes the model estimates for the exposure side.
+#' - `nc_estimate_outcome_links()`: Computes the model estimates for the exposure side.
+#'
 #' @return Outputs a [tibble][tibble::tibble-package] that contains the model
 #'   estimates from either the exposure or outcome side of the network.
 #'
@@ -81,7 +84,7 @@
 #'
 NULL
 
-#' @describeIn nc_estimate_links Computes the model estimates for the exposure side.
+#' @rdname nc_estimate_links
 #' @export
 nc_estimate_exposure_links <-
     function(data,
@@ -108,7 +111,7 @@ nc_estimate_exposure_links <-
 
     }
 
-#' @describeIn nc_estimate_links Computes the model estimates for the exposure side.
+#' @rdname nc_estimate_links
 #' @export
 nc_estimate_outcome_links <-
     function(data,
@@ -200,7 +203,7 @@ compute_model_estimates <-
     #     model_map2_dfr <- furrr::future_map2_dfr
     # }
 
-    # TODO: Move the modeling and tidying into same step
+    # TODO: Move the modeling and tidying into same step?
     model_tbl <- model_formula_list %>%
         purrr::pmap(purrr::lift_dl(model_function), other_args) %>%
         purrr::map2_dfr(network_index_nodes,

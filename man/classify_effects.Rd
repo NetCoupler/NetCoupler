@@ -4,7 +4,7 @@
 \alias{classify_effects}
 \title{Classify direct, ambiguous, or no effect between exposure and network nodes.}
 \usage{
-classify_effects(data)
+classify_effects(data, implementation = c("updated", "original"))
 }
 \arguments{
 \item{data}{Multi-model estimates generated from \code{\link[=nc_estimate_exposure_links]{nc_estimate_exposure_links()}} or

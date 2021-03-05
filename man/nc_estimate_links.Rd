@@ -15,7 +15,8 @@ nc_estimate_exposure_links(
   adjustment_vars = NA,
   model_function,
   model_arg_list = NULL,
-  exponentiate = FALSE
+  exponentiate = FALSE,
+  implementation = c("updated", "original")
 )
 
 nc_estimate_outcome_links(
@@ -25,7 +26,8 @@ nc_estimate_outcome_links(
   adjustment_vars = NA,
   model_function,
   model_arg_list = NULL,
-  exponentiate = FALSE
+  exponentiate = FALSE,
+  implementation = c("updated", "original")
 )
 
 compute_model_estimates(
@@ -83,13 +85,13 @@ estimates from either the exposure or outcome side of the network.
 \lifecycle{experimental}
 
 TODO: Describe more here (fill out vignette first).
+\itemize{
+\item \code{nc_estimate_exposure_links()}: Computes the model estimates for the exposure side.
+\item \code{nc_estimate_outcome_links()}: Computes the model estimates for the exposure side.
+}
 }
 \section{Functions}{
 \itemize{
-\item \code{nc_estimate_exposure_links}: Computes the model estimates for the exposure side.
-
-\item \code{nc_estimate_outcome_links}: Computes the model estimates for the exposure side.
-
 \item \code{compute_model_estimates}: Internal function. Included to document
 algorithm.
 }}
