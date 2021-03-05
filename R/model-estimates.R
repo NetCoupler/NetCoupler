@@ -90,7 +90,8 @@ nc_estimate_exposure_links <-
              adjustment_vars = NA,
              model_function,
              model_arg_list = NULL,
-             exponentiate = FALSE) {
+             exponentiate = FALSE,
+             implementation = c("updated", "original")) {
         multiple_models <- compute_model_estimates(
             data = data,
             edge_tbl = edge_tbl,
@@ -103,7 +104,7 @@ nc_estimate_exposure_links <-
         )
         multiple_models %>%
             dplyr::rename("exposure" = "external_var") %>%
-            classify_effects()
+            classify_effects(implementation = implementation)
 
     }
 
@@ -116,7 +117,8 @@ nc_estimate_outcome_links <-
              adjustment_vars = NA,
              model_function,
              model_arg_list = NULL,
-             exponentiate = FALSE) {
+             exponentiate = FALSE,
+             implementation = c("updated", "original")) {
         multiple_models <- compute_model_estimates(
             data = data,
             edge_tbl = edge_tbl,
@@ -129,7 +131,7 @@ nc_estimate_outcome_links <-
         )
         multiple_models %>%
             dplyr::rename("outcome" = "external_var") %>%
-            classify_effects()
+            classify_effects(implementation = implementation)
 }
 
 #' @describeIn nc_estimate_links Internal function. Included to document
