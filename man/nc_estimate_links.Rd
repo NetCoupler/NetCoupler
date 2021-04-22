@@ -4,7 +4,6 @@
 \alias{nc_estimate_links}
 \alias{nc_estimate_exposure_links}
 \alias{nc_estimate_outcome_links}
-\alias{compute_model_estimates}
 \title{Compute model estimates between an external (exposure or outcome) variable
 and a network.}
 \usage{
@@ -12,31 +11,22 @@ nc_estimate_exposure_links(
   data,
   edge_tbl,
   exposure,
-  adjustement_vars = NA,
+  adjustment_vars = NA,
   model_function,
   model_arg_list = NULL,
-  exponentiate = FALSE
+  exponentiate = FALSE,
+  implementation = c("updated", "original")
 )
 
 nc_estimate_outcome_links(
   data,
   edge_tbl,
   outcome,
-  adjustement_vars = NA,
-  model_function,
-  model_arg_list = NULL,
-  exponentiate = FALSE
-)
-
-compute_model_estimates(
-  data,
-  edge_tbl,
-  external_var,
-  adjustement_vars = NA,
+  adjustment_vars = NA,
   model_function,
   model_arg_list = NULL,
   exponentiate = FALSE,
-  external_side = c("exposure", "outcome")
+  implementation = c("updated", "original")
 )
 }
 \arguments{
@@ -47,7 +37,7 @@ including the variables passed to the network.}
 
 \item{exposure, outcome}{Character. The exposure or outcome variable of interest.}
 
-\item{adjustement_vars}{Optional. Variables to adjust for in the models.}
+\item{adjustment_vars}{Optional. Variables to adjust for in the models.}
 
 \item{model_function}{A function for the model to use (e.g. \code{\link[stats:lm]{stats::lm()}},
 \code{\link[stats:glm]{stats::glm()}}, survival::coxph()). Can be any model as long as the
@@ -83,17 +73,11 @@ estimates from either the exposure or outcome side of the network.
 \lifecycle{experimental}
 
 TODO: Describe more here (fill out vignette first).
-}
-\section{Functions}{
 \itemize{
-\item \code{nc_estimate_exposure_links}: Computes the model estimates for the exposure side.
-
-\item \code{nc_estimate_outcome_links}: Computes the model estimates for the exposure side.
-
-\item \code{compute_model_estimates}: Internal function. Included to document
-algorithm.
-}}
-
+\item \code{nc_estimate_exposure_links()}: Computes the model estimates for the exposure side.
+\item \code{nc_estimate_outcome_links()}: Computes the model estimates for the exposure side.
+}
+}
 \examples{
 
 \dontrun{
@@ -120,7 +104,7 @@ standardized_data \%>\%
     edge_tbl = edge_table,
     outcome = "case_status",
     model_function = glm,
-    adjustement_vars = "age",
+    adjustment_vars = "age",
     model_arg_list = list(family = binomial(link = "logit")),
     exponentiate = TRUE
   )
@@ -132,10 +116,9 @@ standardized_data \%>\%
   nc_estimate_exposure_links(
     edge_tbl = edge_table,
     exposure = "exposure",
-    adjustement_vars = c("age", "Random", "Sex"),
+    adjustment_vars = c("age", "Random", "Sex"),
     model_function = lm
    )
 }
 
 }
-\keyword{internal}

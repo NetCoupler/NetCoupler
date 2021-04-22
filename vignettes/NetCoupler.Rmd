@@ -181,7 +181,7 @@ exposure_estimates
 
 If you want to adjust for confounders and have already used `regressed_on` in
 the `nc_standardize()` function, add confounders to `nc_estimate_outcome_links()`
-or `nc_estimate_exposure_links()` with the `adjustement_vars` argument:
+or `nc_estimate_exposure_links()` with the `adjustment_vars` argument:
 
 ```{r estimation-adjustment, eval=FALSE}
 outcome_estimates <- standardized_data %>%
@@ -189,7 +189,7 @@ outcome_estimates <- standardized_data %>%
         edge_tbl = as_edge_tbl(metabolite_network),
         outcome = "outcome_continuous",
         model_function = lm,
-        adjustement_vars = "age"
+        adjustment_vars = "age"
     )
 ```
 
