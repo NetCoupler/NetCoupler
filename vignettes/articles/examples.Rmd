@@ -1,0 +1,165 @@
+---
+title: "Examples for using different models"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(NetCoupler)
+library(dplyr)
+
+make_table <- function(object, caption) {
+    object %>%
+        mutate(across(where(is.numeric), round, digits = 3)) %>% 
+        knitr::kable(caption = caption)
+}
+```
+
+## Caveats for examples
+
+- None are adjusted, unless to show a certain feature of the model.
+
+## General features across models
+
+### Standardization
+
+```{r}
+standardized_data <- simulated_data %>%
+    nc_standardize(starts_with("metabolite"))
+```
+
+### Network estimation and edge tables
+
+```{r}
+metabolite_network <- simulated_data %>%
+    nc_standardize(starts_with("metabolite")) %>% 
+    nc_estimate_network(starts_with("metabolite"))
+
+edge_table <- as_edge_tbl(metabolite_network)
+```
+
+### Adjusting for confounders
+
+```{r}
+metabolite_network <- simulated_data %>%
+    nc_standardize(starts_with("metabolite"),
+                   regressed_on = "age") %>%
+    nc_estimate_network(starts_with("metabolite"))
+```
+
+### Outcome vs exposure side
+
+```{r}
+lm_results_outcome <- standardized_data %>%
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "outcome_continuous",
+    model_function = lm,
+    implementation = "updated"
+  )
+
+lm_results_outcome_2 <- standardized_data %>%
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "outcome_continuous",
+    model_function = lm,
+    implementation = "original"
+  )
+
+lm_results_exposure <- standardized_data %>%
+  nc_estimate_exposure_links(
+    edge_tbl = edge_table,
+    exposure = "exposure",
+    model_function = lm
+  )
+```
+
+## Linear regression
+
+```{r}
+lm_results <- standardized_data %>%
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "outcome_continuous",
+    model_function = lm
+  )
+
+lm_results %>% 
+    make_table("Results when using linear models.")
+```
+
+## Logistic regression
+
+### Binary Logistic Regression
+
+```{r}
+glm_bin_results <- standardized_data %>%
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "case_status",
+    model_function = glm,
+    model_arg_list = list(family = binomial),
+    exponentiate = TRUE,
+    implementation = "original"
+  )
+
+glm_bin_results %>% 
+    make_table("Results when using logistic regression models.")
+```
+
+### Ordinal Logistic Regression
+### Nominal Logistic Regression
+
+## Cox Regression
+
+TODO: Include `cluster()`, `strata()`.
+
+```{r}
+library(survival)
+
+coxph_results <- standardized_data %>%
+  mutate(surv_object = survival::Surv(time = survival_time, event = case_status)) %>% 
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "surv_object",
+    model_function = survival::coxph
+  )
+
+coxph_results %>% 
+    make_table("Model results and classification for Cox models.")
+```
+
+## Poisson regression
+
+### Negative Binomial Regression
+### Zero-inflated regression
+
+## Polynomial Regression
+
+## Ridge Regression
+
+## Lasso Regression
+
+## Quantile Regression
+
+## Elastic Net Regression
+
+## Principal Components Regression
+
+## Support Vector Machines Regression
+
+## Quasi Poisson Regression
+
+## Tobit Regression
+
+## Multivariate Regression
+
+## Random effects models
+
+## Longitudinal data?
