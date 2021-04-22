@@ -19,6 +19,9 @@ the two main estimation functions instead
 * Model summary statistics for `lm` and `glm` models were removed for improving
 computing speed (they slowed things down quite a bit)
 
+## Bug fixes
+
+
 ## Internal changes
 
 * Tidied up the unit tests to run faster

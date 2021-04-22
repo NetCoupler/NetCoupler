@@ -169,11 +169,14 @@ compute_model_estimates <-
         adj_vars = adjustment_vars
     )
 
+    browser()
+
     variables_to_keep <- formula_list %>%
         map(all.vars) %>%
         purrr::flatten_chr() %>%
         unique()
 
+    # TODO: Add variable of working sample size based on this?
     model_data <- data %>%
         select(all_of(variables_to_keep)) %>%
         stats::na.omit()
@@ -181,18 +184,6 @@ compute_model_estimates <-
     other_args <- list(data = model_data)
     if (!is.null(model_arg_list))
         other_args <- c(other_args, model_arg_list)
-    model_formula_list <- list(formula = formula_list)
-
-    var_to_extract <- 1
-    if (external_side == "outcome")
-        var_to_extract <- 2
-    # Surv objects have two variables, time and case
-    if (grepl("survival::Surv\\(", external_var))
-        var_to_extract <- 3
-
-    network_index_nodes <- formula_list %>%
-        map(~all.vars(.)[var_to_extract]) %>%
-        purrr::flatten_chr()
 
     # TODO: Fix to use parallel processing?
     # model_map2_dfr <- purrr::map2_dfr
@@ -201,9 +192,9 @@ compute_model_estimates <-
     # }
 
     # TODO: Move the modeling and tidying into same step?
-    model_tbl <- model_formula_list %>%
+    model_tbl <- list(formula = formula_list) %>%
         purrr::pmap(purrr::lift_dl(model_function), other_args) %>%
-        purrr::map2_dfr(network_index_nodes,
+        purrr::map2_dfr(network_combinations$index_node,
                        tidy_models, exponentiate = exponentiate)
 
     tidied_models <- model_tbl %>%
