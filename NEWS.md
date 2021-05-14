@@ -24,7 +24,8 @@ computing speed (they slowed things down quite a bit)
 * Tidied up the unit tests to run faster
 * Removed duplicate or extra roxygen examples and instead referenced a common 
 source with `@seealso`
-* Removed survival dependency
+* Removed survival dependency.
+* Switch to using main instead of master branch.
 
 # NetCoupler 0.0.4
 
