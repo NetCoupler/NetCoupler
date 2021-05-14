@@ -14,9 +14,9 @@ knitr::opts_chunk$set(
 # NetCoupler
 
 <!-- badges: start -->
-[![Join the chat at https://gitter.im/NetCoupler/Lobby](https://badges.gitter.im/NetCoupler/Lobby.svg)](https://gitter.im/NetCoupler/Lobby)
+[![R-CMD-check](https://github.com/NetCoupler/NetCoupler/workflows/R-CMD-check/badge.svg)](https://github.com/NetCoupler/NetCoupler/actions)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![R build status](https://github.com/NetCoupler/NetCoupler/workflows/R-CMD-check/badge.svg)](https://github.com/NetCoupler/NetCoupler/actions)
+[![Codecov test coverage](https://codecov.io/gh/NetCoupler/NetCoupler/branch/main/graph/badge.svg)](https://codecov.io/gh/NetCoupler/NetCoupler?branch=main)
 <!-- badges: end -->
 
 The goal of NetCoupler is to estimate causal links between a set of -omic (e.g.
