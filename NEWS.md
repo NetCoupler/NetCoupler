@@ -21,6 +21,7 @@ computing speed (they slowed things down quite a bit)
 
 ## Internal changes
 
+* Use standard GitHub Actions and remove AppVeyor.
 * Tidied up the unit tests to run faster
 * Removed duplicate or extra roxygen examples and instead referenced a common 
 source with `@seealso`
