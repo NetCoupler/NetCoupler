@@ -1,18 +1,13 @@
 ---
-title: "Examples for using different models"
+title: "Examples of using NetCoupler with different models"
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   eval = FALSE
 )
-```
-
-```{r setup}
-library(NetCoupler)
-library(dplyr)
 
 make_table <- function(object, caption) {
     object %>%
@@ -21,36 +16,54 @@ make_table <- function(object, caption) {
 }
 ```
 
-## Caveats for examples
+This article contains a list of models that you could use in NetCoupler.
 
-- None are adjusted, unless to show a certain feature of the model.
+There are some caveats to most of these examples, except for when a section
+explicitly indicates otherwise:
 
-## General features across models
+- Most of the models do not include further adjustment for confounders.
+- Most models only show the outcome-side estimation, for brevity. However,
+the code for running exposure-side estimation is almost the exact same.
 
-### Standardization
+Across the different models, there are some general features, which is described
+in more depth in the [Getting Started](netcoupler.html) article.
+First load up the packages.
 
 ```{r}
-standardized_data <- simulated_data %>%
-    nc_standardize(starts_with("metabolite"))
+library(NetCoupler)
+library(dplyr)
 ```
 
-### Network estimation and edge tables
+1. Pre-processing by standardizing variables, since large differences in the
+values of variables can impact on the results of the algorithm. 
 
-```{r}
-metabolite_network <- simulated_data %>%
-    nc_standardize(starts_with("metabolite")) %>% 
-    nc_estimate_network(starts_with("metabolite"))
+    ```{r}
+    standardized_data <- simulated_data %>%
+        nc_standardize(starts_with("metabolite"))
+    ```
 
-edge_table <- as_edge_tbl(metabolite_network)
-```
+2. Estimating the network structure to identify links between the metabolic variables.
+This network needs to be converted into an edge table that has two columns, one 
+for the `source_node` and another for the `target_node`.
 
-### Adjusting for confounders
+    ```{r}
+    metabolite_network <- simulated_data %>%
+        nc_standardize(starts_with("metabolite")) %>% 
+        nc_estimate_network(starts_with("metabolite"))
+    
+    edge_table <- as_edge_tbl(metabolite_network)
+    edge_table
+    ```
 
-```{r}
-metabolite_network <- simulated_data %>%
-    nc_standardize(starts_with("metabolite"),
-                   regressed_on = "age") %>%
-    nc_estimate_network(starts_with("metabolite"))
+3. If adjusting for confounders in the main models, these also need to be included
+when estimating the network. To do this, the metabolic data needs to be
+regressed on to the variables that will be standardized.
+
+    ```{r}
+    metabolite_network <- simulated_data %>%
+        nc_standardize(starts_with("metabolite"),
+                       regressed_on = "age") %>%
+        nc_estimate_network(starts_with("metabolite"))
 ```
 
 ### Outcome vs exposure side
