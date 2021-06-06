@@ -19,8 +19,6 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,6 +37,12 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="../articles/NetCoupler.html">Get started</a>
 </li>
@@ -63,7 +67,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/NetCoupler/NetCoupler/" class="external-link">
+  <a href="https://github.com/NetCoupler/NetCoupler/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -84,7 +88,7 @@
       <h1 data-toc-skip>Implementation details of NetCoupler</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/NetCoupler/NetCoupler/blob/master/vignettes/description.Rmd" class="external-link"><code>vignettes/description.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/NetCoupler/NetCoupler/blob/master/vignettes/description.Rmd"><code>vignettes/description.Rmd</code></a></small>
       <div class="hidden name"><code>description.Rmd</code></div>
 
     </div>
@@ -94,7 +98,7 @@
 <p><img src="https://img.shields.io/badge/document%20status-rough%20draft-red?style=flat-square"></p>
 <div id="explanation-of-netcoupler" class="section level2">
 <h2 class="hasAnchor">
-<a href="#explanation-of-netcoupler" class="anchor" aria-hidden="true"></a>Explanation of NetCoupler</h2>
+<a href="#explanation-of-netcoupler" class="anchor"></a>Explanation of NetCoupler</h2>
 <p>The <em>NetCoupler</em>-algorithm operates by taking the following steps:</p>
 <ol style="list-style-type: decimal">
 <li>The implementation of the PC-algorithm [1] in the pcalg package <span class="citation">[@Kalisch2012]</span> is applied to estimate the skeleton of the underlying directed acyclic graph (DAG) that generated the complex exposure data (e.g., metabolomics data).</li>
@@ -107,17 +111,17 @@
 <p>Given that 1) an exposure can potentially affect metabolite concentrations (<code>exposure -&gt; metabolic network</code>) and that 2) metabolites can potentially affect the development of a disease (<code>metabolic network -&gt; outcome</code>), two algorithms are needed, one for the exposure side and one for the disease/outcome side. The explanation and description of NetCoupler are taken heavily from Clemens Wittenbecher’s PhD thesis <span class="citation">[@Wittenbecher2017]</span>.</p>
 <div id="metabolic-network-estimation" class="section level3">
 <h3 class="hasAnchor">
-<a href="#metabolic-network-estimation" class="anchor" aria-hidden="true"></a>Metabolic network estimation</h3>
+<a href="#metabolic-network-estimation" class="anchor"></a>Metabolic network estimation</h3>
 <p>TODO: Explain PC algorithm..?</p>
 <div id="directed-acyclic-graph-skeleton-estimation" class="section level4">
 <h4 class="hasAnchor">
-<a href="#directed-acyclic-graph-skeleton-estimation" class="anchor" aria-hidden="true"></a>Directed acyclic graph skeleton estimation</h4>
+<a href="#directed-acyclic-graph-skeleton-estimation" class="anchor"></a>Directed acyclic graph skeleton estimation</h4>
 <p>The estimate the underlying directed acyclic graph (DAG) skeleton of the metabolite network, NetCoupler uses an implementation of the PC-algorithm <span class="citation">[@Kalisch2012;@Maathuis2010;@Spirtes2001;@Colombo2014]</span>. Because of this, the assumptions from the PC-algorithm apply to NetCoupler. The output of this algorithm is a graphical model (<code>G</code>) of the underlying network that is used by NetCoupler.</p>
 </div>
 </div>
 <div id="exposure-side-network-effect-estimation" class="section level3">
 <h3 class="hasAnchor">
-<a href="#exposure-side-network-effect-estimation" class="anchor" aria-hidden="true"></a>Exposure-side network effect estimation</h3>
+<a href="#exposure-side-network-effect-estimation" class="anchor"></a>Exposure-side network effect estimation</h3>
 <p>The exposure-side network retrieves a range of potential direct effects of exogenous {{word?}} factors on the metabolite network. The algorithmic pseudocode from functional programming perspective for the exposure-side estimation is:</p>
 <pre><code>input DAG skeleton
 input data with network variables (M), exposure (X), 
@@ -166,7 +170,7 @@ output confidence set of effects of X on M, based on DAG skeleton
 </div>
 <div id="outcome-side-network-effect-estimation" class="section level3">
 <h3 class="hasAnchor">
-<a href="#outcome-side-network-effect-estimation" class="anchor" aria-hidden="true"></a>Outcome-side network effect estimation</h3>
+<a href="#outcome-side-network-effect-estimation" class="anchor"></a>Outcome-side network effect estimation</h3>
 <p>The outcome-side network retrieves direct effects of network variables on later occurring events.</p>
 <p>There are similarities to the exposure-side algorithm for the outcome-side algorithm, except that the directionality is reversed (<code>metabolite -&gt; outcome</code>). This change in directionality also has implications on the decision rules. There may also be potential network-variable confounders and introduction of spurious associations (<code>metabolite &lt;- confounding metabolite -&gt; outcome</code>). The general algorithm for the outcome-side estimation is:</p>
 <pre><code>Aim: To estimate independentdirect effects between a network
@@ -215,7 +219,7 @@ classification of every Mi from M as
 </div>
 <div id="step-wise-iteration-for-full-network-estimation" class="section level3">
 <h3 class="hasAnchor">
-<a href="#step-wise-iteration-for-full-network-estimation" class="anchor" aria-hidden="true"></a>Step-wise iteration for full network estimation</h3>
+<a href="#step-wise-iteration-for-full-network-estimation" class="anchor"></a>Step-wise iteration for full network estimation</h3>
 <ol style="list-style-type: decimal">
 <li>The DAG skeleton of the metabolite network is estimated</li>
 <li>Initial, tentative links are formed with the exposure-side of the network.</li>
@@ -229,17 +233,17 @@ classification of every Mi from M as
 <!-- TODO: Put this into a bib file. --><ol style="list-style-type: decimal">
 <li><em>Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse Causal Graphs. Social Science Computer Review 1991;9:62-72.</em></li>
 </ol>
-<!-- thesis https://publishup.uni-potsdam.de/frontdoor/index/index/searchtype/collection/id/17105/start/1/rows/10/facetNumber_author_facet/all/doctypefq/doctoralthesis/docId/40459 --><p>2 <em>Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis, Peter Buehlmann (2012). Causal Inference Using Graphical Models with the R Package pcalg. Journal of Statistical Software, 47(11), 1-26. URL <a href="http://www.jstatsoft.org/v47/i11/" class="external-link uri">http://www.jstatsoft.org/v47/i11/</a>.</em></p>
+<!-- thesis https://publishup.uni-potsdam.de/frontdoor/index/index/searchtype/collection/id/17105/start/1/rows/10/facetNumber_author_facet/all/doctypefq/doctoralthesis/docId/40459 --><p>2 <em>Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis, Peter Buehlmann (2012). Causal Inference Using Graphical Models with the R Package pcalg. Journal of Statistical Software, 47(11), 1-26. URL <a href="http://www.jstatsoft.org/v47/i11/" class="uri">http://www.jstatsoft.org/v47/i11/</a>.</em></p>
 </div>
 </div>
 <div id="confidence-ranges-based-on-multi-model-procedures" class="section level2">
 <h2 class="hasAnchor">
-<a href="#confidence-ranges-based-on-multi-model-procedures" class="anchor" aria-hidden="true"></a>Confidence ranges based on multi-model procedures</h2>
+<a href="#confidence-ranges-based-on-multi-model-procedures" class="anchor"></a>Confidence ranges based on multi-model procedures</h2>
 <p>The estimated DAG skeleton … {{complete later. Not clear about this right now. (page 43 of thesis)}}</p>
 </div>
 <div id="data-pre-processing" class="section level2">
 <h2 class="hasAnchor">
-<a href="#data-pre-processing" class="anchor" aria-hidden="true"></a>Data pre-processing</h2>
+<a href="#data-pre-processing" class="anchor"></a>Data pre-processing</h2>
 <p>Metabolic variables should be log-transformed and standardized on potential confounders {{this the best way?}} by regressing on age, sex, BMI, and prevalence of hypertension and using the residual variance in further models. Metabolites were then scaled (mean of zero and standard deviation of one). {{both regressed and scaled?}}</p>
 <p>Apply transformations (log-transformation, standardization, regressing on) to the high dimensional metabolic data.</p>
 </div>
@@ -256,13 +260,11 @@ classification of every Mi from M as
 
 
       <footer><div class="copyright">
-  <p></p>
-<p>Developed by Luke Johnston, Clemens Wittenbecher.</p>
+  <p>Developed by Luke Johnston, Clemens Wittenbecher.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -270,8 +272,6 @@ classification of every Mi from M as
 
   
 
-
-  
 
   </body>
 </html>

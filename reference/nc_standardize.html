@@ -50,8 +50,6 @@ remove influence of potential confounding." />
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -63,15 +61,9 @@ remove influence of potential confounding." />
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -92,6 +84,12 @@ remove influence of potential confounding." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../articles/NetCoupler.html">Get started</a>
 </li>
 <li>
@@ -147,7 +145,7 @@ the <code><a href='https://rdrr.io/r/stats/residuals.html'>stats::residuals()</a
 remove influence of potential confounding.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>nc_standardize</span><span class='op'>(</span><span class='va'>data</span>, cols <span class='op'>=</span> <span class='fu'><a href='https://tidyselect.r-lib.org/reference/everything.html'>everything</a></span><span class='op'>(</span><span class='op'>)</span>, regressed_on <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
+    <pre class="usage"><span class='fu'>nc_standardize</span><span class='op'>(</span><span class='va'>data</span>, cols <span class='op'>=</span> <span class='fu'><a href='https://tidyselect.r-lib.org/reference/everything.html'>everything</a></span><span class='op'>(</span><span class='op'>)</span>, regressed_on <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,49 +173,47 @@ the residuals from a linear regression model.</p></td>
 variables now standardized.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'></span>
-<span class='r-in'><span class='co'># Don't regress on any variable</span></span>
-<span class='r-in'><span class='va'>simulated_data</span> <span class='op'><a href='pipe.html'>%&gt;%</a></span></span>
-<span class='r-in'>  <span class='fu'>nc_standardize</span><span class='op'>(</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>starts_with</a></span><span class='op'>(</span><span class='st'>"metabolite_"</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 2,000 x 17</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>    survival_time case_status exposure metabolite_1 metabolite_10 metabolite_11</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span>          4.41           0    0.180        0.137         0.188        -<span style='color: #BB0000;'>1.64</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span>          4.41           0   -<span style='color: #BB0000;'>0.538</span>       -<span style='color: #BB0000;'>1.54</span>          0.407         0.143</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span>          4.41           0    0.298       -<span style='color: #BB0000;'>0.731</span>        -<span style='color: #BB0000;'>1.97</span>          2.06 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span>          4.41           0    0.386        0.169         1.14          1.30 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span>          4.41           0    1.76         0.626        -<span style='color: #BB0000;'>0.244</span>         0.968</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span>          4.41           0    0.100        0.604        -<span style='color: #BB0000;'>0.670</span>         0.936</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span>          4.41           0   -<span style='color: #BB0000;'>2.11</span>        -<span style='color: #BB0000;'>2.16</span>          1.92          0.738</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span>          4.41           0   -<span style='color: #BB0000;'>0.364</span>       -<span style='color: #BB0000;'>1.54</span>         -<span style='color: #BB0000;'>1.07</span>         -<span style='color: #BB0000;'>2.42</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span>          4.41           0    0.823       -<span style='color: #BB0000;'>1.32</span>         -<span style='color: #BB0000;'>1.13</span>         -<span style='color: #BB0000;'>0.554</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span>          4.41           0    0.673        0.128         0.416         0.680</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 1,990 more rows, and 11 more variables: metabolite_12 &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   metabolite_2 &lt;dbl&gt;, metabolite_3 &lt;dbl&gt;, metabolite_4 &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   metabolite_5 &lt;dbl&gt;, metabolite_6 &lt;dbl&gt;, metabolite_7 &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   metabolite_8 &lt;dbl&gt;, metabolite_9 &lt;dbl&gt;, outcome_continuous &lt;dbl&gt;, age &lt;dbl&gt;</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># Extract residuals by regressing on a variable</span></span>
-<span class='r-in'><span class='va'>simulated_data</span> <span class='op'><a href='pipe.html'>%&gt;%</a></span></span>
-<span class='r-in'>  <span class='fu'>nc_standardize</span><span class='op'>(</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>starts_with</a></span><span class='op'>(</span><span class='st'>"metabolite_"</span><span class='op'>)</span>, <span class='st'>"age"</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 2,000 x 17</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>    survival_time case_status exposure metabolite_1 metabolite_10 metabolite_11</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span>          4.41           0    0.180       -<span style='color: #BB0000;'>0.696</span>      -<span style='color: #BB0000;'>0.694</span>         -<span style='color: #BB0000;'>1.51</span>  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span>          4.41           0   -<span style='color: #BB0000;'>0.538</span>       -<span style='color: #BB0000;'>0.498</span>       0.412          0.284 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span>          4.41           0    0.298       -<span style='color: #BB0000;'>0.404</span>      -<span style='color: #BB0000;'>0.993</span>          0.855 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span>          4.41           0    0.386       -<span style='color: #BB0000;'>0.711</span>      -<span style='color: #BB0000;'>0.279</span>         -<span style='color: #BB0000;'>0.225</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span>          4.41           0    1.76         0.736       0.346          0.892 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span>          4.41           0    0.100        0.578      -<span style='color: #BB0000;'>0.006</span><span style='color: #BB0000; text-decoration: underline;'>46</span>        0.726 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span>          4.41           0   -<span style='color: #BB0000;'>2.11</span>        -<span style='color: #BB0000;'>1.80</span>        0.077<span style='text-decoration: underline;'>7</span>        -<span style='color: #BB0000;'>0.487</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span>          4.41           0   -<span style='color: #BB0000;'>0.364</span>        0.326       0.567         -<span style='color: #BB0000;'>0.024</span><span style='color: #BB0000; text-decoration: underline;'>8</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span>          4.41           0    0.823       -<span style='color: #BB0000;'>1.18</span>       -<span style='color: #BB0000;'>1.12</span>          -<span style='color: #BB0000;'>0.837</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span>          4.41           0    0.673        0.263       0.405          0.514 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 1,990 more rows, and 11 more variables: metabolite_12 &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   metabolite_2 &lt;dbl&gt;, metabolite_3 &lt;dbl&gt;, metabolite_4 &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   metabolite_5 &lt;dbl&gt;, metabolite_6 &lt;dbl&gt;, metabolite_7 &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   metabolite_8 &lt;dbl&gt;, metabolite_9 &lt;dbl&gt;, outcome_continuous &lt;dbl&gt;, age &lt;dbl&gt;</span></span>
-</code></pre></div>
+    <pre class="examples"><div class='input'>
+<span class='co'># Don't regress on any variable</span>
+<span class='va'>simulated_data</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>nc_standardize</span><span class='op'>(</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>starts_with</a></span><span class='op'>(</span><span class='st'>"metabolite_"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2,000 x 17</span>
+#&gt;    survival_time case_status exposure metabolite_1 metabolite_10 metabolite_11
+#&gt;            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>          4.41           0    0.180        0.137         0.188        -<span style='color: #BB0000;'>1.64</span> 
+#&gt; <span style='color: #BCBCBC;'> 2</span>          4.41           0   -<span style='color: #BB0000;'>0.538</span>       -<span style='color: #BB0000;'>1.54</span>          0.407         0.143
+#&gt; <span style='color: #BCBCBC;'> 3</span>          4.41           0    0.298       -<span style='color: #BB0000;'>0.731</span>        -<span style='color: #BB0000;'>1.97</span>          2.06 
+#&gt; <span style='color: #BCBCBC;'> 4</span>          4.41           0    0.386        0.169         1.14          1.30 
+#&gt; <span style='color: #BCBCBC;'> 5</span>          4.41           0    1.76         0.626        -<span style='color: #BB0000;'>0.244</span>         0.968
+#&gt; <span style='color: #BCBCBC;'> 6</span>          4.41           0    0.100        0.604        -<span style='color: #BB0000;'>0.670</span>         0.936
+#&gt; <span style='color: #BCBCBC;'> 7</span>          4.41           0   -<span style='color: #BB0000;'>2.11</span>        -<span style='color: #BB0000;'>2.16</span>          1.92          0.738
+#&gt; <span style='color: #BCBCBC;'> 8</span>          4.41           0   -<span style='color: #BB0000;'>0.364</span>       -<span style='color: #BB0000;'>1.54</span>         -<span style='color: #BB0000;'>1.07</span>         -<span style='color: #BB0000;'>2.42</span> 
+#&gt; <span style='color: #BCBCBC;'> 9</span>          4.41           0    0.823       -<span style='color: #BB0000;'>1.32</span>         -<span style='color: #BB0000;'>1.13</span>         -<span style='color: #BB0000;'>0.554</span>
+#&gt; <span style='color: #BCBCBC;'>10</span>          4.41           0    0.673        0.128         0.416         0.680
+#&gt; <span style='color: #949494;'># … with 1,990 more rows, and 11 more variables: metabolite_12 &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   metabolite_2 &lt;dbl&gt;, metabolite_3 &lt;dbl&gt;, metabolite_4 &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   metabolite_5 &lt;dbl&gt;, metabolite_6 &lt;dbl&gt;, metabolite_7 &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   metabolite_8 &lt;dbl&gt;, metabolite_9 &lt;dbl&gt;, outcome_continuous &lt;dbl&gt;, age &lt;dbl&gt;</span></div><div class='input'>
+<span class='co'># Extract residuals by regressing on a variable</span>
+<span class='va'>simulated_data</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>nc_standardize</span><span class='op'>(</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>starts_with</a></span><span class='op'>(</span><span class='st'>"metabolite_"</span><span class='op'>)</span>, <span class='st'>"age"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2,000 x 17</span>
+#&gt;    survival_time case_status exposure metabolite_1 metabolite_10 metabolite_11
+#&gt;            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>          4.41           0    0.180       -<span style='color: #BB0000;'>0.696</span>      -<span style='color: #BB0000;'>0.694</span>         -<span style='color: #BB0000;'>1.51</span>  
+#&gt; <span style='color: #BCBCBC;'> 2</span>          4.41           0   -<span style='color: #BB0000;'>0.538</span>       -<span style='color: #BB0000;'>0.498</span>       0.412          0.284 
+#&gt; <span style='color: #BCBCBC;'> 3</span>          4.41           0    0.298       -<span style='color: #BB0000;'>0.404</span>      -<span style='color: #BB0000;'>0.993</span>          0.855 
+#&gt; <span style='color: #BCBCBC;'> 4</span>          4.41           0    0.386       -<span style='color: #BB0000;'>0.711</span>      -<span style='color: #BB0000;'>0.279</span>         -<span style='color: #BB0000;'>0.225</span> 
+#&gt; <span style='color: #BCBCBC;'> 5</span>          4.41           0    1.76         0.736       0.346          0.892 
+#&gt; <span style='color: #BCBCBC;'> 6</span>          4.41           0    0.100        0.578      -<span style='color: #BB0000;'>0.006</span><span style='color: #BB0000; text-decoration: underline;'>46</span>        0.726 
+#&gt; <span style='color: #BCBCBC;'> 7</span>          4.41           0   -<span style='color: #BB0000;'>2.11</span>        -<span style='color: #BB0000;'>1.80</span>        0.077<span style='text-decoration: underline;'>7</span>        -<span style='color: #BB0000;'>0.487</span> 
+#&gt; <span style='color: #BCBCBC;'> 8</span>          4.41           0   -<span style='color: #BB0000;'>0.364</span>        0.326       0.567         -<span style='color: #BB0000;'>0.024</span><span style='color: #BB0000; text-decoration: underline;'>8</span>
+#&gt; <span style='color: #BCBCBC;'> 9</span>          4.41           0    0.823       -<span style='color: #BB0000;'>1.18</span>       -<span style='color: #BB0000;'>1.12</span>          -<span style='color: #BB0000;'>0.837</span> 
+#&gt; <span style='color: #BCBCBC;'>10</span>          4.41           0    0.673        0.263       0.405          0.514 
+#&gt; <span style='color: #949494;'># … with 1,990 more rows, and 11 more variables: metabolite_12 &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   metabolite_2 &lt;dbl&gt;, metabolite_3 &lt;dbl&gt;, metabolite_4 &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   metabolite_5 &lt;dbl&gt;, metabolite_6 &lt;dbl&gt;, metabolite_7 &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   metabolite_8 &lt;dbl&gt;, metabolite_9 &lt;dbl&gt;, outcome_continuous &lt;dbl&gt;, age &lt;dbl&gt;</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -229,11 +225,11 @@ variables now standardized.</p>
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Luke Johnston, Clemens Wittenbecher.</p></p>
+  <p>Developed by Luke Johnston, Clemens Wittenbecher.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -241,8 +237,6 @@ variables now standardized.</p>
 
   
 
-
-  
 
   </body>
 </html>
