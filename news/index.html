@@ -44,6 +44,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -55,9 +57,15 @@
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -78,12 +86,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/NetCoupler.html">Get started</a>
 </li>
 <li>
@@ -131,111 +133,91 @@
 
     <div id="netcoupler-development-version" class="section level1">
 <h1 class="page-header" data-toc-text="development version">
-<a href="#netcoupler-development-version" class="anchor"></a>NetCoupler (development version)</h1>
+<a href="#netcoupler-development-version" class="anchor" aria-hidden="true"></a>NetCoupler (development version)</h1>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features" class="anchor"></a>New features</h2>
-<ul>
-<li>Added two plotting functions for the model estimation side of things: <code><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_exposure_estimation()</a></code> and <code><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_outcome_estimation()</a></code>
+<a href="#new-features" class="anchor" aria-hidden="true"></a>New features</h2>
+<ul><li>Added two plotting functions for the model estimation side of things: <code><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_exposure_estimation()</a></code> and <code><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_outcome_estimation()</a></code>
 </li>
 <li>Added ability to parallelize code with furrr (<a href='https://github.com/NetCoupler/NetCoupler/issues/141'>#141</a>)</li>
 <li>Added a continuous outcome variable to simulated data that also links in with the DAG so that the linkage is more obvious (<a href='https://github.com/NetCoupler/NetCoupler/issues/97'>#97</a>)</li>
 <li>Added function to create an edge table (<a href='https://github.com/NetCoupler/NetCoupler/issues/117'>#117</a>)</li>
 <li>Incorporate tidyselect helpers into functions for selection of variables (<a href='https://github.com/NetCoupler/NetCoupler/issues/62'>#62</a>)</li>
 <li>Added Getting Started vignette as well as a more detailed article on the implementation of NetCoupler (<a href='https://github.com/NetCoupler/NetCoupler/issues/70'>#70</a>)</li>
-</ul>
-</div>
+</ul></div>
 <div id="removed-features" class="section level2">
 <h2 class="hasAnchor">
-<a href="#removed-features" class="anchor"></a>Removed features</h2>
-<ul>
-<li>Removed <code>nc_classify_effects()</code> and <code>nc_filter_estimates()</code>, merged them into the two main estimation functions instead</li>
+<a href="#removed-features" class="anchor" aria-hidden="true"></a>Removed features</h2>
+<ul><li>Removed <code>nc_classify_effects()</code> and <code>nc_filter_estimates()</code>, merged them into the two main estimation functions instead</li>
 <li>Model summary statistics for <code>lm</code> and <code>glm</code> models were removed for improving computing speed (they slowed things down quite a bit)</li>
-</ul>
-</div>
+</ul></div>
 <div id="internal-changes" class="section level2">
 <h2 class="hasAnchor">
-<a href="#internal-changes" class="anchor"></a>Internal changes</h2>
-<ul>
-<li>Use standard GitHub Actions and remove AppVeyor.</li>
-<li>Tidied up the unit tests to run faster</li>
+<a href="#internal-changes" class="anchor" aria-hidden="true"></a>Internal changes</h2>
+<ul><li>Tidied up the unit tests to run faster</li>
 <li>Removed duplicate or extra roxygen examples and instead referenced a common source with <code>@seealso</code>
 </li>
-<li>Removed survival dependency.</li>
-<li>Switch to using main instead of master branch.</li>
-</ul>
-</div>
+<li>Removed survival dependency</li>
+</ul></div>
 </div>
     <div id="netcoupler-004" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.4">
-<a href="#netcoupler-004" class="anchor"></a>NetCoupler 0.0.4</h1>
+<a href="#netcoupler-004" class="anchor" aria-hidden="true"></a>NetCoupler 0.0.4</h1>
 <div id="added-features" class="section level2">
 <h2 class="hasAnchor">
-<a href="#added-features" class="anchor"></a>Added features</h2>
-<ul>
-<li>For <code>lm</code> and <code>glm</code> models, model summary statistics are added (<a href='https://github.com/NetCoupler/NetCoupler/issues/88'>#88</a>).</li>
+<a href="#added-features" class="anchor" aria-hidden="true"></a>Added features</h2>
+<ul><li>For <code>lm</code> and <code>glm</code> models, model summary statistics are added (<a href='https://github.com/NetCoupler/NetCoupler/issues/88'>#88</a>).</li>
 <li>Add a function to classify the direct effects between outcome or exposure and the network (<a href='https://github.com/NetCoupler/NetCoupler/issues/98'>#98</a>).</li>
 <li>Add function to plot network graph: <code><a href="../reference/nc_plot_network.html">nc_plot_network()</a></code> (<a href='https://github.com/NetCoupler/NetCoupler/issues/89'>#89</a>, <a href='https://github.com/NetCoupler/NetCoupler/issues/110'>#110</a>).</li>
 <li>Added helper functions <code>nc_adjacency_graph()</code>, <code>nc_adjacency_matrix()</code>, and <code>nc_partial_corr_matrix()</code> to help create the weights for the network plot. (Issue <a href='https://github.com/NetCoupler/NetCoupler/issues/80'>#80</a>, PR <a href='https://github.com/NetCoupler/NetCoupler/issues/89'>#89</a>).</li>
 <li>Removed soft deprecated functions. Using MuMIn over glmulti doesn’t change the results too much, see <a href='https://github.com/NetCoupler/NetCoupler/issues/60'>#60</a> for details (<a href='https://github.com/NetCoupler/NetCoupler/issues/83'>#83</a>).</li>
 <li>Removed stringr dependency (<a href='https://github.com/NetCoupler/NetCoupler/issues/65'>#65</a>, <a href='https://github.com/NetCoupler/NetCoupler/issues/83'>#83</a>).</li>
-</ul>
-</div>
+</ul></div>
 <div id="fixed-bugs-and-other-problems" class="section level2">
 <h2 class="hasAnchor">
-<a href="#fixed-bugs-and-other-problems" class="anchor"></a>Fixed bugs and other problems</h2>
-<ul>
-<li>Fix bug where too many digits caused a problem for <code>pcor()</code> (<a href='https://github.com/NetCoupler/NetCoupler/issues/125'>#125</a>, <a href='https://github.com/NetCoupler/NetCoupler/issues/131'>#131</a>).</li>
+<a href="#fixed-bugs-and-other-problems" class="anchor" aria-hidden="true"></a>Fixed bugs and other problems</h2>
+<ul><li>Fix bug where too many digits caused a problem for <code>pcor()</code> (<a href='https://github.com/NetCoupler/NetCoupler/issues/125'>#125</a>, <a href='https://github.com/NetCoupler/NetCoupler/issues/131'>#131</a>).</li>
 <li>Fix bug that didn’t properly filter variables nor identify neighbour nodes in <code>nc_filter_estimates()</code> (<a href='https://github.com/NetCoupler/NetCoupler/issues/109'>#109</a>).</li>
 <li>Fix problem with <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code> that prevented the ability to use the <code>.regressed_on</code>. argument to extract residuals (<a href='https://github.com/NetCoupler/NetCoupler/issues/108'>#108</a>).</li>
 <li>Input dataset can include missingness. Input data is treated as complete case for only the variables used in the modelling (<a href='https://github.com/NetCoupler/NetCoupler/issues/88'>#88</a>).</li>
-</ul>
-</div>
+</ul></div>
 <div id="internal-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#internal-changes-1" class="anchor"></a>Internal changes</h2>
-<ul>
-<li>Rewrote underlying model estimation algorithm so it doesn’t use MuMIn and so there is one unified function for both outcome and exposure side estimation (<a href='https://github.com/NetCoupler/NetCoupler/issues/101'>#101</a>)</li>
-</ul>
-</div>
+<a href="#internal-changes-1" class="anchor" aria-hidden="true"></a>Internal changes</h2>
+<ul><li>Rewrote underlying model estimation algorithm so it doesn’t use MuMIn and so there is one unified function for both outcome and exposure side estimation (<a href='https://github.com/NetCoupler/NetCoupler/issues/101'>#101</a>)</li>
+</ul></div>
 </div>
     <div id="netcoupler-0039000" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.3.9000">
-<a href="#netcoupler-0039000" class="anchor"></a>NetCoupler 0.0.3.9000</h1>
-<ul>
-<li>Add <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code> function to standardize the metabolic variables (<a href='https://github.com/NetCoupler/NetCoupler/issues/73'>#73</a>).</li>
-<li>Export tidyselect functions like <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches()</a></code> or <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with()</a></code> (<a href='https://github.com/NetCoupler/NetCoupler/issues/73'>#73</a>).</li>
+<a href="#netcoupler-0039000" class="anchor" aria-hidden="true"></a>NetCoupler 0.0.3.9000</h1>
+<ul><li>Add <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code> function to standardize the metabolic variables (<a href='https://github.com/NetCoupler/NetCoupler/issues/73'>#73</a>).</li>
+<li>Export tidyselect functions like <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches()</a></code> or <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with()</a></code> (<a href='https://github.com/NetCoupler/NetCoupler/issues/73'>#73</a>).</li>
 <li>Add CONTRIBUTING guidelines (<a href='https://github.com/NetCoupler/NetCoupler/issues/56'>#56</a>).</li>
 <li>Add lifecycle badges to functions, soft deprecating <code>net_coupler_out()</code>, <code>getExp.coef.permetabolite()</code>, and <code>getExp.coef.out()</code> (<a href='https://github.com/NetCoupler/NetCoupler/issues/59'>#59</a>)</li>
 <li>Add defensive checks to input arguments with assertive.types (<a href='https://github.com/NetCoupler/NetCoupler/issues/59'>#59</a>).</li>
 <li>Add AppVeyor to repo. Started Travis to run on repo (<a href='https://github.com/NetCoupler/NetCoupler/issues/61'>#61</a>).</li>
 <li>Added function for exposure side estimation: <code>nc_exposure_estimates()</code>
 </li>
-</ul>
-</div>
+</ul></div>
     <div id="netcoupler-0029000" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.2.9000">
-<a href="#netcoupler-0029000" class="anchor"></a>NetCoupler 0.0.2.9000</h1>
-<ul>
-<li>Major revision of underlying code for generating the outcome-network link estimation (<a href='https://github.com/NetCoupler/NetCoupler/issues/55'>#55</a>), resulting in created and streamlined <code>nc_outcome_estimates()</code> function. Because of this streamlining, the code is much faster and with the move to use MuMIn we can remove our dependency on rJava via glmulti.</li>
+<a href="#netcoupler-0029000" class="anchor" aria-hidden="true"></a>NetCoupler 0.0.2.9000</h1>
+<ul><li>Major revision of underlying code for generating the outcome-network link estimation (<a href='https://github.com/NetCoupler/NetCoupler/issues/55'>#55</a>), resulting in created and streamlined <code>nc_outcome_estimates()</code> function. Because of this streamlining, the code is much faster and with the move to use MuMIn we can remove our dependency on rJava via glmulti.</li>
 <li>Tidied up <code>nc_create_network()</code> function so that only the graph skeleton is output (<a href='https://github.com/NetCoupler/NetCoupler/issues/55'>#55</a>).</li>
 <li>Started cleaning up, along with leftover files.</li>
 <li>Updated and generated documentation of <code>nc_create_network()</code>.</li>
 <li>Added unit tests for <code>nc_create_network()</code> and the outcome estimation functions. Travis and code coverage were added as well.</li>
 <li>Renamed <code>nc_make_network()</code> to <code>nc_create_network()</code> and moved into own file.</li>
 <li>Modularized <code>nc_make_network()</code> code and moved into another file.</li>
-</ul>
-</div>
+</ul></div>
     <div id="netcoupler-0019000" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.1.9000">
-<a href="#netcoupler-0019000" class="anchor"></a>NetCoupler 0.0.1.9000</h1>
-<ul>
-<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
+<a href="#netcoupler-0019000" class="anchor" aria-hidden="true"></a>NetCoupler 0.0.1.9000</h1>
+<ul><li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
 <li>Added package infrastructure</li>
 <li>Added initial code that other projects use</li>
 <li>Added basic introduction vignette</li>
-</ul>
-</div>
+</ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -249,11 +231,11 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Luke Johnston, Clemens Wittenbecher.</p>
+  <p><p>Developed by Luke Johnston, Clemens Wittenbecher.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -261,6 +243,8 @@
 
   
 
+
+  
 
   </body>
 </html>
