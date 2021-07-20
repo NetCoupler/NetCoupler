@@ -99,67 +99,6 @@ as_edge_tbl.pcAlgo <- function(network_object) {
     return(edge_table)
 }
 
-#' Compute the adjacency matrix of the graph with the data.
-#'
-#' @description
-#' \lifecycle{experimental}
-#'
-#' @inheritParams nc_plot_network
-#'
-#' @return Outputs an `igraph` object from [igraph::graph_from_adjacency_matrix()].
-#' @keywords internal
-#'
-compute_adjacency_graph <- function(data, edge_tbl) {
-    # TODO: This may change underlying graph connections, check into this.
-    weighted_adjacency_matrix <- compute_adjacency_matrix(edge_tbl) *
-        round(compute_partial_corr_matrix(data), digits = 3)
-
-    igraph::graph_from_adjacency_matrix(
-        as.matrix(weighted_adjacency_matrix),
-        weighted = TRUE,
-        mode = "undirected"
-    )
-}
-
-#' Extract adjacency matrix from a DAG skeleton.
-#'
-#' @description
-#' \lifecycle{experimental}
-#'
-#' Is generally a wrapper around calls to [igraph::as_adjacency_matrix()] and
-#' [igraph::graph_from_graphnel()]. Transforms from a GraphNEL object in igraph.
-#'
-#' @param dag_skeleton The PC DAG skeleton object.
-#'
-#' @return Outputs an adjacency matrix of the DAG skeleton.
-#' @keywords internal
-#'
-compute_adjacency_matrix <- function(dag_skeleton) {
-    # TODO: Include a check here that it is a DAG skeleton..?
-    from_skeleton <- igraph::graph_from_graphnel(dag_skeleton@graph)
-    igraph::as_adjacency_matrix(from_skeleton)
-}
-
-#' Estimate Pearson's partial correlation coefficients.
-#'
-#' @description
-#' \lifecycle{experimental}
-#'
-#' This function is a wrapper around [ppcor::pcor()] that extracts correlation
-#' coefficient estimates, then adds the variable names to the column and row names.
-#'
-#' @param data Input data of metabolic variables as matrix or data.frame.
-#'
-#' @return Outputs a matrix of partial correlation coefficients.
-#' @keywords internal
-#'
-compute_partial_corr_matrix <- function(data) {
-    pcor_matrix <- ppcor::pcor(data)$estimate
-    colnames(pcor_matrix) <- colnames(data)
-    rownames(pcor_matrix) <- colnames(data)
-    return(pcor_matrix)
-}
-
 #' Estimate the undirected graph of the metabolic data.
 #'
 #' @description
@@ -246,3 +185,65 @@ discard_unconnected_nodes <- function(data_graph) {
     data_graph %>%
         tidygraph::activate("nodes") %>%
         dplyr::filter(dplyr::row_number() %in% connected_nodes)
+}
+
+#' Compute the adjacency matrix of the graph with the data.
+#'
+#' @description
+#' \lifecycle{experimental}
+#'
+#' @inheritParams nc_plot_network
+#'
+#' @return Outputs an `igraph` object from [igraph::graph_from_adjacency_matrix()].
+#' @keywords internal
+#'
+compute_adjacency_graph <- function(data, edge_tbl) {
+    # TODO: This may change underlying graph connections, check into this.
+    weighted_adjacency_matrix <- compute_adjacency_matrix(edge_tbl) *
+        round(compute_partial_corr_matrix(data), digits = 3)
+
+    igraph::graph_from_adjacency_matrix(
+        as.matrix(weighted_adjacency_matrix),
+        weighted = TRUE,
+        mode = "undirected"
+    )
+}
+
+#' Extract adjacency matrix from a DAG skeleton.
+#'
+#' @description
+#' \lifecycle{experimental}
+#'
+#' Is generally a wrapper around calls to [igraph::as_adjacency_matrix()] and
+#' [igraph::graph_from_graphnel()]. Transforms from a GraphNEL object in igraph.
+#'
+#' @param dag_skeleton The PC DAG skeleton object.
+#'
+#' @return Outputs an adjacency matrix of the DAG skeleton.
+#' @keywords internal
+#'
+compute_adjacency_matrix <- function(dag_skeleton) {
+    # TODO: Include a check here that it is a DAG skeleton..?
+    from_skeleton <- igraph::graph_from_graphnel(dag_skeleton@graph)
+    igraph::as_adjacency_matrix(from_skeleton)
+}
+
+#' Estimate Pearson's partial correlation coefficients.
+#'
+#' @description
+#' \lifecycle{experimental}
+#'
+#' This function is a wrapper around [ppcor::pcor()] that extracts correlation
+#' coefficient estimates, then adds the variable names to the column and row names.
+#'
+#' @param data Input data of metabolic variables as matrix or data.frame.
+#'
+#' @return Outputs a matrix of partial correlation coefficients.
+#' @keywords internal
+#'
+compute_partial_corr_matrix <- function(data) {
+    pcor_matrix <- ppcor::pcor(data)$estimate
+    colnames(pcor_matrix) <- colnames(data)
+    rownames(pcor_matrix) <- colnames(data)
+    return(pcor_matrix)
+}
