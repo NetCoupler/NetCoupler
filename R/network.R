@@ -160,36 +160,6 @@ compute_partial_corr_matrix <- function(data) {
     return(pcor_matrix)
 }
 
-# TODO: Don't know what this does or is for.
-#' Estimate equivalence class of DAG from the PC algorithm.
-#'
-#' Is mostly a wrapper around [pcalg::pc()]. Estimates an order-independent
-#' skeleton.
-#'
-#' @param data Input data, samples by metabolite matrix or as data.frame.
-#' @param alpha Significance level threshold applied to each test.
-#'
-#' @return Outputs a `pcAlgo` object.
-#' @keywords internal
-#'
-pc_dag_estimates <- function(data, alpha = 0.01) {
-    number_samples <- nrow(data)
-    metabolite_names <- colnames(data)
-
-    pcalg::pc(
-        suffStat = list(C = stats::cor(data), n = number_samples),
-        indepTest = pcalg::gaussCItest,
-        labels = metabolite_names,
-        skel.method = "stable",
-        alpha = alpha,
-        fixedGaps = NULL,
-        fixedEdges = NULL,
-        verbose = FALSE,
-        maj.rule = FALSE,
-        solve.confl = FALSE
-    )
-}
-
 #' Estimate the undirected graph of the metabolic data.
 #'
 #' @description
