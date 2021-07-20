@@ -190,24 +190,38 @@ pc_dag_estimates <- function(data, alpha = 0.01) {
     )
 }
 
-#' Estimate order-independent PC-stable skeleton of a DAG.
+#' Estimate the undirected graph of the metabolic data.
 #'
 #' Uses the PC-algorithm and is mostly a wrapper around [pcalg::skeleton()].
+#' This function estimates the "skeleton of a DAG", meaning a graph without
+#' arrowheads, aka an undirected graph.
+#' The default estimation method used is the "PC-stable" method, which estimates
+#' the *order-independent* skeleton of the DAG, meaning the order of the
+#' variables given does not impact the results (older versions of the algorithm
+#' were order-dependent). The method also assumes no latent variables.
 #'
-#' @param data Input metabolic data.
-#' @param alpha Significance level threshold applied to each test.
+#' An edge is determined by testing for conditional dependence between two
+#' nodes based on the [pcalg::gaussCItest()]. Conditional *independence* exists
+#' when the nodes have zero partial correlation determined from a p-value based
+#' hypothesis test against the correlation matrix of the data from the nodes.
+#' The estimated edges exists between the *start* and *end* nodes when the
+#' *start* and *end* variables are conditionally dependent given the subset of
+#' remaining variables.
 #'
-#' @return A DAG skeleton object.
+#' @param data Input numeric data.
+#' @param alpha Significance level threshold applied to each test to determine
+#'   conditional dependence.
+#'
+#' @return A `pcAlgo` object that contains the DAG skeleton, aka undirected graph.
 #' @keywords internal
+#' @seealso The help documentation of [pcalg::skeleton()] has more details.
 #'
-pc_skeleton_estimates <- function(data, alpha = 0.01) {
+pc_estimate_undirected_graph <- function(data, alpha = 0.01) {
     number_samples <- nrow(data)
     metabolite_names <- colnames(data)
 
-    # TODO: Confirm that this does this.
     pcalg::skeleton(
         suffStat = list(C = stats::cor(data, use = "complete.obs"), n = number_samples),
-        # Test conditional independence of Gaussians via Fisher's Z
         indepTest = pcalg::gaussCItest,
         labels = metabolite_names,
         method = "stable",
