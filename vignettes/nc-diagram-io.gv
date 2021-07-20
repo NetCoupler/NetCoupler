@@ -1,0 +1,50 @@
+digraph {
+    graph [ranksep = 0.3 splines = ortho overlap = true]
+
+    node [group = a shape = box style = filled fillcolor = whitesmoke]
+    df_data [label = 'Dataframe:\l- Metabolites\l- Outcome/Exposure\l']
+    df_std [label = 'Dataframe:\l- Standardized Metabolites\l- Standardized Outcome/Exposure\l']
+    df_edge [label = 'Edge table:\l- Nodes\l- Edges\l- Weights\l']
+    df_out_results [label = 'Dataframe:\l- Outcome\l- Nodes\l- Estimates\l- Effects\l']
+    df_exp_results [label = 'Dataframe:\l- Exposure\l- Nodes\l- Estimates\l- Effects\l']
+    df_joint [label = 'Dataframe:\l- Nodes\l- Edges\l- Weights/Estimates\l- Effects\l']
+
+    node [group = '' shape = box style = filled fillcolor = slategray2]
+    fn_std [label = 'nc_standardize()']
+    fn_net [label = 'nc_estimate_network()']
+    fn_out_links [label = 'nc_estimate_outcome_links()']
+    fn_exp_links [label = 'nc_estimate_exposure_links()']
+
+    node [group = '' shape = box style = filled fillcolor = salmon1]
+    fn_join [label = 'nc_join_links()']
+    fn_plot_network [label = 'nc_plot_network()']
+    fn_plot_links [label = 'nc_plot_links()']
+
+    subgraph {
+        rank = same
+        fn_net; fn_std
+    }
+
+    subgraph {
+        rank = same
+        df_edge; df_std
+    }
+
+    subgraph {
+        rank = same
+        fn_out_links; fn_exp_links
+    }
+
+    subgraph {
+        rank = same
+        fn_plot_network; fn_plot_links
+    }
+
+    df_data -> fn_std -> df_std -> {fn_out_links  fn_exp_links}
+    fn_out_links -> df_out_results
+    fn_exp_links -> df_exp_results
+    fn_std -> fn_net -> df_edge -> {fn_out_links fn_exp_links}
+    df_edge -> fn_plot_network
+    {df_exp_results df_out_results} -> fn_join -> df_joint
+    {df_exp_results df_out_results df_joint} -> fn_plot_links
+}

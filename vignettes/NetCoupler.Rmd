@@ -53,15 +53,15 @@ NetCoupler has several frameworks in mind:
 - Works with [tidyselect](https://tidyselect.r-lib.org/) helpers (e.g.
 `starts_with()`, `contains()`).
 - Is auto-complete friendly (e.g. start function names with `nc_`).
-- Inputs and outputs of functions are in general
+- Inputs and outputs of functions are
 [tibbles](https://tibble.tidyverse.org/)/dataframes or [tidygraph tibbles](https://tidygraph.data-imaginist.com/).
 - Generic modeling approach by using model and settings as function argument
 inputs.
 
 ## Workflow
 
-The general workflow for using NetCoupler revolves around the five main
-functions:
+The general workflow for using NetCoupler revolves around several main
+functions, listed below as well as visualized in the figure below:
 
 - `nc_standardize()`: The algorithm in general, but especially the network
 estimation method, is sensitive to the values and distribution of the variables.
@@ -71,16 +71,19 @@ transforming them are important to making sure more accurate estimations.
 as a undirected graph based on dependencies between variables. This network is
 used to identify metabolic variables that are connected to each other as
 neighbours.
-- `nc_plot_network()`: Visualize the connections estimated from
-`nc_estimate_network()`.
 - `nc_estimate_exposure_links()` and `nc_estimate_outcome_links()`: Uses the
 standardized data and the estimated network to classify the conditionally
 independent relationship between each metabolic variable and an external
 variable (e.g. an outcome or an exposure) as either being a direct, ambiguous,
 or no effect relationship.
-- `nc_plot_links()`: Plots the results from the
-`nc_estimate_exposure_links()` or 
-`nc_estimate_outcome_links()`.
+- `nc_join_links()`: **Not implemented yet.** Join together the exposure- and outcome-side estimated links.
+- `nc_plot_network()`: **Not implemented yet.** Visualize the connections estimated from
+`nc_estimate_network()`.
+- `nc_plot_links()`: **Not implemented yet.** Plots the output results from
+either `nc_estimate_exposure_links()`, `nc_estimate_outcome_links()`, or
+`nc_join_links()`.
+
+![NetCoupler functions and their input and ouput. Input and output objects are the light gray boxes, while the light blue boxes are the currently available functions, and the light orange boxes are functions planned to be developed.](nc-diagram-io.png)
 
 ## Simple example
 
