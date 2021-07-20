@@ -192,7 +192,10 @@ pc_dag_estimates <- function(data, alpha = 0.01) {
 
 #' Estimate the undirected graph of the metabolic data.
 #'
+#' @description
 #' Uses the PC-algorithm and is mostly a wrapper around [pcalg::skeleton()].
+#'
+#' @details
 #' This function estimates the "skeleton of a DAG", meaning a graph without
 #' arrowheads, aka an undirected graph.
 #' The default estimation method used is the "PC-stable" method, which estimates
@@ -208,9 +211,9 @@ pc_dag_estimates <- function(data, alpha = 0.01) {
 #' *start* and *end* variables are conditionally dependent given the subset of
 #' remaining variables.
 #'
-#' @param data Input numeric data.
+#' @param data Input numeric data that forms the basis of the underlying graph.
 #' @param alpha Significance level threshold applied to each test to determine
-#'   conditional dependence.
+#'   conditional dependence for if an edge exists.
 #'
 #' @return A `pcAlgo` object that contains the DAG skeleton, aka undirected graph.
 #' @keywords internal
