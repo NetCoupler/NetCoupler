@@ -210,3 +210,39 @@ pc_estimate_undirected_graph <- function(data, alpha = 0.01) {
 single_network_to_tbl <- function(edges, nodes) {
     tibble(target_node = nodes[edges$edges])
 }
+
+nc_tbl_adjacency_graph <- function(data, edge_tbl) {
+    data %>%
+        create_tbl_network_graph(edge_tbl) %>%
+        discard_unconnected_nodes()
+}
+
+create_tbl_network_graph <- function(data, edge_tbl) {
+    data %>%
+        select(all_of(names(edge_tbl@graph@edgeL))) %>%
+        compute_adjacency_graph(edge_tbl = edge_tbl) %>%
+        tidygraph::as_tbl_graph()
+}
+
+define_edge_label <- function(data_graph, edge_label_threshold = 0.2) {
+    data_graph %>%
+        mutate(edge_label =
+                   if_else(
+                       abs(.data$weight) > edge_label_threshold,
+                       as.character(round(.data$weight, 2)),
+                       ""
+                   ))
+}
+
+    # node_with_edges <- edge_tbl@graph@edgeL %>%
+    #     purrr::discard(~length(.x) == 0)
+
+discard_unconnected_nodes <- function(data_graph) {
+    data_graph <- tidygraph::activate(data_graph, "edges")
+    edge_from <- dplyr::pull(data_graph, .data$from)
+    edge_to <- dplyr::pull(data_graph, .data$to)
+    connected_nodes <- unique(c(edge_from, edge_to))
+
+    data_graph %>%
+        tidygraph::activate("nodes") %>%
+        dplyr::filter(dplyr::row_number() %in% connected_nodes)
