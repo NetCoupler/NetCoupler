@@ -83,7 +83,7 @@ as_edge_tbl.data.frame <- function(network_object) {
 
 #' @export
 as_edge_tbl.default <- function(network_object) {
-    rlang::abort("The `network_object` object is not from the pcalgo package. We currently do not have support for other network packages.")
+    rlang::abort("The `network_object` object is not from the pcalg package. We currently do not have support for other network packages.")
 }
 
 #' @export
