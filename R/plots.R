@@ -170,6 +170,19 @@ nc_plot_exposure_estimation <- function(data,
 
 # Helpers -----------------------------------------------------------------
 
+define_edge_label <- function(data_graph, edge_label_threshold = 0.2) {
+    data_graph %>%
+        mutate(edge_label =
+                   if_else(
+                       abs(.data$weight) > edge_label_threshold,
+                       as.character(round(.data$weight, 2)),
+                       ""
+                   ))
+}
+
+    # node_with_edges <- edge_tbl@graph@edgeL %>%
+    #     purrr::discard(~length(.x) == 0)
+
 convert_model_data_to_model_edges <- function(data, ext_var) {
     data %>%
         dplyr::arrange(.data$index_node) %>%

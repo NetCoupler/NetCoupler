@@ -163,19 +163,6 @@ create_tbl_network_graph <- function(data, edge_tbl) {
         tidygraph::as_tbl_graph()
 }
 
-define_edge_label <- function(data_graph, edge_label_threshold = 0.2) {
-    data_graph %>%
-        mutate(edge_label =
-                   if_else(
-                       abs(.data$weight) > edge_label_threshold,
-                       as.character(round(.data$weight, 2)),
-                       ""
-                   ))
-}
-
-    # node_with_edges <- edge_tbl@graph@edgeL %>%
-    #     purrr::discard(~length(.x) == 0)
-
 discard_unconnected_nodes <- function(data_graph) {
     data_graph <- tidygraph::activate(data_graph, "edges")
     edge_from <- dplyr::pull(data_graph, .data$from)
