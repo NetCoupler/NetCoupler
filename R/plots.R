@@ -1,3 +1,4 @@
+# TODO: Incomplete.
 #' Plot of the network of the metabolic variables.
 #'
 #' @description
@@ -13,7 +14,7 @@
 #'   [stringr::str_replace()].
 #'
 #' @return Outputs a `ggplot2` object of the metabolic network.
-#' @export
+#' @noRd
 #'
 #' @seealso See [nc_estimate_links] for examples on using NetCoupler.
 #'
@@ -137,7 +138,7 @@ plot_external_var <-
 #'
 #' @return a [ggplot2][ggplot2::ggplot2-package] object showing the model
 #'   estimation results linked with the network graph.
-#' @export
+#' @noRd
 #'
 nc_plot_outcome_estimation <- function(data,
                                        edge_tbl,
@@ -154,7 +155,6 @@ nc_plot_outcome_estimation <- function(data,
 }
 
 #' @describeIn nc_plot_outcome_estimation Plots the exposure side estimation.
-#' @export
 nc_plot_exposure_estimation <- function(data,
                                         edge_tbl,
                                         data_model,
