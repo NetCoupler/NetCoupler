@@ -125,16 +125,16 @@ metabolite_network <- std_metabolic_data %>%
     nc_estimate_network(starts_with("metabolite"))
 ```
 
-To see what the network looks like,
-use the function `nc_plot_network()`.
+<!-- To see what the network looks like, -->
+<!-- use the function `nc_plot_network()`. -->
 
-```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5}
-std_metabolic_data %>%
-    nc_plot_network(metabolite_network)
-```
+<!-- ```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5} -->
+<!-- std_metabolic_data %>% -->
+<!--     nc_plot_network(metabolite_network) -->
+<!-- ``` -->
 
-While the plot is a bit crowded, it at least provides a base to start tidying up
-from.
+<!-- While the plot is a bit crowded, it at least provides a base to start tidying up -->
+<!-- from. -->
 
 ### Estimating exposure and outcome-side connections
 
@@ -196,30 +196,30 @@ outcome_estimates <- standardized_data %>%
     )
 ```
 
-### Plotting 
+<!-- ### Plotting  -->
 
-To visualize the results of the linked network graph and the effect
-classification, there are two functions to show the exposure and the outcome
-plots. In general, these plot functions are currently mostly for exploratory
-purposes and are too "busy" and crowded to be meaningful for presentation or
-publication. However, these are good starting points for making prettier,
-more legible plots.
+<!-- To visualize the results of the linked network graph and the effect -->
+<!-- classification, there are two functions to show the exposure and the outcome -->
+<!-- plots. In general, these plot functions are currently mostly for exploratory -->
+<!-- purposes and are too "busy" and crowded to be meaningful for presentation or -->
+<!-- publication. However, these are good starting points for making prettier, -->
+<!-- more legible plots. -->
 
-```{r plot-outcome-estimation-networks, fig.width=7, fig.height=6}
-nc_plot_outcome_estimation(
-    standardized_data,
-    metabolite_network,
-    outcome_estimates
-)
-```
+<!-- ```{r plot-outcome-estimation-networks, fig.width=7, fig.height=6} -->
+<!-- nc_plot_outcome_estimation( -->
+<!--     standardized_data, -->
+<!--     metabolite_network, -->
+<!--     outcome_estimates -->
+<!-- ) -->
+<!-- ``` -->
 
-```{r plot-exposure-estimation-networks, fig.width=7, fig.height=6}
-nc_plot_exposure_estimation(
-    standardized_data,
-    metabolite_network,
-    exposure_estimates
-)
-```
+<!-- ```{r plot-exposure-estimation-networks, fig.width=7, fig.height=6} -->
+<!-- nc_plot_exposure_estimation( -->
+<!--     standardized_data, -->
+<!--     metabolite_network, -->
+<!--     exposure_estimates -->
+<!-- ) -->
+<!-- ``` -->
 
 <!-- ## Slow code? Use parallel processing with future -->
 
