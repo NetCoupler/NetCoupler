@@ -149,32 +149,34 @@ compute_model_estimates <-
              external_side = c("exposure", "outcome")) {
 
     # TODO: Use tidy eval style input for variables.
-    assert_is_data.frame(data)
-    assert_is_data.frame(edge_tbl)
-    assert_is_a_string(external_var)
+    assert_data_frame(data)
+    assert_data_frame(edge_tbl)
+    assert_character(external_var)
     # TODO: This check needs to be better constructed
     if (!any(is.na(adjustment_vars)))
-        assert_is_character(adjustment_vars)
+        assert_character(adjustment_vars)
     if (!is.null(model_arg_list))
-        assert_is_list(model_arg_list)
-    assert_is_logical(exponentiate)
-    assert_is_function(model_function)
+        assert_list(model_arg_list)
+    assert_logical(exponentiate)
+    assert_function(model_function)
 
     network_combinations <- generate_all_network_combinations(edge_tbl)
 
     external_side <- rlang::arg_match(external_side)
-    formula_list <- generate_formula_list(
+    # TODO: Change to not create formulas as environments (they take up a lot of space)
+    formula_df <- generate_formula_df(
         network_object_tbl = network_combinations,
         ext_var = external_var,
         ext_side = external_side,
         adj_vars = adjustment_vars
     )
 
-    # TODO: This could be revised to not use formula list and instead only raw variables
-    variables_to_keep <- formula_list %>%
-        map(all.vars) %>%
-        purrr::flatten_chr() %>%
-        unique()
+    variables_to_keep <- na.omit(unique(c(
+        network_combinations$index_node,
+        purrr::flatten_chr(network_combinations$neighbours),
+        external_var,
+        adjustment_vars
+    )))
 
     model_data <- data %>%
         select(all_of(variables_to_keep)) %>%
@@ -183,30 +185,14 @@ compute_model_estimates <-
     other_args <- list(data = model_data)
     if (!is.null(model_arg_list))
         other_args <- c(other_args, model_arg_list)
-    model_formula_list <- list(formula = formula_list)
 
-    var_to_extract <- 1
-    if (external_side == "outcome")
-        var_to_extract <- 2
-    # Surv objects have two variables, time and case
-    if (grepl("survival::Surv\\(", external_var))
-        var_to_extract <- 3
-
-    network_index_nodes <- formula_list %>%
-        map(~all.vars(.)[var_to_extract]) %>%
-        purrr::flatten_chr()
-
-    # TODO: Fix to use parallel processing?
-    # model_map2_dfr <- purrr::map2_dfr
-    # if (.parallel) {
-    #     model_map2_dfr <- furrr::future_map2_dfr
-    # }
-
-    # TODO: Move the modeling and tidying into same step?
-    model_tbl <- model_formula_list %>%
-        purrr::pmap(purrr::lift_dl(model_function), other_args) %>%
-        purrr::map2_dfr(network_index_nodes,
-                       tidy_models, exponentiate = exponentiate)
+    model_tbl <- formula_df %>%
+        purrr::pmap_dfr(
+            run_model_and_tidy,
+            model_function = model_function,
+            model_args = other_args,
+            exponentiate = exponentiate
+        )
 
     tidied_models <- model_tbl %>%
         mutate(
@@ -224,6 +210,15 @@ compute_model_estimates <-
 }
 
 # Helpers -----------------------------------------------------------------
+
+run_model_and_tidy <- function(x, y, index_node, model_function, model_args, exponentiate) {
+    formula <- stats::reformulate(termlabels = x, response = y)
+    function_with_args_as_list <- purrr::lift_dl(model_function)
+    model_args <- c(list(formula = formula),
+                    model_args)
+    function_with_args_as_list(model_args) %>%
+        tidy_models(index_node = index_node, exponentiate = exponentiate)
+}
 
 all_neighbour_combinations <- function(edge_tbl) {
     neighbours <- edge_tbl$target_node
@@ -281,7 +276,7 @@ generate_all_network_combinations <- function(edge_tbl) {
         )
 }
 
-generate_formula_list <-
+generate_formula_df <-
     function(network_object_tbl, ext_var, ext_side, adj_vars) {
         xvars_prep <-
             list(network_object_tbl$neighbours) %>%
@@ -302,15 +297,12 @@ generate_formula_list <-
             map2(external_input$y, ~.x[!.x %in% .y]) %>%
             map(stats::na.omit)
 
-        unique_formulas_df <- tibble(
-            yvar = external_input$y,
-            xvar = xvar_input
+        tibble(
+            y = external_input$y,
+            x = xvar_input,
+            index_node = network_object_tbl$index_node
         ) %>%
             dplyr::distinct()
-
-        map2(unique_formulas_df$xvar,
-             unique_formulas_df$yvar,
-             stats::reformulate)
     }
 
 
