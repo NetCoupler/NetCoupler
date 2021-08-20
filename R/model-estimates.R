@@ -169,6 +169,7 @@ compute_model_estimates <-
         adj_vars = adjustment_vars
     )
 
+    # TODO: This could be revised to not use formula list and instead only raw variables
     variables_to_keep <- formula_list %>%
         map(all.vars) %>%
         purrr::flatten_chr() %>%
