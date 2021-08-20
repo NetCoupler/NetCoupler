@@ -31,9 +31,10 @@ nc_estimate_outcome_links(
 }
 \arguments{
 \item{data}{The data.frame or tibble that contains the variables of interest,
-including the variables passed to the network.}
+including the variables used to make the network.}
 
-\item{edge_tbl}{Output graph object from \code{nc_estimate_network()}.}
+\item{edge_tbl}{Output graph object from \code{nc_estimate_network()}, converted
+to an edge table using \code{as_edge_tbl()}.}
 
 \item{exposure, outcome}{Character. The exposure or outcome variable of interest.}
 

@@ -73,18 +73,15 @@ lm_results_outcome <- standardized_data %>%
   nc_estimate_outcome_links(
     edge_tbl = edge_table,
     outcome = "outcome_continuous",
-    model_function = lm,
-    implementation = "updated"
+    model_function = lm
   )
+```
 
-lm_results_outcome_2 <- standardized_data %>%
-  nc_estimate_outcome_links(
-    edge_tbl = edge_table,
-    outcome = "outcome_continuous",
-    model_function = lm,
-    implementation = "original"
-  )
+```{r, echo=FALSE}
+make_table(lm_results_outcome)
+```
 
+```{r}
 lm_results_exposure <- standardized_data %>%
   nc_estimate_exposure_links(
     edge_tbl = edge_table,
