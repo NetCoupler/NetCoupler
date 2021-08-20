@@ -24,12 +24,17 @@ knitr::opts_chunk$set(
 The goal of NetCoupler is to estimate causal links between a set of -omic (e.g.
 metabolomics, lipidomics) or other high-dimensional data and an external variable,
 such as a disease outcome, an exposure, or both. The NetCoupler-algorithm,
-initially formulated by Clemens Wittenbecher [@Wittenbecher2017], links a conditional
-dependency network with an external variable (i.e. an outcome or exposure) to
-identify network-independent associations between the network variables and the
-external variable, classified as direct effects.
+initially formulated during Clemens' PhD thesis [@Wittenbecher2017], links a
+conditional dependency network with an external variable (i.e. an outcome or
+exposure) to identify network-independent associations between the network
+variables and the external variable, classified as direct effects.
 
-The input given to NetCoupler include:
+A typical use case we have in mind would be if a researcher might be interested
+in exploring potential pathways that exist between a health exposure like red
+meat consumption, its impact on the metabolic profile, and the subsequent impact
+on an outcome like type 2 diabetes incidence.
+
+The input for NetCoupler includes:
 
 1. Standardized metabolic or other high-dimensional data.
 2. Exposure or outcome data.
@@ -41,8 +46,8 @@ to adjust for.
 <!-- TODO: Add figure demonstrating NetCoupler -->
 
 The final output is the modeling results along with the results from
-NetCoupler's classification. Results can be displayed as a joint network model
-in graphical form.
+NetCoupler's classification. Results can then be displayed as a joint network
+model in graphical format.
 
 ## Overall framework
 
@@ -57,6 +62,9 @@ NetCoupler has several frameworks in mind:
 [tibbles](https://tibble.tidyverse.org/)/dataframes or [tidygraph tibbles](https://tidygraph.data-imaginist.com/).
 - Generic modeling approach by using model and settings as function argument
 inputs.
+<!-- - Works with the [tidymodel](https://www.tidymodels.org/) approach, such as by  -->
+<!-- making use of [parsnip](https://parsnip.tidymodels.org/) functions to make the  -->
+<!-- models. -->
 
 ## Workflow
 
@@ -66,7 +74,7 @@ functions, listed below as well as visualized in the figure below:
 - `nc_standardize()`: The algorithm in general, but especially the network
 estimation method, is sensitive to the values and distribution of the variables.
 Scaling the variables by standardizing, mean-centering, and natural log
-transforming them are important to making sure more accurate estimations.
+transforming them are important to obtaining more accurate estimations.
 - `nc_estimate_network()`: Estimate the connections between metabolic variables
 as a undirected graph based on dependencies between variables. This network is
 used to identify metabolic variables that are connected to each other as
@@ -77,8 +85,8 @@ independent relationship between each metabolic variable and an external
 variable (e.g. an outcome or an exposure) as either being a direct, ambiguous,
 or no effect relationship.
 - `nc_join_links()`: **Not implemented yet.** Join together the exposure- and outcome-side estimated links.
-- `nc_plot_network()`: **Not implemented yet.** Visualize the connections estimated from
-`nc_estimate_network()`.
+- `nc_plot_network()`: **Not implemented yet.** Visualize the connections
+estimated from `nc_estimate_network()`.
 - `nc_plot_links()`: **Not implemented yet.** Plots the output results from
 either `nc_estimate_exposure_links()`, `nc_estimate_outcome_links()`, or
 `nc_join_links()`.
@@ -243,3 +251,5 @@ outcome_estimates <- standardized_data %>%
 <!--     ) -->
 <!-- plan(sequential) -->
 <!-- ``` -->
+
+<!-- - complete cases for all variables used by netcoupler -->
