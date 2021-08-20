@@ -2,28 +2,36 @@
 % Please edit documentation in R/network.R
 \name{nc_estimate_network}
 \alias{nc_estimate_network}
-\title{Create an estimate of the metabolic network skeleton.}
+\title{Create an estimate of the metabolic network as an undirected graph.}
 \usage{
-nc_estimate_network(data, cols = everything(), alpha = 0.05)
+nc_estimate_network(data, cols = everything(), alpha = 0.01)
 }
 \arguments{
-\item{data}{Data of the metabolic variables.}
+\item{data}{Data that would form the underlying network.}
 
 \item{cols}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Variables to include
 by using \code{\link[dplyr:select]{dplyr::select()}} style selection.}
 
-\item{alpha}{The alpha level to set. Default is 0.05.}
+\item{alpha}{The alpha level to use to test whether an edge exists or not.
+Default is 0.01.}
 }
 \value{
-Outputs a DAG skeleton.
+Outputs a \code{\link[tidygraph:tbl_graph]{tidygraph::tbl_graph()}} with the start and end nodes, as
+well as the edge weights.
 }
 \description{
 \lifecycle{experimental}
 
-Main NetCoupler network creator.
-Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
+The main NetCoupler network creator.
+Uses the input data to estimate the underlying undirected graph.
+The default uses the PC algorithm, implemented within NetCoupler
+with \code{\link[=pc_estimate_undirected_graph]{pc_estimate_undirected_graph()}}
 Defaults to using the PC algorithm to calculate possible edges.
+Any missing values in the input data are removed by this function,
+since some computations can't handle missingness.
 }
 \seealso{
-See \link{nc_estimate_links} for examples on using NetCoupler.
+See \link{nc_estimate_links} for examples on using NetCoupler and
+\link{pc_estimate_undirected_graph} for more details on the PC-algorithm network
+estimation method.
 }

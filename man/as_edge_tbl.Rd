@@ -2,7 +2,7 @@
 % Please edit documentation in R/network.R
 \name{as_edge_tbl}
 \alias{as_edge_tbl}
-\title{Convert network graph to edge table.}
+\title{Convert network graphs to edge tables as tibbles/data.frames.}
 \usage{
 as_edge_tbl(network_object)
 }
@@ -14,6 +14,8 @@ A \link[tibble:tibble-package]{tibble}, with at least two columns:
 \itemize{
 \item \code{source_node}: The starting node (variable).
 \item \code{target_node}: The ending node (variable) that links with the source node.
+\item \code{adjacency_weight}: (Optional) The "weight" given to the edge, which
+represents the strength of the link between two nodes.
 }
 }
 \description{
