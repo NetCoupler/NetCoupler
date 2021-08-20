@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create an estimate of the metabolic network skeleton. — nc_estimate_network • NetCoupler</title>
+<title>Create an estimate of the metabolic network as an undirected graph. — nc_estimate_network • NetCoupler</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,15 @@
 
 
 
-<meta property="og:title" content="Create an estimate of the metabolic network skeleton. — nc_estimate_network" />
+<meta property="og:title" content="Create an estimate of the metabolic network as an undirected graph. — nc_estimate_network" />
 <meta property="og:description" content="
-Main NetCoupler network creator.
-Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
-Defaults to using the PC algorithm to calculate possible edges." />
+The main NetCoupler network creator.
+Uses the input data to estimate the underlying undirected graph.
+The default uses the PC algorithm, implemented within NetCoupler
+with pc_estimate_undirected_graph()
+Defaults to using the PC algorithm to calculate possible edges.
+Any missing values in the input data are removed by this function,
+since some computations can't handle missingness." />
 
 
 
@@ -101,7 +105,10 @@ Defaults to using the PC algorithm to calculate possible edges." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/description.html">Implementation details of NetCoupler</a>
+      <a href="../articles/articles/description.html">Implementation details of NetCoupler</a>
+    </li>
+    <li>
+      <a href="../articles/articles/examples.html">Examples of using NetCoupler with different models</a>
     </li>
   </ul>
 </li>
@@ -129,26 +136,30 @@ Defaults to using the PC algorithm to calculate possible edges." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create an estimate of the metabolic network skeleton.</h1>
+    <h1>Create an estimate of the metabolic network as an undirected graph.</h1>
     <small class="dont-index">Source: <a href='https://github.com/NetCoupler/NetCoupler/blob/master/R/network.R'><code>R/network.R</code></a></small>
     <div class="hidden name"><code>nc_estimate_network.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a></p>
-<p>Main NetCoupler network creator.
-Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
-Defaults to using the PC algorithm to calculate possible edges.</p>
+<p>The main NetCoupler network creator.
+Uses the input data to estimate the underlying undirected graph.
+The default uses the PC algorithm, implemented within NetCoupler
+with <code><a href='pc_estimate_undirected_graph.html'>pc_estimate_undirected_graph()</a></code>
+Defaults to using the PC algorithm to calculate possible edges.
+Any missing values in the input data are removed by this function,
+since some computations can't handle missingness.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>nc_estimate_network</span><span class='op'>(</span><span class='va'>data</span>, cols <span class='op'>=</span> <span class='fu'><a href='https://tidyselect.r-lib.org/reference/everything.html'>everything</a></span><span class='op'>(</span><span class='op'>)</span>, alpha <span class='op'>=</span> <span class='fl'>0.05</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>nc_estimate_network</span><span class='op'>(</span><span class='va'>data</span>, cols <span class='op'>=</span> <span class='fu'><a href='https://tidyselect.r-lib.org/reference/everything.html'>everything</a></span><span class='op'>(</span><span class='op'>)</span>, alpha <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Data of the metabolic variables.</p></td>
+      <td><p>Data that would form the underlying network.</p></td>
     </tr>
     <tr>
       <th>cols</th>
@@ -157,16 +168,20 @@ by using <code><a href='https://dplyr.tidyverse.org/reference/select.html'>dplyr
     </tr>
     <tr>
       <th>alpha</th>
-      <td><p>The alpha level to set. Default is 0.05.</p></td>
+      <td><p>The alpha level to use to test whether an edge exists or not.
+Default is 0.01.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Outputs a DAG skeleton.</p>
+    <p>Outputs a <code><a href='https://tidygraph.data-imaginist.com/reference/tbl_graph.html'>tidygraph::tbl_graph()</a></code> with the start and end nodes, as
+well as the edge weights.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>See <a href='nc_estimate_links.html'>nc_estimate_links</a> for examples on using NetCoupler.</p></div>
+    <div class='dont-index'><p>See <a href='nc_estimate_links.html'>nc_estimate_links</a> for examples on using NetCoupler and
+<a href='pc_estimate_undirected_graph.html'>pc_estimate_undirected_graph</a> for more details on the PC-algorithm network
+estimation method.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

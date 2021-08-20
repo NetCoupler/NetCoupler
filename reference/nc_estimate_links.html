@@ -105,7 +105,10 @@ nc_estimate_outcome_links(): Computes the model estimates for the exposure side.
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/description.html">Implementation details of NetCoupler</a>
+      <a href="../articles/articles/description.html">Implementation details of NetCoupler</a>
+    </li>
+    <li>
+      <a href="../articles/articles/examples.html">Examples of using NetCoupler with different models</a>
     </li>
   </ul>
 </li>
@@ -176,11 +179,12 @@ and a network.</h1>
     <tr>
       <th>data</th>
       <td><p>The data.frame or tibble that contains the variables of interest,
-including the variables passed to the network.</p></td>
+including the variables used to make the network.</p></td>
     </tr>
     <tr>
       <th>edge_tbl</th>
-      <td><p>Output graph object from <code><a href='nc_estimate_network.html'>nc_estimate_network()</a></code>.</p></td>
+      <td><p>Output graph object from <code><a href='nc_estimate_network.html'>nc_estimate_network()</a></code>, converted
+to an edge table using <code><a href='as_edge_tbl.html'>as_edge_tbl()</a></code>.</p></td>
     </tr>
     <tr>
       <th>exposure, outcome</th>

@@ -97,7 +97,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/description.html">Implementation details of NetCoupler</a>
+      <a href="../articles/articles/description.html">Implementation details of NetCoupler</a>
+    </li>
+    <li>
+      <a href="../articles/articles/examples.html">Examples of using NetCoupler with different models</a>
     </li>
   </ul>
 </li>
@@ -136,7 +139,7 @@
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h2>
 <ul>
-<li>Added two plotting functions for the model estimation side of things: <code><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_exposure_estimation()</a></code> and <code><a href="../reference/nc_plot_outcome_estimation.html">nc_plot_outcome_estimation()</a></code>
+<li>Added two plotting functions for the model estimation side of things: <code>nc_plot_exposure_estimation()</code> and <code>nc_plot_outcome_estimation()</code>
 </li>
 <li>Added ability to parallelize code with furrr (<a href='https://github.com/NetCoupler/NetCoupler/issues/141'>#141</a>)</li>
 <li>Added a continuous outcome variable to simulated data that also links in with the DAG so that the linkage is more obvious (<a href='https://github.com/NetCoupler/NetCoupler/issues/97'>#97</a>)</li>
@@ -175,7 +178,7 @@
 <ul>
 <li>For <code>lm</code> and <code>glm</code> models, model summary statistics are added (<a href='https://github.com/NetCoupler/NetCoupler/issues/88'>#88</a>).</li>
 <li>Add a function to classify the direct effects between outcome or exposure and the network (<a href='https://github.com/NetCoupler/NetCoupler/issues/98'>#98</a>).</li>
-<li>Add function to plot network graph: <code><a href="../reference/nc_plot_network.html">nc_plot_network()</a></code> (<a href='https://github.com/NetCoupler/NetCoupler/issues/89'>#89</a>, <a href='https://github.com/NetCoupler/NetCoupler/issues/110'>#110</a>).</li>
+<li>Add function to plot network graph: <code>nc_plot_network()</code> (<a href='https://github.com/NetCoupler/NetCoupler/issues/89'>#89</a>, <a href='https://github.com/NetCoupler/NetCoupler/issues/110'>#110</a>).</li>
 <li>Added helper functions <code>nc_adjacency_graph()</code>, <code>nc_adjacency_matrix()</code>, and <code>nc_partial_corr_matrix()</code> to help create the weights for the network plot. (Issue <a href='https://github.com/NetCoupler/NetCoupler/issues/80'>#80</a>, PR <a href='https://github.com/NetCoupler/NetCoupler/issues/89'>#89</a>).</li>
 <li>Removed soft deprecated functions. Using MuMIn over glmulti doesn’t change the results too much, see <a href='https://github.com/NetCoupler/NetCoupler/issues/60'>#60</a> for details (<a href='https://github.com/NetCoupler/NetCoupler/issues/83'>#83</a>).</li>
 <li>Removed stringr dependency (<a href='https://github.com/NetCoupler/NetCoupler/issues/65'>#65</a>, <a href='https://github.com/NetCoupler/NetCoupler/issues/83'>#83</a>).</li>
