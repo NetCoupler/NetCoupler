@@ -1,6 +1,5 @@
-#' @importFrom assertive.types assert_is_data.frame assert_is_s4
-#'   assert_is_a_string assert_is_character assert_is_function assert_is_a_number
-#'   assert_is_list assert_is_logical
+#' @importFrom checkmate assert_data_frame assert_character assert_number
+#'   assert_list assert_function assert_logical
 #' @importFrom dplyr select mutate group_by if_else
 #' @importFrom rlang .data
 #' @importFrom purrr map map_dfr map2 imap imap_dfr

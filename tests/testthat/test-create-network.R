@@ -9,12 +9,10 @@ metabolite_network <- metabolite_data %>%
     nc_estimate_network()
 
 test_that("network is created", {
-    # TODO: This might not always be this class.
-    expect_s4_class(metabolite_network, "pcAlgo")
-
-    # For number of neighbours, etc
-    edges <- metabolite_network@graph@edgeL
-    expect_equal(names(edges), names(metabolite_data))
+    # For number of edges
+    expect_equal(nrow(as_edge_tbl(metabolite_network)), 13)
+    # For columns
+    expect_equal(ncol(as_edge_tbl(metabolite_network)), 3)
 
     # For data frame
     expect_error(
@@ -29,24 +27,17 @@ test_that("network is created", {
     )
 })
 
-test_that("adjacency graph object is constructed", {
-    # Based on adjacency matrix and partial correlation matrix
-    adj_graph <- compute_adjacency_graph(metabolite_data,
-                                         metabolite_network)
-
-    expect_identical(class(adj_graph), "igraph")
-})
-
 test_that("network is constructed even with missingness", {
     metabolite_network_na <- simulated_data %>%
         insert_random_missingness() %>%
         nc_estimate_network(starts_with("metabolite"))
 
-    expect_s4_class(metabolite_network_na, "pcAlgo")
+    expect_identical(class(metabolite_network_na)[1], "tbl_graph")
 
     # For number of neighbours, etc
-    edges <- metabolite_network_na@graph@edgeL
-    expect_equal(names(edges), names(metabolite_data))
+    edges <- as_edge_tbl(metabolite_network_na)
+    edges <- unique(c(edges$source_node, edges$target_node))
+    expect_true(all(edges %in% names(metabolite_data)))
 })
 
 # test_that("edge table generates correct output", {

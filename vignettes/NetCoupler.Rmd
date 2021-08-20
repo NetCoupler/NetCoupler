@@ -24,12 +24,17 @@ knitr::opts_chunk$set(
 The goal of NetCoupler is to estimate causal links between a set of -omic (e.g.
 metabolomics, lipidomics) or other high-dimensional data and an external variable,
 such as a disease outcome, an exposure, or both. The NetCoupler-algorithm,
-initially formulated by Clemens Wittenbecher [@Wittenbecher2017], links a conditional
-dependency network with an external variable (i.e. an outcome or exposure) to
-identify network-independent associations between the network variables and the
-external variable, classified as direct effects.
+initially formulated during Clemens' PhD thesis [@Wittenbecher2017], links a
+conditional dependency network with an external variable (i.e. an outcome or
+exposure) to identify network-independent associations between the network
+variables and the external variable, classified as direct effects.
 
-The input given to NetCoupler include:
+A typical use case we have in mind would be if a researcher might be interested
+in exploring potential pathways that exist between a health exposure like red
+meat consumption, its impact on the metabolic profile, and the subsequent impact
+on an outcome like type 2 diabetes incidence.
+
+The input for NetCoupler includes:
 
 1. Standardized metabolic or other high-dimensional data.
 2. Exposure or outcome data.
@@ -41,8 +46,8 @@ to adjust for.
 <!-- TODO: Add figure demonstrating NetCoupler -->
 
 The final output is the modeling results along with the results from
-NetCoupler's classification. Results can be displayed as a joint network model
-in graphical form.
+NetCoupler's classification. Results can then be displayed as a joint network
+model in graphical format.
 
 ## Overall framework
 
@@ -53,34 +58,40 @@ NetCoupler has several frameworks in mind:
 - Works with [tidyselect](https://tidyselect.r-lib.org/) helpers (e.g.
 `starts_with()`, `contains()`).
 - Is auto-complete friendly (e.g. start function names with `nc_`).
-- Inputs and outputs of functions are in general
+- Inputs and outputs of functions are
 [tibbles](https://tibble.tidyverse.org/)/dataframes or [tidygraph tibbles](https://tidygraph.data-imaginist.com/).
 - Generic modeling approach by using model and settings as function argument
 inputs.
+<!-- - Works with the [tidymodel](https://www.tidymodels.org/) approach, such as by  -->
+<!-- making use of [parsnip](https://parsnip.tidymodels.org/) functions to make the  -->
+<!-- models. -->
 
 ## Workflow
 
-The general workflow for using NetCoupler revolves around the five main
-functions:
+The general workflow for using NetCoupler revolves around several main
+functions, listed below as well as visualized in the figure below:
 
 - `nc_standardize()`: The algorithm in general, but especially the network
 estimation method, is sensitive to the values and distribution of the variables.
 Scaling the variables by standardizing, mean-centering, and natural log
-transforming them are important to making sure more accurate estimations.
+transforming them are important to obtaining more accurate estimations.
 - `nc_estimate_network()`: Estimate the connections between metabolic variables
 as a undirected graph based on dependencies between variables. This network is
 used to identify metabolic variables that are connected to each other as
 neighbours.
-- `nc_plot_network()`: Visualize the connections estimated from
-`nc_estimate_network()`.
 - `nc_estimate_exposure_links()` and `nc_estimate_outcome_links()`: Uses the
 standardized data and the estimated network to classify the conditionally
 independent relationship between each metabolic variable and an external
 variable (e.g. an outcome or an exposure) as either being a direct, ambiguous,
 or no effect relationship.
-- `nc_plot_links()`: Plots the results from the
-`nc_estimate_exposure_links()` or 
-`nc_estimate_outcome_links()`.
+- `nc_join_links()`: **Not implemented yet.** Join together the exposure- and outcome-side estimated links.
+- `nc_plot_network()`: **Not implemented yet.** Visualize the connections
+estimated from `nc_estimate_network()`.
+- `nc_plot_links()`: **Not implemented yet.** Plots the output results from
+either `nc_estimate_exposure_links()`, `nc_estimate_outcome_links()`, or
+`nc_join_links()`.
+
+![NetCoupler functions and their input and ouput. Input and output objects are the light gray boxes, while the light blue boxes are the currently available functions, and the light orange boxes are functions planned to be developed.](nc-diagram-io.png)
 
 ## Simple example
 
@@ -122,16 +133,16 @@ metabolite_network <- std_metabolic_data %>%
     nc_estimate_network(starts_with("metabolite"))
 ```
 
-To see what the network looks like,
-use the function `nc_plot_network()`.
+<!-- To see what the network looks like, -->
+<!-- use the function `nc_plot_network()`. -->
 
-```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5}
-std_metabolic_data %>%
-    nc_plot_network(metabolite_network)
-```
+<!-- ```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5} -->
+<!-- std_metabolic_data %>% -->
+<!--     nc_plot_network(metabolite_network) -->
+<!-- ``` -->
 
-While the plot is a bit crowded, it at least provides a base to start tidying up
-from.
+<!-- While the plot is a bit crowded, it at least provides a base to start tidying up -->
+<!-- from. -->
 
 ### Estimating exposure and outcome-side connections
 
@@ -193,30 +204,30 @@ outcome_estimates <- standardized_data %>%
     )
 ```
 
-### Plotting 
+<!-- ### Plotting  -->
 
-To visualize the results of the linked network graph and the effect
-classification, there are two functions to show the exposure and the outcome
-plots. In general, these plot functions are currently mostly for exploratory
-purposes and are too "busy" and crowded to be meaningful for presentation or
-publication. However, these are good starting points for making prettier,
-more legible plots.
+<!-- To visualize the results of the linked network graph and the effect -->
+<!-- classification, there are two functions to show the exposure and the outcome -->
+<!-- plots. In general, these plot functions are currently mostly for exploratory -->
+<!-- purposes and are too "busy" and crowded to be meaningful for presentation or -->
+<!-- publication. However, these are good starting points for making prettier, -->
+<!-- more legible plots. -->
 
-```{r plot-outcome-estimation-networks, fig.width=7, fig.height=6}
-nc_plot_outcome_estimation(
-    standardized_data,
-    metabolite_network,
-    outcome_estimates
-)
-```
+<!-- ```{r plot-outcome-estimation-networks, fig.width=7, fig.height=6} -->
+<!-- nc_plot_outcome_estimation( -->
+<!--     standardized_data, -->
+<!--     metabolite_network, -->
+<!--     outcome_estimates -->
+<!-- ) -->
+<!-- ``` -->
 
-```{r plot-exposure-estimation-networks, fig.width=7, fig.height=6}
-nc_plot_exposure_estimation(
-    standardized_data,
-    metabolite_network,
-    exposure_estimates
-)
-```
+<!-- ```{r plot-exposure-estimation-networks, fig.width=7, fig.height=6} -->
+<!-- nc_plot_exposure_estimation( -->
+<!--     standardized_data, -->
+<!--     metabolite_network, -->
+<!--     exposure_estimates -->
+<!-- ) -->
+<!-- ``` -->
 
 <!-- ## Slow code? Use parallel processing with future -->
 
@@ -240,3 +251,5 @@ nc_plot_exposure_estimation(
 <!--     ) -->
 <!-- plan(sequential) -->
 <!-- ``` -->
+
+<!-- - complete cases for all variables used by netcoupler -->

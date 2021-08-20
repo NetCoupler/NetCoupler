@@ -24,7 +24,7 @@ BugReports: https://github.com/NetCoupler/NetCoupler/issues
 Depends: 
     R (>= 3.5.0)
 Imports: 
-    assertive.types,
+    checkmate,
     dplyr,
     ggraph,
     ids,

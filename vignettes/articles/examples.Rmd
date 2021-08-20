@@ -1,0 +1,175 @@
+---
+title: "Examples of using NetCoupler with different models"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+
+make_table <- function(object, caption) {
+    object %>%
+        mutate(across(where(is.numeric), round, digits = 3)) %>% 
+        knitr::kable(caption = caption)
+}
+```
+
+This article contains a list of models that you could use in NetCoupler.
+
+There are some caveats to most of these examples, except for when a section
+explicitly indicates otherwise:
+
+- Most of the models do not include further adjustment for confounders.
+- Most models only show the outcome-side estimation, for brevity. However,
+the code for running exposure-side estimation is almost the exact same.
+
+Across the different models, there are some general features, which is described
+in more depth in the [Getting Started](netcoupler.html) article.
+First load up the packages.
+
+```{r}
+library(NetCoupler)
+library(dplyr)
+```
+
+1. Pre-processing by standardizing variables, since large differences in the
+values of variables can impact on the results of the algorithm. 
+
+    ```{r}
+    standardized_data <- simulated_data %>%
+        nc_standardize(starts_with("metabolite"))
+    ```
+
+2. Estimating the network structure to identify links between the metabolic variables.
+This network needs to be converted into an edge table that has two columns, one 
+for the `source_node` and another for the `target_node`.
+
+    ```{r}
+    metabolite_network <- simulated_data %>%
+        nc_standardize(starts_with("metabolite")) %>% 
+        nc_estimate_network(starts_with("metabolite"))
+    
+    edge_table <- as_edge_tbl(metabolite_network)
+    edge_table
+    ```
+
+3. If adjusting for confounders in the main models, these also need to be included
+when estimating the network. To do this, the metabolic data needs to be
+regressed on to the variables that will be standardized.
+
+    ```{r}
+    metabolite_network <- simulated_data %>%
+        nc_standardize(starts_with("metabolite"),
+                       regressed_on = "age") %>%
+        nc_estimate_network(starts_with("metabolite"))
+```
+
+### Outcome vs exposure side
+
+```{r}
+lm_results_outcome <- standardized_data %>%
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "outcome_continuous",
+    model_function = lm
+  )
+```
+
+```{r, echo=FALSE}
+make_table(lm_results_outcome)
+```
+
+```{r}
+lm_results_exposure <- standardized_data %>%
+  nc_estimate_exposure_links(
+    edge_tbl = edge_table,
+    exposure = "exposure",
+    model_function = lm
+  )
+```
+
+## Linear regression
+
+```{r}
+lm_results <- standardized_data %>%
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "outcome_continuous",
+    model_function = lm
+  )
+
+lm_results %>% 
+    make_table("Results when using linear models.")
+```
+
+## Logistic regression
+
+### Binary Logistic Regression
+
+```{r}
+glm_bin_results <- standardized_data %>%
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "case_status",
+    model_function = glm,
+    model_arg_list = list(family = binomial),
+    exponentiate = TRUE,
+    implementation = "original"
+  )
+
+glm_bin_results %>% 
+    make_table("Results when using logistic regression models.")
+```
+
+### Ordinal Logistic Regression
+### Nominal Logistic Regression
+
+## Cox Regression
+
+TODO: Include `cluster()`, `strata()`.
+
+```{r}
+library(survival)
+
+coxph_results <- standardized_data %>%
+  mutate(surv_object = survival::Surv(time = survival_time, event = case_status)) %>% 
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "surv_object",
+    model_function = survival::coxph
+  )
+
+coxph_results %>% 
+    make_table("Model results and classification for Cox models.")
+```
+
+## Poisson regression
+
+### Negative Binomial Regression
+### Zero-inflated regression
+
+## Polynomial Regression
+
+## Ridge Regression
+
+## Lasso Regression
+
+## Quantile Regression
+
+## Elastic Net Regression
+
+## Principal Components Regression
+
+## Support Vector Machines Regression
+
+## Quasi Poisson Regression
+
+## Tobit Regression
+
+## Multivariate Regression
+
+## Random effects models
+
+## Longitudinal data?

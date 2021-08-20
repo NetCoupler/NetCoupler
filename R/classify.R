@@ -21,7 +21,7 @@
 #'
 classify_effects <- function(data, implementation = c("updated", "original")) {
     # TODO: Use an attribute as a "check"
-    assert_is_data.frame(data)
+    assert_data_frame(data)
     check_tbl(data)
 
     external_variable <- identify_external_variable(data)

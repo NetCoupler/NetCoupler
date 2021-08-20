@@ -12,20 +12,20 @@ dag_graph <- dagitty('dag {
     exposure -> metabolite_8
     exposure -> metabolite_10
     metabolite_1 -> metabolite_2
+    metabolite_1 -> metabolite_12
     metabolite_2 -> metabolite_3
-    metabolite_3 -> metabolite_4
-    metabolite_4 -> metabolite_5
-    metabolite_5 -> metabolite_6
     metabolite_2 -> metabolite_7
+    metabolite_3 -> metabolite_4
+    metabolite_3 -> metabolite_12
+    metabolite_4 -> metabolite_5
+    metabolite_4 -> metabolite_12
+    metabolite_5 -> metabolite_6
+    metabolite_5 -> metabolite_9
+    metabolite_6 -> metabolite_10
     metabolite_7 -> metabolite_8
     metabolite_8 -> metabolite_9
     metabolite_9 -> metabolite_10
     metabolite_10 -> metabolite_11
-    metabolite_1 -> metabolite_12
-    metabolite_3 -> metabolite_12
-    metabolite_4 -> metabolite_12
-    metabolite_5 -> metabolite_9
-    metabolite_6 -> metabolite_10
     metabolite_10 -> metabolite_12
     metabolite_3 -> outcome_continuous
     metabolite_9 -> outcome_continuous

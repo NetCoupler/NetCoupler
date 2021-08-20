@@ -1,3 +1,4 @@
+# TODO: Incomplete.
 #' Plot of the network of the metabolic variables.
 #'
 #' @description
@@ -13,7 +14,7 @@
 #'   [stringr::str_replace()].
 #'
 #' @return Outputs a `ggplot2` object of the metabolic network.
-#' @export
+#' @noRd
 #'
 #' @seealso See [nc_estimate_links] for examples on using NetCoupler.
 #'
@@ -24,7 +25,7 @@ nc_plot_network <- function(data,
 
     if (is.null(fn_node_rename))
         fn_node_rename <- function(x) x
-    assert_is_function(fn_node_rename)
+    assert_function(fn_node_rename)
 
     graph_data_prep <- nc_tbl_adjacency_graph(data, edge_tbl) %>%
         tidygraph::activate("edges") %>%
@@ -137,7 +138,7 @@ plot_external_var <-
 #'
 #' @return a [ggplot2][ggplot2::ggplot2-package] object showing the model
 #'   estimation results linked with the network graph.
-#' @export
+#' @noRd
 #'
 nc_plot_outcome_estimation <- function(data,
                                        edge_tbl,
@@ -153,8 +154,7 @@ nc_plot_outcome_estimation <- function(data,
 
 }
 
-#' @describeIn nc_plot_outcome_estimation Plots the exposure side estimation.
-#' @export
+# TODO: Fix this: @describeIn nc_plot_outcome_estimation Plots the exposure side estimation.
 nc_plot_exposure_estimation <- function(data,
                                         edge_tbl,
                                         data_model,
@@ -170,19 +170,6 @@ nc_plot_exposure_estimation <- function(data,
 
 # Helpers -----------------------------------------------------------------
 
-nc_tbl_adjacency_graph <- function(data, edge_tbl) {
-    data %>%
-        create_tbl_network_graph(edge_tbl) %>%
-        discard_unconnected_nodes()
-}
-
-create_tbl_network_graph <- function(data, edge_tbl) {
-    data %>%
-        select(all_of(names(edge_tbl@graph@edgeL))) %>%
-        compute_adjacency_graph(edge_tbl = edge_tbl) %>%
-        tidygraph::as_tbl_graph()
-}
-
 define_edge_label <- function(data_graph, edge_label_threshold = 0.2) {
     data_graph %>%
         mutate(edge_label =
@@ -195,17 +182,6 @@ define_edge_label <- function(data_graph, edge_label_threshold = 0.2) {
 
     # node_with_edges <- edge_tbl@graph@edgeL %>%
     #     purrr::discard(~length(.x) == 0)
-
-discard_unconnected_nodes <- function(data_graph) {
-    data_graph <- tidygraph::activate(data_graph, "edges")
-    edge_from <- dplyr::pull(data_graph, .data$from)
-    edge_to <- dplyr::pull(data_graph, .data$to)
-    connected_nodes <- unique(c(edge_from, edge_to))
-
-    data_graph %>%
-        tidygraph::activate("nodes") %>%
-        dplyr::filter(dplyr::row_number() %in% connected_nodes)
-}
 
 convert_model_data_to_model_edges <- function(data, ext_var) {
     data %>%

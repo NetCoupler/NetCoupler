@@ -1,33 +1,50 @@
 #' @title
-#' Create an estimate of the metabolic network skeleton.
+#' Create an estimate of the metabolic network as an undirected graph.
 #'
 #' @description
 #' \lifecycle{experimental}
 #'
-#' Main NetCoupler network creator.
-#' Estimates the skeleton based on a family of DAGs without specifying the direction of edges.
+#' The main NetCoupler network creator.
+#' Uses the input data to estimate the underlying undirected graph.
+#' The default uses the PC algorithm, implemented within NetCoupler
+#' with [pc_estimate_undirected_graph()]
 #' Defaults to using the PC algorithm to calculate possible edges.
+#' Any missing values in the input data are removed by this function,
+#' since some computations can't handle missingness.
 #'
-#' @param data Data of the metabolic variables.
+#' @param data Data that would form the underlying network.
 #' @param cols <[`tidy-select`][dplyr::dplyr_tidy_select]> Variables to include
 #'   by using [dplyr::select()] style selection.
-#' @param alpha The alpha level to set. Default is 0.05.
+#' @param alpha The alpha level to use to test whether an edge exists or not.
+#'   Default is 0.01.
 #'
-#' @return Outputs a DAG skeleton.
+#' @return Outputs a [tidygraph::tbl_graph()] with the start and end nodes, as
+#'   well as the edge weights.
 #' @export
 #'
-#' @seealso See [nc_estimate_links] for examples on using NetCoupler.
+#' @seealso See [nc_estimate_links] for examples on using NetCoupler and
+#'   [pc_estimate_undirected_graph] for more details on the PC-algorithm network
+#'   estimation method.
 #'
-nc_estimate_network <- function(data, cols = everything(), alpha = 0.05) {
-    assert_is_data.frame(data)
-    assert_is_a_number(alpha)
+nc_estimate_network <- function(data, cols = everything(), alpha = 0.01) {
+    assert_data_frame(data)
+    assert_number(alpha)
 
-    data %>%
+    subset_data <- data %>%
         select({{cols}}) %>%
-        pc_skeleton_estimates(alpha)
+        na.omit()
+
+    tbl_network <- subset_data %>%
+        pc_estimate_undirected_graph(alpha) %>%
+        as_tbl_graph.pcAlgo()
+
+    compute_weighted_adjacency_graph(
+        subset_data,
+        tbl_network
+    )
 }
 
-#' Convert network graph to edge table.
+#' Convert network graphs to edge tables as tibbles/data.frames.
 #'
 #' @description
 #' \lifecycle{experimental}
@@ -38,6 +55,8 @@ nc_estimate_network <- function(data, cols = everything(), alpha = 0.05) {
 #'
 #' - `source_node`: The starting node (variable).
 #' - `target_node`: The ending node (variable) that links with the source node.
+#' - `adjacency_weight`: (Optional) The "weight" given to the edge, which
+#' represents the strength of the link between two nodes.
 #'
 #' @export
 #'
@@ -45,12 +64,6 @@ nc_estimate_network <- function(data, cols = everything(), alpha = 0.05) {
 #'
 as_edge_tbl <- function(network_object) {
     UseMethod("as_edge_tbl", network_object)
-}
-
-#' @export
-as_edge_tbl.igraph <- function(network_object) {
-    network_object %>%
-        tidygraph::as_tbl_graph()
 }
 
 #' @export
@@ -75,139 +88,49 @@ as_edge_tbl.tbl_graph <- function(network_object) {
     )
 }
 
-
-#' @export
-as_edge_tbl.data.frame <- function(network_object) {
-    # if (names(network_object) %in% c("source_node", "target_node"))
-}
-
 #' @export
 as_edge_tbl.default <- function(network_object) {
-    rlang::abort("The `network_object` object is not from the pcalgo package. We currently do not have support for other network packages.")
+    if (checkmate::test_data_frame(network_object))
+        return(network_object)
+    else
+        rlang::abort("We don't know how to handle the object given as `network_object`. This function only can accept `tbl_graph()` objects for now.")
 }
 
-#' @export
-as_edge_tbl.pcAlgo <- function(network_object) {
-    network_object <- network_object@graph@edgeL
-    nodes <- names(network_object)
-    edge_table <- purrr::map_dfr(
-        network_object,
-        single_network_to_tbl,
-        .id = "source_node",
-        nodes = nodes
-    )
-    return(edge_table)
-}
-
-#' Compute the adjacency matrix of the graph with the data.
+#' Estimate the undirected graph of the metabolic data.
 #'
 #' @description
-#' \lifecycle{experimental}
-#'
-#' @inheritParams nc_plot_network
-#'
-#' @return Outputs an `igraph` object from [igraph::graph_from_adjacency_matrix()].
-#' @keywords internal
-#'
-compute_adjacency_graph <- function(data, edge_tbl) {
-    # TODO: This may change underlying graph connections, check into this.
-    weighted_adjacency_matrix <- compute_adjacency_matrix(edge_tbl) *
-        round(compute_partial_corr_matrix(data), digits = 3)
-
-    igraph::graph_from_adjacency_matrix(
-        as.matrix(weighted_adjacency_matrix),
-        weighted = TRUE,
-        mode = "undirected"
-    )
-}
-
-#' Extract adjacency matrix from a DAG skeleton.
-#'
-#' @description
-#' \lifecycle{experimental}
-#'
-#' Is generally a wrapper around calls to [igraph::as_adjacency_matrix()] and
-#' [igraph::graph_from_graphnel()]. Transforms from a GraphNEL object in igraph.
-#'
-#' @param dag_skeleton The PC DAG skeleton object.
-#'
-#' @return Outputs an adjacency matrix of the DAG skeleton.
-#' @keywords internal
-#'
-compute_adjacency_matrix <- function(dag_skeleton) {
-    # TODO: Include a check here that it is a DAG skeleton..?
-    from_skeleton <- igraph::graph_from_graphnel(dag_skeleton@graph)
-    igraph::as_adjacency_matrix(from_skeleton)
-}
-
-#' Estimate Pearson's partial correlation coefficients.
-#'
-#' @description
-#' \lifecycle{experimental}
-#'
-#' This function is a wrapper around [ppcor::pcor()] that extracts correlation
-#' coefficient estimates, then adds the variable names to the column and row names.
-#'
-#' @param data Input data of metabolic variables as matrix or data.frame.
-#'
-#' @return Outputs a matrix of partial correlation coefficients.
-#' @keywords internal
-#'
-compute_partial_corr_matrix <- function(data) {
-    pcor_matrix <- ppcor::pcor(data)$estimate
-    colnames(pcor_matrix) <- colnames(data)
-    rownames(pcor_matrix) <- colnames(data)
-    return(pcor_matrix)
-}
-
-# TODO: Don't know what this does or is for.
-#' Estimate equivalence class of DAG from the PC algorithm.
-#'
-#' Is mostly a wrapper around [pcalg::pc()]. Estimates an order-independent
-#' skeleton.
-#'
-#' @param data Input data, samples by metabolite matrix or as data.frame.
-#' @param alpha Significance level threshold applied to each test.
-#'
-#' @return Outputs a `pcAlgo` object.
-#' @keywords internal
-#'
-pc_dag_estimates <- function(data, alpha = 0.01) {
-    number_samples <- nrow(data)
-    metabolite_names <- colnames(data)
-
-    pcalg::pc(
-        suffStat = list(C = stats::cor(data), n = number_samples),
-        indepTest = pcalg::gaussCItest,
-        labels = metabolite_names,
-        skel.method = "stable",
-        alpha = alpha,
-        fixedGaps = NULL,
-        fixedEdges = NULL,
-        verbose = FALSE,
-        maj.rule = FALSE,
-        solve.confl = FALSE
-    )
-}
-
-#' Estimate order-independent PC-stable skeleton of a DAG.
-#'
 #' Uses the PC-algorithm and is mostly a wrapper around [pcalg::skeleton()].
 #'
-#' @param data Input metabolic data.
-#' @param alpha Significance level threshold applied to each test.
+#' @details
+#' This function estimates the "skeleton of a DAG", meaning a graph without
+#' arrowheads, aka an undirected graph.
+#' The default estimation method used is the "PC-stable" method, which estimates
+#' the *order-independent* skeleton of the DAG, meaning the order of the
+#' variables given does not impact the results (older versions of the algorithm
+#' were order-dependent). The method also assumes no latent variables.
 #'
-#' @return A DAG skeleton object.
+#' An edge is determined by testing for conditional dependence between two
+#' nodes based on the [pcalg::gaussCItest()]. Conditional *independence* exists
+#' when the nodes have zero partial correlation determined from a p-value based
+#' hypothesis test against the correlation matrix of the data from the nodes.
+#' The estimated edges exists between the *start* and *end* nodes when the
+#' *start* and *end* variables are conditionally dependent given the subset of
+#' remaining variables.
+#'
+#' @param data Input numeric data that forms the basis of the underlying graph.
+#' @param alpha Significance level threshold applied to each test to determine
+#'   conditional dependence for if an edge exists.
+#'
+#' @return A `pcAlgo` object that contains the DAG skeleton, aka undirected graph.
 #' @keywords internal
+#' @seealso The help documentation of [pcalg::skeleton()] has more details.
 #'
-pc_skeleton_estimates <- function(data, alpha = 0.01) {
+pc_estimate_undirected_graph <- function(data, alpha = 0.01) {
     number_samples <- nrow(data)
     metabolite_names <- colnames(data)
 
-    # TODO: Confirm that this does this.
     pcalg::skeleton(
         suffStat = list(C = stats::cor(data, use = "complete.obs"), n = number_samples),
-        # Test conditional independence of Gaussians via Fisher's Z
         indepTest = pcalg::gaussCItest,
         labels = metabolite_names,
         method = "stable",
@@ -220,6 +143,51 @@ pc_skeleton_estimates <- function(data, alpha = 0.01) {
 
 # Helpers -----------------------------------------------------------------
 
-single_network_to_tbl <- function(edges, nodes) {
-    tibble(target_node = nodes[edges$edges])
+# Convert the pcAlgo object to a tidygraph tbl_graph object.
+as_tbl_graph.pcAlgo <- function(pc_graph) {
+    pc_graph %>%
+        pcalg::getGraph() %>%
+        igraph::graph_from_graphnel() %>%
+        tidygraph::as_tbl_graph()
+}
+
+#' Compute the weighted adjacency matrix and use to create the graph with weighting.
+#'
+#' @param data Input data.
+#' @param network_graph The output object from [nc_estimate_network()].
+#'
+#' @return Outputs a [tidygraph::tbl_graph()] object.
+#' @keywords internal
+#' @noRd
+#'
+compute_weighted_adjacency_graph <- function(data, network_graph) {
+    # Calculate the weighted adjacency matrix
+    # Rounding fixes a problem with very small numbers,
+    # this forces them to be zero.
+    weighted_adj_matrix <- igraph::as_adjacency_matrix(network_graph) *
+        round(compute_partial_corr_matrix(data), digits = 3)
+
+    weighted_adj_matrix %>%
+        as.matrix() %>%
+        igraph::graph_from_adjacency_matrix(weighted = TRUE,
+                                            mode = "undirected") %>%
+        tidygraph::as_tbl_graph()
+}
+
+#' Estimate Pearson's partial correlation coefficients.
+#'
+#' This function is a wrapper around [ppcor::pcor()] that extracts correlation
+#' coefficient estimates, then adds the variable names to the column and row names.
+#'
+#' @param data Input data of metabolic variables as matrix or data.frame.
+#'
+#' @return Outputs a matrix of partial correlation coefficients.
+#' @keywords internal
+#' @noRd
+#'
+compute_partial_corr_matrix <- function(data) {
+    pcor_matrix <- ppcor::pcor(data)$estimate
+    colnames(pcor_matrix) <- colnames(data)
+    rownames(pcor_matrix) <- colnames(data)
+    pcor_matrix
 }

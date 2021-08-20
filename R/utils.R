@@ -1,13 +1,4 @@
 
-insert_random_missingness <- function(data) {
-    purrr::map_df(data, ~ .[sample(
-        c(TRUE, NA),
-        prob = c(0.98, 0.02),
-        size = length(.),
-        replace = TRUE
-    )])
-}
-
 # Taken from forcats
 lvls_reorder <- function (f, idx, ordered = NA) {
     if (!is.numeric(idx)) {
