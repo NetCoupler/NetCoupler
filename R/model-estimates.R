@@ -3,8 +3,9 @@
 #'
 #' @name nc_estimate_links
 #' @param data The data.frame or tibble that contains the variables of interest,
-#'   including the variables passed to the network.
-#' @param edge_tbl Output graph object from `nc_estimate_network()`.
+#'   including the variables used to make the network.
+#' @param edge_tbl Output graph object from `nc_estimate_network()`, converted
+#'   to an edge table using `as_edge_tbl()`.
 #' @param exposure,outcome Character. The exposure or outcome variable of interest.
 #' @param adjustment_vars Optional. Variables to adjust for in the models.
 #' @param model_function A function for the model to use (e.g. [stats::lm()],
