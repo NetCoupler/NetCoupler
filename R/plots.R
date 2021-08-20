@@ -25,7 +25,7 @@ nc_plot_network <- function(data,
 
     if (is.null(fn_node_rename))
         fn_node_rename <- function(x) x
-    assert_is_function(fn_node_rename)
+    assert_function(fn_node_rename)
 
     graph_data_prep <- nc_tbl_adjacency_graph(data, edge_tbl) %>%
         tidygraph::activate("edges") %>%

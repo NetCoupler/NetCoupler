@@ -27,8 +27,8 @@
 #'   estimation method.
 #'
 nc_estimate_network <- function(data, cols = everything(), alpha = 0.01) {
-    checkmate::assert_data_frame(data)
-    checkmate::assert_number(alpha)
+    assert_data_frame(data)
+    assert_number(alpha)
 
     subset_data <- data %>%
         select({{cols}}) %>%
