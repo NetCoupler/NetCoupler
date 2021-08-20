@@ -154,7 +154,7 @@ nc_plot_outcome_estimation <- function(data,
 
 }
 
-#' @describeIn nc_plot_outcome_estimation Plots the exposure side estimation.
+# TODO: Fix this: @describeIn nc_plot_outcome_estimation Plots the exposure side estimation.
 nc_plot_exposure_estimation <- function(data,
                                         edge_tbl,
                                         data_model,
