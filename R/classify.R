@@ -20,7 +20,7 @@
 #'   See [nc_estimate_links] for examples on using NetCoupler.
 #'
 classify_effects <- function(data, implementation = c("updated", "original")) {
-    # TODO: Use an attribute as a "check"
+    # TODO: Use an attribute as a "check"?
     assert_data_frame(data)
     check_tbl(data)
 
@@ -60,7 +60,6 @@ keep_xvar_model_estimates <- function(data, main_x_var) {
                keep_main_x_var_estimates(main_x_var)
            )
 }
-
 
 extract_neighbour_nodes <-
     function(term_var,
