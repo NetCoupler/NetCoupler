@@ -90,6 +90,7 @@ identify_external_variable <- function(x) {
 
 # Need to round since some p-values can be really small (basically zero),
 # and others can be exactly zero. So need to assume both are same.
+# TODO: Or do log of the p-value ie. like in GWAS studies.
 round_p_values <- function(data) {
     mutate(data, dplyr::across("p_value", ~ round(., 6)))
 }
