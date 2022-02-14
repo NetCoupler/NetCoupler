@@ -27,16 +27,16 @@ test_that("Correct metabolites are classified as direct", {
         pull(index_node)
 
     expected_exposure_associations <- paste0("metabolite_", c(1, 10, 8))
-    expect_identical(sort(exposure_direct_effect_vars),
-                     sort(expected_exposure_associations))
+    # Expect at least the three associations to be identified.
+    expect_equal(sum(exposure_direct_effect_vars %in% expected_exposure_associations), 3)
 
     outcome_direct_effect_vars <- outcome_estimates %>%
         dplyr::filter(effect == "direct") %>%
         pull(index_node)
 
     expected_outcome_associations <- paste0("metabolite_", c(3, 9, 12))
-    expect_identical(sort(outcome_direct_effect_vars),
-                     sort(expected_outcome_associations))
+    # Expect at least the three associations to be identified.
+    expect_equal(sum(outcome_direct_effect_vars %in% expected_outcome_associations), 3)
 })
 
 test_that("estimations outputs as correct class", {

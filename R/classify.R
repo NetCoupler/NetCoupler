@@ -116,7 +116,7 @@ keep_main_x_var_estimates <- function(data, main_x_var) {
 
 keep_no_neighbour_models <- function(data, main_x_var) {
     data %>%
-        dplyr::filter(dplyr::across(all_of("neighbour_vars"), ~ . == "")) %>%
+        dplyr::filter(dplyr::if_all(all_of("neighbour_vars"), ~ . == "")) %>%
         dplyr::rename(
             no_neighbours_adj_p_value = .data$adj_p_value,
             no_neighbours_p_value = .data$p_value,
