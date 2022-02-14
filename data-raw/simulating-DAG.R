@@ -7,34 +7,41 @@ library(simsurv)
 
 dag_model <- "
 # Network connections
-metabolite_1 ~ metabolite_2 + metabolite_12
-metabolite_2 ~ metabolite_3 + metabolite_7
-metabolite_3 ~ metabolite_4 + metabolite_12
-metabolite_4 ~ metabolite_5 + metabolite_12
-metabolite_5 ~ metabolite_6 + metabolite_9
-metabolite_6 ~ metabolite_10
-metabolite_7 ~ metabolite_8
-metabolite_8 ~ metabolite_9
-metabolite_9 ~ metabolite_10
-metabolite_10 ~ metabolite_11 + metabolite_12
+metabolite_1 ~ 0.25*metabolite_2 + 0.25*metabolite_12
+metabolite_2 ~ 0.25*metabolite_3 + 0.25*metabolite_7
+metabolite_3 ~ 0.25*metabolite_4 + 0.25*metabolite_12
+metabolite_4 ~ 0.25*metabolite_5 + 0.25*metabolite_12
+metabolite_5 ~ 0.25*metabolite_6 + 0.25*metabolite_9
+metabolite_6 ~ 0.25*metabolite_10
+metabolite_7 ~ 0.25*metabolite_8
+metabolite_8 ~ 0.25*metabolite_9
+metabolite_9 ~ 0.25*metabolite_10
+metabolite_10 ~ 0.25*metabolite_11 + 0.25*metabolite_12
 
 # Exposure connections
-metabolite_1 + metabolite_8 + metabolite_10 ~ exposure
+metabolite_1 ~ 0.5*exposure
+metabolite_8 ~ 0.5*exposure
+metabolite_10 ~ 0.5*exposure
 
 # Outcome connections
-outcome_continuous ~ metabolite_3 + metabolite_9 + metabolite_12
+outcome_continuous ~ 0.5*metabolite_3
+outcome_continuous ~ 0.5*metabolite_9
+outcome_continuous ~ 0.5*metabolite_12
 
 # Covariance (confounders)
-exposure + outcome_continuous ~~ age
+# Need to figure out how this works.
+age ~~ exposure + outcome_continuous
+# exposure + outcome_continuous ~~ age
 "
 
 sim_data <- as_tibble(simulateData(dag_model, sample.nobs = 2000)) %>%
+    mutate(across(matches("metabolite_"), ~ . + (5 + abs(min(.))) * 1.1)) %>%
     mutate(id = 1:n())
 
 # Check if DAG was created correctly
 # sim_model_fit <- sem(model = dag_model, data = sim_data)
+# summary(sim_model_fit)
 # lavaanPlot(model = sim_model_fit)
-
 
 # Simulate survival times -------------------------------------------------
 
