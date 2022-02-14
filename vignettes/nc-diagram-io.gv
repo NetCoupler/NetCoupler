@@ -1,7 +1,8 @@
 digraph {
+    # Save using the Export option in RStudio. Dimensions are w=442, h=558
     graph [ranksep = 0.3 splines = ortho overlap = true]
 
-    node [group = a shape = box style = filled fillcolor = whitesmoke]
+    node [group = a shape = box style = 'filled, rounded' fillcolor = whitesmoke]
     df_data [label = 'Dataframe:\l- Metabolites\l- Outcome/Exposure\l']
     df_std [label = 'Dataframe:\l- Standardized Metabolites\l- Standardized Outcome/Exposure\l']
     df_edge [label = 'Edge table:\l- Nodes\l- Edges\l- Weights\l']
@@ -9,13 +10,13 @@ digraph {
     df_exp_results [label = 'Dataframe:\l- Exposure\l- Nodes\l- Estimates\l- Effects\l']
     df_joint [label = 'Dataframe:\l- Nodes\l- Edges\l- Weights/Estimates\l- Effects\l']
 
-    node [group = '' shape = box style = filled fillcolor = slategray2]
+    node [group = '' shape = box style = 'filled, rounded' fillcolor = slategray2]
     fn_std [label = 'nc_standardize()']
     fn_net [label = 'nc_estimate_network()']
     fn_out_links [label = 'nc_estimate_outcome_links()']
     fn_exp_links [label = 'nc_estimate_exposure_links()']
 
-    node [group = '' shape = box style = filled fillcolor = salmon1]
+    node [group = '' shape = box style = 'filled, rounded' fillcolor = salmon1]
     fn_join [label = 'nc_join_links()']
     fn_plot_network [label = 'nc_plot_network()']
     fn_plot_links [label = 'nc_plot_links()']
