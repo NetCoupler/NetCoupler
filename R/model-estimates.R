@@ -40,6 +40,9 @@
 #' @return Outputs a [tibble][tibble::tibble-package] that contains the model
 #'   estimates from either the exposure or outcome side of the network.
 #'
+#' @seealso The vignette ... has more details on how to use NetCoupler with
+#'   different models.
+#'
 #' @examples
 #'
 #' \dontrun{
@@ -105,11 +108,12 @@ nc_estimate_exposure_links <-
             model_arg_list = model_arg_list,
             exponentiate = exponentiate,
             external_side = "exposure"
+        ) %>%
+            dplyr::rename("exposure" = "external_var")
+        list(
+            full_model_list = multiple_models,
+            classified_effects = classify_effects(multiple_models, implementation = implementation)
         )
-        multiple_models %>%
-            dplyr::rename("exposure" = "external_var") %>%
-            classify_effects(implementation = implementation)
-
     }
 
 #' @rdname nc_estimate_links
@@ -132,10 +136,12 @@ nc_estimate_outcome_links <-
             model_arg_list = model_arg_list,
             exponentiate = exponentiate,
             external_side = "outcome"
+        ) %>%
+            dplyr::rename("outcome" = "external_var")
+        list(
+            full_model_list = multiple_models,
+            classified_effects = classify_effects(multiple_models, implementation = implementation)
         )
-        multiple_models %>%
-            dplyr::rename("outcome" = "external_var") %>%
-            classify_effects(implementation = implementation)
 }
 
 compute_model_estimates <-

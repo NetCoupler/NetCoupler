@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
   eval = FALSE
 )
 
-make_table <- function(object, caption) {
+make_table <- function(object, caption = NULL) {
     object %>%
         mutate(across(where(is.numeric), round, digits = 3)) %>% 
         knitr::kable(caption = caption)
@@ -78,7 +78,7 @@ lm_results_outcome <- standardized_data %>%
 ```
 
 ```{r, echo=FALSE}
-make_table(lm_results_outcome)
+make_table(lm_results_outcome$classified_effects)
 ```
 
 ```{r}
@@ -100,7 +100,7 @@ lm_results <- standardized_data %>%
     model_function = lm
   )
 
-lm_results %>% 
+lm_results$classified_effects %>% 
     make_table("Results when using linear models.")
 ```
 
@@ -119,11 +119,12 @@ glm_bin_results <- standardized_data %>%
     implementation = "original"
   )
 
-glm_bin_results %>% 
+glm_bin_results$classified_effects %>% 
     make_table("Results when using logistic regression models.")
 ```
 
 ### Ordinal Logistic Regression
+
 ### Nominal Logistic Regression
 
 ## Cox Regression
@@ -141,7 +142,7 @@ coxph_results <- standardized_data %>%
     model_function = survival::coxph
   )
 
-coxph_results %>% 
+coxph_results$classified_effects %>% 
     make_table("Model results and classification for Cox models.")
 ```
 

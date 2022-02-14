@@ -34,6 +34,7 @@ nc_estimate_network <- function(data, cols = everything(), alpha = 0.01) {
         select({{cols}}) %>%
         na.omit()
 
+    # TODO: Not sure why but this only has 9 of the 12 variables
     tbl_network <- subset_data %>%
         pc_estimate_undirected_graph(alpha) %>%
         as_tbl_graph.pcAlgo()
