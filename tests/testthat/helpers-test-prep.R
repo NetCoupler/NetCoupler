@@ -11,7 +11,7 @@ expect_correct_model_results <- function(.actual, .expected_metabolites) {
     expect_type(.actual, "list")
     expect_identical(class(.actual)[1], "tbl_df")
     expect_identical(sort(.actual$index_node),
-                     sort(.expected_metabolites)[-3])
+                     sort(.expected_metabolites))
 }
 
 insert_random_missingness <- function(data) {
