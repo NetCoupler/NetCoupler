@@ -1,3 +1,4 @@
+#' @title
 #' Classify direct, ambiguous, or no effect between exposure and network nodes.
 #'
 #' @description
@@ -10,6 +11,15 @@
 #'
 #' @param data Multi-model estimates generated from [nc_estimate_exposure_links()] or
 #'   [nc_estimate_outcome_links()] that contain the model summaries.
+#' @param classify_option_list Classification options for direct, ambigious, or none
+#'   effects. Options currently are:
+#'
+#'   - `single_metabolite_threshold`: Default of 0.05. P-values from models with
+#'   only the index metabolite (no neighbour adjustment) are classified as effects if
+#'   below this threshold.
+#'   - `network_threshold`: Default of 0.1. P-values from any models that have
+#'   direct neighbour adjustments are classified as effects if below this threshold.
+#'   This is assumed as a one-sided p-value threshold.
 #'
 #' @return Outputs a [tibble][tibble::tibble-package] with model estimates
 #'   between the exposure and the individual index network nodes, along with the
@@ -19,7 +29,10 @@
 #'   detailed description of the algorithm used to classify direct effects.
 #'   See [nc_estimate_links] for examples on using NetCoupler.
 #'
-classify_effects <- function(data, implementation = c("updated", "original")) {
+classify_effects <- function(data,
+                             classify_option_list = list(single_metabolite_threshold = 0.05,
+                                                         network_threshold = 0.1)) {
+    # TODO: Add check that classify_option_list has appropriate options.
     # TODO: Use an attribute as a "check"?
     assert_data_frame(data)
     check_tbl(data)
@@ -40,8 +53,7 @@ classify_effects <- function(data, implementation = c("updated", "original")) {
         add_comparison_columns()
 
     classify_direct_effects <- models_compared %>%
-        # TODO: Add p-value threshold as argument?
-        add_effects_column(external_variable, implementation = implementation) %>%
+        add_effects_column(external_variable, classify_option_list) %>%
         keep_relevant_data()
 
     return(classify_direct_effects)
@@ -139,13 +151,6 @@ add_comparison_columns <- function(data) {
         mutate(
             # nnm = no neighbour models
             # nm = neighbour models
-            nnm_has_bigger_pval_than_nm = .data$adj_p_value <= .data$no_neighbours_adj_p_value,
-            # For no neighbour model, have variable be NA
-            nnm_has_bigger_pval_than_nm = dplyr::if_else(
-                .data$neighbour_vars == "",
-                NA,
-                .data$nnm_has_bigger_pval_than_nm
-            ),
             nnm_has_same_direction_as_nm = sign(.data$estimate) ==
                 sign(.data$no_neighbours_estimate),
             # For no neighbour model, have variable be NA
@@ -157,51 +162,43 @@ add_comparison_columns <- function(data) {
         )
 }
 
-add_effects_column <- function(data, ext_var, pvalue_threshold = 0.001,
-                               implementation = c("updated", "original")) {
+add_effects_column <- function(data, ext_var, classify_option_list) {
     data %>%
         dplyr::group_by(.data[[ext_var]], .data$index_node) %>%
         mutate(effect = dplyr::case_when(
-            direct_effect_logic(.data$nnm_has_bigger_pval_than_nm,
+            direct_effect_logic(.data$no_neighbours_adj_p_value,
                                 .data$nnm_has_same_direction_as_nm,
-                                .data$estimate,
-                                .data$std_error,
-                                .data$no_neighbours_adj_p_value,
                                 .data$adj_p_value,
-                                implementation = implementation) ~ "direct",
-            ambigious_effect_logic(.data$nnm_has_bigger_pval_than_nm,
-                                   .data$nnm_has_same_direction_as_nm,
+                                classify_option_list = classify_option_list) ~ "direct",
+            ambigious_effect_logic(.data$no_neighbours_adj_p_value,
                                    .data$adj_p_value,
-                                   pvalue_threshold) ~ "ambiguous",
+                                   classify_option_list = classify_option_list) ~ "ambiguous",
             TRUE ~ "none"
         )) %>%
         dplyr::ungroup()
 }
 
-direct_effect_logic <- function(bigger_pval, same_dir, est, se, nnm_pvalue,
-                                pvalue, implementation = c("updated", "original")) {
-    implementation <- rlang::arg_match(implementation)
+direct_effect_logic <- function(nnm_pvalue, same_dir, pvalue, classify_option_list) {
+    # TODO: Add this later.
+    # implementation <- rlang::arg_match(implementation)
+    implementation <- "original"
     switch(
         implementation,
-        updated =
-            all(bigger_pval, na.rm = TRUE) &
-            all(same_dir, na.rm = TRUE) &
-            # When standard error is smaller than a quarter of the estimate. (?)
-            all(se < abs(est / 4), na.rm = TRUE),
         # the criteria for direct effect identification were i) P < 0.05 in the
         # non-neighbor-adjusted model (rule1), ii) P < 0.1 in all neighbor-adjusted
         # models (rule 2), iii) same sign of the beta in all the models (rule 3).
         original =
-            all(nnm_pvalue < 0.05, na.rm = TRUE) &
+            all(nnm_pvalue < classify_option_list$single_metabolite_threshold, na.rm = TRUE) &
             all(same_dir, na.rm = TRUE) &
-            all(pvalue < 0.1, na.rm = TRUE)
+            all(pvalue < classify_option_list$network_threshold, na.rm = TRUE)
+        # TODO: Add other methods later.
     )
 }
 
-ambigious_effect_logic <- function(bigger_pval, same_dir, pvalue, pvalue_threshold = 0.001) {
-    any(bigger_pval, na.rm = TRUE) &
-        any(same_dir, na.rm = TRUE) &
-        any(pvalue <= pvalue_threshold)
+# TODO: Merge with direct above? depends on implementation
+ambigious_effect_logic <- function(nnm_pvalue, pvalue, classify_option_list) {
+    any(nnm_pvalue < classify_option_list$single_metabolite_threshold, na.rm = TRUE) |
+        any(pvalue < classify_option_list$network_threshold, na.rm = TRUE)
 }
 
 keep_relevant_data <- function(data) {

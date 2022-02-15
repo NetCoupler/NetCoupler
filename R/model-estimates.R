@@ -1,3 +1,5 @@
+
+#' @title
 #' Compute model estimates between an external (exposure or outcome) variable
 #' and a network.
 #'
@@ -98,7 +100,8 @@ nc_estimate_exposure_links <-
              model_function,
              model_arg_list = NULL,
              exponentiate = FALSE,
-             implementation = c("updated", "original")) {
+             classify_option_list = list(single_metabolite_threshold = 0.05,
+                                         network_threshold = 0.1)) {
         multiple_models <- compute_model_estimates(
             data = data,
             edge_tbl = edge_tbl,
@@ -112,7 +115,7 @@ nc_estimate_exposure_links <-
             dplyr::rename("exposure" = "external_var")
         list(
             full_model_list = multiple_models,
-            classified_effects = classify_effects(multiple_models, implementation = implementation)
+            classified_effects = classify_effects(multiple_models, classify_option_list)
         )
     }
 
@@ -126,7 +129,8 @@ nc_estimate_outcome_links <-
              model_function,
              model_arg_list = NULL,
              exponentiate = FALSE,
-             implementation = c("updated", "original")) {
+             classify_option_list = list(single_metabolite_threshold = 0.05,
+                                         network_threshold = 0.1)) {
         multiple_models <- compute_model_estimates(
             data = data,
             edge_tbl = edge_tbl,
@@ -140,7 +144,7 @@ nc_estimate_outcome_links <-
             dplyr::rename("outcome" = "external_var")
         list(
             full_model_list = multiple_models,
-            classified_effects = classify_effects(multiple_models, implementation = implementation)
+            classified_effects = classify_effects(multiple_models, classify_option_list)
         )
 }
 
