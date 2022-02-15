@@ -15,7 +15,13 @@ NULL
 
 #' Simulated dataset with an underlying Directed Graph structure for the metabolites.
 #'
-#' @format The simulated dataset, output as a [tibble][tibble::tibble-package]
-#'   contains two outcome variables (`survival_time` and `case_status`), one
-#'   generic `exposure`, 12 `metabolite_*` variables, and an `age` variable.
+#' @format The simulated dataset is a [tibble][tibble::tibble-package] with the
+#'   following variables:
+#'
+#'   - Two outcome variables (`outcome_continuous` and `outcome_binary`) along
+#'   with survival time (`outcome_event_time`) used for the `outcome_binary`
+#'   - A generic `exposure` variable as continuous
+#'   - 12 `metabolite_*` variables
+#'   - An `age` variable used as a confounder
+#'
 "simulated_data"

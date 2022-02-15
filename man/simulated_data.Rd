@@ -5,9 +5,15 @@
 \alias{simulated_data}
 \title{Simulated dataset with an underlying Directed Graph structure for the metabolites.}
 \format{
-The simulated dataset, output as a \link[tibble:tibble-package]{tibble}
-contains two outcome variables (\code{survival_time} and \code{case_status}), one
-generic \code{exposure}, 12 \verb{metabolite_*} variables, and an \code{age} variable.
+The simulated dataset is a \link[tibble:tibble-package]{tibble} with the
+following variables:
+\itemize{
+\item Two outcome variables (\code{outcome_continuous} and \code{outcome_binary}) along
+with survival time (\code{outcome_event_time}) used for the \code{outcome_binary}
+\item A generic \code{exposure} variable as continuous
+\item 12 \verb{metabolite_*} variables
+\item An \code{age} variable used as a confounder
+}
 }
 \usage{
 simulated_data

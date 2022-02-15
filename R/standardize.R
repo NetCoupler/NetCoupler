@@ -1,4 +1,5 @@
 
+#' @title
 #' Standardize the metabolic variables.
 #'
 #' @description
@@ -20,6 +21,7 @@
 #' @return Outputs a [tibble][tibble::tibble-package] object, with the original metabolic
 #'   variables now standardized.
 #' @export
+#' @seealso [nc_estimate_links] for more detailed examples or the [vignette("NetCoupler")].
 #'
 #' @examples
 #'

@@ -6,10 +6,7 @@
 \alias{NetCoupler-package}
 \title{NetCoupler: Inference of Causal Links Between a Network and an External Variable}
 \description{
-The NetCoupler algorithm identifies potential direct effects of 
-    correlated, high-dimensional variables formed as a network with an external 
-    variable. The external variable may act as the dependent/response variable 
-    or as an independent/predictor variable to the network.
+The NetCoupler algorithm identifies potential direct effects of correlated, high-dimensional variables formed as a network with an external variable. The external variable may act as the dependent/response variable or as an independent/predictor variable to the network.
 }
 \seealso{
 Useful links:
