@@ -1,5 +1,6 @@
 # TODO: Incomplete.
-#' Plot of the network of the metabolic variables.
+#' @title
+#' **IN DEVELOPMENT** Plot of the network of the metabolic variables.
 #'
 #' @description
 #' \lifecycle{experimental}
@@ -120,7 +121,8 @@ plot_external_var <-
         ggraph::theme_graph()
     }
 
-#' Plot of the outcome or exposure side model estimation.
+#' @title
+#' **IN DEVELOPMENT** Plot of the outcome or exposure side model estimation.
 #'
 #' @description
 #' \lifecycle{experimental}
