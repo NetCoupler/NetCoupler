@@ -99,7 +99,9 @@ lm_results <- standardized_data %>%
     outcome = "outcome_continuous",
     model_function = lm
   )
+```
 
+```{r, echo=FALSE}
 lm_results$classified_effects %>% 
     make_table("Results when using linear models.")
 ```
@@ -118,7 +120,9 @@ glm_bin_results <- standardized_data %>%
     exponentiate = TRUE,
     implementation = "original"
   )
+```
 
+```{r, echo=FALSE}
 glm_bin_results$classified_effects %>% 
     make_table("Results when using logistic regression models.")
 ```
@@ -143,11 +147,12 @@ coxph_results <- standardized_data %>%
     outcome = "surv_object",
     model_function = survival::coxph
   )
+```
 
+```{r, echo=FALSE}
 coxph_results$classified_effects %>% 
     make_table("Model results and classification for Cox models.")
 ```
-
 
 <!-- 
 ## Poisson regression 
