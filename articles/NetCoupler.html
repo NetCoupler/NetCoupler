@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NetCoupler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/NetCoupler.html">Get started</a>
 </li>
@@ -57,10 +53,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/articles/description.html">Implementation details of NetCoupler</a>
+      <a href="../articles/description.html">Implementation details of NetCoupler</a>
     </li>
     <li>
-      <a href="../articles/articles/examples.html">Examples of using NetCoupler with different models</a>
+      <a href="../articles/examples.html">Examples of using NetCoupler with different models</a>
     </li>
   </ul>
 </li>
@@ -70,7 +66,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/NetCoupler/NetCoupler/">
+  <a href="https://github.com/NetCoupler/NetCoupler/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -89,12 +85,12 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting started with NetCoupler</h1>
-                        <h4 class="author">Clemens Wittenbecher</h4>
-                        <h4 class="author">Luke Johnston</h4>
+                        <h4 data-toc-skip class="author">Clemens Wittenbecher</h4>
+                        <h4 data-toc-skip class="author">Luke Johnston</h4>
             
-            <h4 class="date">2021-08-20</h4>
+            <h4 data-toc-skip class="date">2022-02-15</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/NetCoupler/NetCoupler/blob/master/vignettes/NetCoupler.Rmd"><code>vignettes/NetCoupler.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/NetCoupler/NetCoupler/blob/HEAD/vignettes/NetCoupler.Rmd" class="external-link"><code>vignettes/NetCoupler.Rmd</code></a></small>
       <div class="hidden name"><code>NetCoupler.Rmd</code></div>
 
     </div>
@@ -108,26 +104,26 @@
 <ol style="list-style-type: decimal">
 <li>Standardized metabolic or other high-dimensional data.</li>
 <li>Exposure or outcome data.</li>
-<li>Network estimating method (default is the PC algorithm <span class="citation">(Colombo and Maathuis 2014)</span> from the <a href="https://CRAN.R-project.org/package=pcalg">pcalg</a> package).</li>
-<li>Modeling method (e.g. linear regression with <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>), including confounders to adjust for.</li>
+<li>Network estimating method (default is the PC algorithm <span class="citation">(Colombo and Maathuis 2014)</span> from the <a href="https://CRAN.R-project.org/package=pcalg" class="external-link">pcalg</a> package).</li>
+<li>Modeling method (e.g. linear regression with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>), including confounders to adjust for.</li>
 </ol>
 <!-- TODO: Add figure demonstrating NetCoupler --><p>The final output is the modeling results along with the results from NetCoupler’s classification. Results can then be displayed as a joint network model in graphical format.</p>
-<div id="overall-framework" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overall-framework" class="anchor"></a>Overall framework</h2>
+<div class="section level2">
+<h2 id="overall-framework">Overall framework<a class="anchor" aria-label="anchor" href="#overall-framework"></a>
+</h2>
 <p>NetCoupler has several frameworks in mind:</p>
 <ul>
-<li>Works with <a href="https://magrittr.tidyverse.org/">magrittr</a> <code><a href="../reference/%&gt;%.html">%&gt;%</a></code> or base R <code>|&gt;</code> operator.</li>
-<li>Works with <a href="https://tidyselect.r-lib.org/">tidyselect</a> helpers (e.g. <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with()</a></code>, <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">contains()</a></code>).</li>
+<li>Works with <a href="https://magrittr.tidyverse.org/" class="external-link">magrittr</a> <code>%&gt;%</code> or base R <code>|&gt;</code> operator.</li>
+<li>Works with <a href="https://tidyselect.r-lib.org/" class="external-link">tidyselect</a> helpers (e.g. <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with()</a></code>, <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains()</a></code>).</li>
 <li>Is auto-complete friendly (e.g. start function names with <code>nc_</code>).</li>
-<li>Inputs and outputs of functions are <a href="https://tibble.tidyverse.org/">tibbles</a>/dataframes or <a href="https://tidygraph.data-imaginist.com/">tidygraph tibbles</a>.</li>
+<li>Inputs and outputs of functions are <a href="https://tibble.tidyverse.org/" class="external-link">tibbles</a>/dataframes or <a href="https://tidygraph.data-imaginist.com/" class="external-link">tidygraph tibbles</a>.</li>
 <li>Generic modeling approach by using model and settings as function argument inputs. <!-- - Works with the [tidymodel](https://www.tidymodels.org/) approach, such as by  --> <!-- making use of [parsnip](https://parsnip.tidymodels.org/) functions to make the  --> <!-- models. -->
 </li>
 </ul>
 </div>
-<div id="workflow" class="section level2">
-<h2 class="hasAnchor">
-<a href="#workflow" class="anchor"></a>Workflow</h2>
+<div class="section level2">
+<h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
+</h2>
 <p>The general workflow for using NetCoupler revolves around several main functions, listed below as well as visualized in the figure below:</p>
 <ul>
 <li>
@@ -147,28 +143,28 @@
 <img src="nc-diagram-io.png" alt=""><p class="caption">NetCoupler functions and their input and ouput. Input and output objects are the light gray boxes, while the light blue boxes are the currently available functions, and the light orange boxes are functions planned to be developed.</p>
 </div>
 </div>
-<div id="simple-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#simple-example" class="anchor"></a>Simple example</h2>
+<div class="section level2">
+<h2 id="simple-example">Simple example<a class="anchor" aria-label="anchor" href="#simple-example"></a>
+</h2>
 <p>The below is an example using a simulated dataset for demonstrating NetCoupler.</p>
-<div id="estimating-the-metabolic-network" class="section level3">
-<h3 class="hasAnchor">
-<a href="#estimating-the-metabolic-network" class="anchor"></a>Estimating the metabolic network</h3>
+<div class="section level3">
+<h3 id="estimating-the-metabolic-network">Estimating the metabolic network<a class="anchor" aria-label="anchor" href="#estimating-the-metabolic-network"></a>
+</h3>
 <p>For estimating the network, it’s (basically) required to standardize the metabolic variables before inputting into <code><a href="../reference/nc_estimate_network.html">nc_estimate_network()</a></code>. This function also log-transforms and scales (mean-center and z-score normalize) the values of the metabolic variables. We do this because the network estimation algorithm can sometimes be finicky about differences in variable numerical scale (mean of 1 vs mean of 1000).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NetCoupler/NetCoupler">NetCoupler</a></span><span class="op">)</span>
-<span class="va">std_metabolic_data</span> <span class="op">&lt;-</span> <span class="va">simulated_data</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NetCoupler/NetCoupler" class="external-link">NetCoupler</a></span><span class="op">)</span>
+<span class="va">std_metabolic_data</span> <span class="op">&lt;-</span> <span class="va">simulated_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>If you intend to also adjust for potential confounders when estimating the exposure or outcome side connections, you can include the potential impact these confounders may have on the network by regressing the confounders on the metabolic variables. Then the residuals can be extracted and used when constructing the network. You do this also with the <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code> function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">std_metabolic_data</span> <span class="op">&lt;-</span> <span class="va">simulated_data</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="va">std_metabolic_data</span> <span class="op">&lt;-</span> <span class="va">simulated_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span>,
                    regressed_on <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></code></pre></div>
 <p>After that, you can estimate the network.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Make partial independence network from metabolite data</span>
-<span class="va">metabolite_network</span> <span class="op">&lt;-</span> <span class="va">std_metabolic_data</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/nc_estimate_network.html">nc_estimate_network</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">metabolite_network</span> <span class="op">&lt;-</span> <span class="va">std_metabolic_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/nc_estimate_network.html">nc_estimate_network</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <!-- To see what the network looks like, -->
 <!-- use the function `nc_plot_network()`. -->
 <!-- ```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5} -->
@@ -178,58 +174,98 @@
 <!-- While the plot is a bit crowded, it at least provides a base to start tidying up -->
 <!-- from. -->
 </div>
-<div id="estimating-exposure-and-outcome-side-connections" class="section level3">
-<h3 class="hasAnchor">
-<a href="#estimating-exposure-and-outcome-side-connections" class="anchor"></a>Estimating exposure and outcome-side connections</h3>
+<div class="section level3">
+<h3 id="estimating-exposure-and-outcome-side-connections">Estimating exposure and outcome-side connections<a class="anchor" aria-label="anchor" href="#estimating-exposure-and-outcome-side-connections"></a>
+</h3>
 <p>For the exposure and outcome side, you should standardize the metabolic variables, but this time, we don’t regress on the confounders since they will be included in the models.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">standardized_data</span> <span class="op">&lt;-</span> <span class="va">simulated_data</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Now you can estimate the outcome or exposure and identify direct effects for either the exposure side (<code>exposure -&gt; metabolite</code>) or the outcome side (<code>metabolite -&gt; outcome</code>). For more details on the algorithm, see the <code>vignette("description")</code>. For the exposure side, the function identifies whether a link between the exposure and an index node (one metabolic variable in the network) exists, independent of potential confounders and from neighbouring nodes (other metabolic variables linked to the index variable). Depending on how consistent and strong the link is, the effect is classified as “direct”, “ambiguous”, or “none”.</p>
+<code class="sourceCode R"><span class="va">standardized_data</span> <span class="op">&lt;-</span> <span class="va">simulated_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>Now you can estimate the outcome or exposure and identify direct effects for either the exposure side (<code>exposure -&gt; metabolite</code>) or the outcome side (<code>metabolite -&gt; outcome</code>). For more details on the algorithm, see the <code><a href="../articles/description.html">vignette("description")</a></code>. For the exposure side, the function identifies whether a link between the exposure and an index node (one metabolic variable in the network) exists, independent of potential confounders and from neighbouring nodes (other metabolic variables linked to the index variable). Depending on how consistent and strong the link is, the effect is classified as “direct”, “ambiguous”, or “none”.</p>
 <p>In the example below, we specifically generated the simulated data so that the exposure is associated with metabolites 1, 8, and 12. And as we can see, those links have been correctly identified.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">outcome_estimates</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">outcome_estimates</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
         edge_tbl <span class="op">=</span> <span class="fu"><a href="../reference/as_edge_tbl.html">as_edge_tbl</a></span><span class="op">(</span><span class="va">metabolite_network</span><span class="op">)</span>,
         outcome <span class="op">=</span> <span class="st">"outcome_continuous"</span>,
         model_function <span class="op">=</span> <span class="va">lm</span>
     <span class="op">)</span>
 <span class="va">outcome_estimates</span>
-<span class="co">#&gt; # A tibble: 9 × 7</span>
-<span class="co">#&gt;   outcome            index_node   estimate std_error p_value adj_p_value effect </span>
-<span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;  </span>
-<span class="co">#&gt; 1 outcome_continuous metabolite_1 -0.00437    0.0223  0.845       0.915  none   </span>
-<span class="co">#&gt; 2 outcome_continuous metabolite_… -0.129      0.0221  0           0      ambigu…</span>
-<span class="co">#&gt; 3 outcome_continuous metabolite_…  0.260      0.0215  0           0      direct </span>
-<span class="co">#&gt; 4 outcome_continuous metabolite_2 -0.0350     0.0223  0.116       0.232  none   </span>
-<span class="co">#&gt; 5 outcome_continuous metabolite_3  0.171      0.0220  0           0      direct </span>
-<span class="co">#&gt; 6 outcome_continuous metabolite_4  0.0491     0.0223  0.0275      0.0650 none   </span>
-<span class="co">#&gt; 7 outcome_continuous metabolite_5  0.120      0.0221  0           0      none   </span>
-<span class="co">#&gt; 8 outcome_continuous metabolite_7  0.0149     0.0223  0.503       0.595  none   </span>
-<span class="co">#&gt; 9 outcome_continuous metabolite_8  0.0338     0.0223  0.130       0.241  none</span>
+<span class="co">#&gt; $full_model_list</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 301 × 9</span></span>
+<span class="co">#&gt;    outcome       index_node model_id term  estimate std_error statistic  p_value</span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> outcome_cont… metabolit… 42e63fc… (Int… -<span style="color: #BB0000;">0.018</span><span style="color: #BB0000; text-decoration: underline;">5</span>     0.025<span style="text-decoration: underline;">0</span>    -<span style="color: #BB0000;">0.738</span> 4.61<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> outcome_cont… metabolit… 42e63fc… meta…  0.066<span style="text-decoration: underline;">2</span>     0.025<span style="text-decoration: underline;">8</span>     2.57  1.03<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> outcome_cont… metabolit… 42e63fc… meta… -<span style="color: #BB0000;">0.049</span><span style="color: #BB0000; text-decoration: underline;">4</span>     0.025<span style="text-decoration: underline;">8</span>    -<span style="color: #BB0000;">1.92</span>  5.54<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> outcome_cont… metabolit… 84366fe… (Int… -<span style="color: #BB0000;">0.018</span><span style="color: #BB0000; text-decoration: underline;">5</span>     0.023<span style="text-decoration: underline;">8</span>    -<span style="color: #BB0000;">0.777</span> 4.37<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> outcome_cont… metabolit… 84366fe… meta… -<span style="color: #BB0000;">0.019</span><span style="color: #BB0000; text-decoration: underline;">8</span>     0.024<span style="text-decoration: underline;">3</span>    -<span style="color: #BB0000;">0.814</span> 4.16<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> outcome_cont… metabolit… 84366fe… meta…  0.364      0.024<span style="text-decoration: underline;">3</span>    15.0   3.50<span style="color: #949494;">e</span><span style="color: #BB0000;">-48</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> outcome_cont… metabolit… 9bc6200… (Int… -<span style="color: #BB0000;">0.018</span><span style="color: #BB0000; text-decoration: underline;">5</span>     0.023<span style="text-decoration: underline;">7</span>    -<span style="color: #BB0000;">0.778</span> 4.37<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> outcome_cont… metabolit… 9bc6200… meta… -<span style="color: #BB0000;">0.005</span><span style="color: #BB0000; text-decoration: underline;">62</span>    0.024<span style="text-decoration: underline;">9</span>    -<span style="color: #BB0000;">0.226</span> 8.21<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> outcome_cont… metabolit… 9bc6200… meta…  0.365      0.024<span style="text-decoration: underline;">2</span>    15.1   1.10<span style="color: #949494;">e</span><span style="color: #BB0000;">-48</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> outcome_cont… metabolit… 9bc6200… meta… -<span style="color: #BB0000;">0.060</span><span style="color: #BB0000; text-decoration: underline;">4</span>     0.024<span style="text-decoration: underline;">5</span>    -<span style="color: #BB0000;">2.47</span>  1.37<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 291 more rows, and 1 more variable: adjusted_vars &lt;chr&gt;</span></span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $classified_effects</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 7</span></span>
+<span class="co">#&gt;    outcome            index_node   estimate std_error p_value adj_p_value effect</span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> outcome_continuous metabolite_1  0.054<span style="text-decoration: underline;">3</span>     0.025<span style="text-decoration: underline;">1</span> 3.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    0.057<span style="text-decoration: underline;">7</span>   ambig…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> outcome_continuous metabolite_…  0.096<span style="text-decoration: underline;">5</span>     0.025<span style="text-decoration: underline;">0</span> 1.17<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>    0.000<span style="text-decoration: underline;">296</span> ambig…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> outcome_continuous metabolite_… -<span style="color: #BB0000;">0.007</span><span style="color: #BB0000; text-decoration: underline;">64</span>    0.025<span style="text-decoration: underline;">1</span> 7.61<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>    0.861    none  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> outcome_continuous metabolite_…  0.360      0.023<span style="text-decoration: underline;">8</span> 0   <span style="color: #949494;"> </span>      0        direct</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> outcome_continuous metabolite_2 -<span style="color: #BB0000;">0.033</span><span style="color: #BB0000; text-decoration: underline;">5</span>     0.025<span style="text-decoration: underline;">1</span> 1.81<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>    0.260    ambig…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> outcome_continuous metabolite_3 -<span style="color: #BB0000;">0.144</span>      0.024<span style="text-decoration: underline;">9</span> 0   <span style="color: #949494;"> </span>      0        direct</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> outcome_continuous metabolite_4  0.024<span style="text-decoration: underline;">4</span>     0.025<span style="text-decoration: underline;">1</span> 3.31<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>    0.452    ambig…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> outcome_continuous metabolite_5  0.029<span style="text-decoration: underline;">6</span>     0.025<span style="text-decoration: underline;">1</span> 2.38<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>    0.330    none  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> outcome_continuous metabolite_6  0.056<span style="text-decoration: underline;">0</span>     0.025<span style="text-decoration: underline;">0</span> 2.55<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    0.049<span style="text-decoration: underline;">8</span>   ambig…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> outcome_continuous metabolite_7  0.002<span style="text-decoration: underline;">68</span>    0.025<span style="text-decoration: underline;">1</span> 9.15<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>    0.937    none  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> outcome_continuous metabolite_8  0.056<span style="text-decoration: underline;">7</span>     0.025<span style="text-decoration: underline;">0</span> 2.38<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    0.047<span style="text-decoration: underline;">6</span>   ambig…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> outcome_continuous metabolite_9  0.212      0.024<span style="text-decoration: underline;">6</span> 0   <span style="color: #949494;"> </span>      0        direct</span>
 
-<span class="va">exposure_estimates</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op">%&gt;%</span>
+<span class="va">exposure_estimates</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_exposure_links</a></span><span class="op">(</span>
         edge_tbl <span class="op">=</span> <span class="fu"><a href="../reference/as_edge_tbl.html">as_edge_tbl</a></span><span class="op">(</span><span class="va">metabolite_network</span><span class="op">)</span>,
         exposure <span class="op">=</span> <span class="st">"exposure"</span>,
         model_function <span class="op">=</span> <span class="va">lm</span>
     <span class="op">)</span>
 <span class="va">exposure_estimates</span>
-<span class="co">#&gt; # A tibble: 9 × 7</span>
-<span class="co">#&gt;   exposure index_node    estimate std_error p_value adj_p_value effect</span>
-<span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt; </span>
-<span class="co">#&gt; 1 exposure metabolite_1    0.151     0.0215   0           0     direct</span>
-<span class="co">#&gt; 2 exposure metabolite_10  -0.362     0.0202   0           0     direct</span>
-<span class="co">#&gt; 3 exposure metabolite_12  -0.0171    0.0218   0.432       0.503 none  </span>
-<span class="co">#&gt; 4 exposure metabolite_2    0.0189    0.0218   0.387       0.503 none  </span>
-<span class="co">#&gt; 5 exposure metabolite_3    0.0279    0.0218   0.200       0.346 none  </span>
-<span class="co">#&gt; 6 exposure metabolite_4    0.0207    0.0218   0.342       0.493 none  </span>
-<span class="co">#&gt; 7 exposure metabolite_5   -0.0230    0.0218   0.290       0.444 none  </span>
-<span class="co">#&gt; 8 exposure metabolite_7    0.0198    0.0218   0.362       0.496 none  </span>
-<span class="co">#&gt; 9 exposure metabolite_8   -0.328     0.0205   0           0     direct</span></code></pre></div>
+<span class="co">#&gt; $full_model_list</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 301 × 9</span></span>
+<span class="co">#&gt;    exposure index_node   model_id    term  estimate std_error statistic  p_value</span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> exposure metabolite_1 d54d16e09e… (Int… 0.000<span style="text-decoration: underline;">360</span>    0.021<span style="text-decoration: underline;">4</span>    0.016<span style="text-decoration: underline;">8</span> 9.87<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> exposure metabolite_1 d54d16e09e… expo… 0.180       0.021<span style="text-decoration: underline;">8</span>    8.26   2.71<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> exposure metabolite_1 d54d16e09e… meta… 0.242       0.021<span style="text-decoration: underline;">4</span>   11.3    8.56<span style="color: #949494;">e</span><span style="color: #BB0000;">-29</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> exposure metabolite_1 3e7b561192… (Int… 0.000<span style="text-decoration: underline;">358</span>    0.021<span style="text-decoration: underline;">5</span>    0.016<span style="text-decoration: underline;">6</span> 9.87<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> exposure metabolite_1 3e7b561192… expo… 0.179       0.022<span style="text-decoration: underline;">0</span>    8.16   6.07<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> exposure metabolite_1 3e7b561192… meta… 0.205       0.021<span style="text-decoration: underline;">6</span>    9.51   5.39<span style="color: #949494;">e</span><span style="color: #BB0000;">-21</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> exposure metabolite_1 275c2363be… (Int… 0.000<span style="text-decoration: underline;">362</span>    0.020<span style="text-decoration: underline;">9</span>    0.017<span style="text-decoration: underline;">3</span> 9.86<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> exposure metabolite_1 275c2363be… expo… 0.181       0.021<span style="text-decoration: underline;">4</span>    8.47   4.79<span style="color: #949494;">e</span><span style="color: #BB0000;">-17</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> exposure metabolite_1 275c2363be… meta… 0.187       0.021<span style="text-decoration: underline;">0</span>    8.92   1.06<span style="color: #949494;">e</span><span style="color: #BB0000;">-18</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> exposure metabolite_1 275c2363be… meta… 0.227       0.021<span style="text-decoration: underline;">0</span>   10.8    1.66<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 291 more rows, and 1 more variable: adjusted_vars &lt;chr&gt;</span></span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $classified_effects</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 7</span></span>
+<span class="co">#&gt;    exposure index_node    estimate std_error  p_value adj_p_value effect   </span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> exposure metabolite_1   0.178      0.022<span style="text-decoration: underline;">5</span> 0          0         direct   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> exposure metabolite_10  0.298      0.021<span style="text-decoration: underline;">8</span> 0          0         direct   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> exposure metabolite_11 -<span style="color: #BB0000;">0.022</span><span style="color: #BB0000; text-decoration: underline;">6</span>     0.022<span style="text-decoration: underline;">8</span> 0.322      0.512     ambiguous</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> exposure metabolite_12 -<span style="color: #BB0000;">0.006</span><span style="color: #BB0000; text-decoration: underline;">41</span>    0.022<span style="text-decoration: underline;">8</span> 0.779      0.859     none     </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> exposure metabolite_2  -<span style="color: #BB0000;">0.007</span><span style="color: #BB0000; text-decoration: underline;">88</span>    0.022<span style="text-decoration: underline;">8</span> 0.730      0.826     ambiguous</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> exposure metabolite_3   0.024<span style="text-decoration: underline;">1</span>     0.022<span style="text-decoration: underline;">8</span> 0.290      0.473     none     </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> exposure metabolite_4  -<span style="color: #BB0000;">0.008</span><span style="color: #BB0000; text-decoration: underline;">54</span>    0.022<span style="text-decoration: underline;">8</span> 0.708      0.826     none     </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> exposure metabolite_5   0.019<span style="text-decoration: underline;">1</span>     0.022<span style="text-decoration: underline;">8</span> 0.402      0.576     none     </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> exposure metabolite_6  -<span style="color: #BB0000;">0.015</span><span style="color: #BB0000; text-decoration: underline;">1</span>     0.022<span style="text-decoration: underline;">8</span> 0.507      0.683     none     </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> exposure metabolite_7  -<span style="color: #BB0000;">0.097</span><span style="color: #BB0000; text-decoration: underline;">6</span>     0.022<span style="text-decoration: underline;">7</span> 0.000<span style="text-decoration: underline;">018</span>   0.000<span style="text-decoration: underline;">053</span>4 ambiguous</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> exposure metabolite_8  -<span style="color: #BB0000;">0.343</span>      0.021<span style="text-decoration: underline;">5</span> 0          0         direct   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> exposure metabolite_9   0.102      0.022<span style="text-decoration: underline;">7</span> 0.000<span style="text-decoration: underline;">007</span>   0.000<span style="text-decoration: underline;">024</span>1 ambiguous</span></code></pre></div>
 <p>If you want to adjust for confounders and have already used <code>regressed_on</code> in the <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code> function, add confounders to <code><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links()</a></code> or <code><a href="../reference/nc_estimate_links.html">nc_estimate_exposure_links()</a></code> with the <code>adjustment_vars</code> argument:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">outcome_estimates</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">outcome_estimates</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
         edge_tbl <span class="op">=</span> <span class="fu"><a href="../reference/as_edge_tbl.html">as_edge_tbl</a></span><span class="op">(</span><span class="va">metabolite_network</span><span class="op">)</span>,
         outcome <span class="op">=</span> <span class="st">"outcome_continuous"</span>,
@@ -280,10 +316,10 @@
 <!-- - complete cases for all variables used by netcoupler -->
 <div id="refs" class="references">
 <div id="ref-Colombo2014">
-<p>Colombo, Diego, and Marloes H. Maathuis. 2014. “Order-Independent Constraint-Based Causal Structure Learning.” <em>Journal of Machine Learning Research</em> 15 (1): 3741–82. <a href="http://dl.acm.org/citation.cfm?id=2627435.2750365">http://dl.acm.org/citation.cfm?id=2627435.2750365</a>.</p>
+<p>Colombo, Diego, and Marloes H. Maathuis. 2014. “Order-Independent Constraint-Based Causal Structure Learning.” <em>Journal of Machine Learning Research</em> 15 (1): 3741–82. <a href="http://dl.acm.org/citation.cfm?id=2627435.2750365" class="external-link">http://dl.acm.org/citation.cfm?id=2627435.2750365</a>.</p>
 </div>
 <div id="ref-Wittenbecher2017">
-<p>Wittenbecher, Clemens. 2017. “Linking Whole-Grain Bread, Coffee, and Red Meat to the Risk of Type 2 Diabetes.” Doctoralthesis, Universität Potsdam. <a href="https://nbn-resolving.org/urn:nbn:de:kobv:517-opus4-404592">https://nbn-resolving.org/urn:nbn:de:kobv:517-opus4-404592</a>.</p>
+<p>Wittenbecher, Clemens. 2017. “Linking Whole-Grain Bread, Coffee, and Red Meat to the Risk of Type 2 Diabetes.” Doctoralthesis, Universität Potsdam. <a href="https://nbn-resolving.org/urn:nbn:de:kobv:517-opus4-404592" class="external-link">https://nbn-resolving.org/urn:nbn:de:kobv:517-opus4-404592</a>.</p>
 </div>
 </div>
 </div>
@@ -301,11 +337,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Luke Johnston, Clemens Wittenbecher.</p>
+  <p></p>
+<p>Developed by Luke Johnston, Clemens Wittenbecher.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -313,6 +351,8 @@
 
   
 
+
+  
 
   </body>
 </html>

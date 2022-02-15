@@ -22,6 +22,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -34,18 +36,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">NetCoupler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/NetCoupler.html">Get started</a>
 </li>
@@ -60,10 +56,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/articles/description.html">Implementation details of NetCoupler</a>
+      <a href="articles/description.html">Implementation details of NetCoupler</a>
     </li>
     <li>
-      <a href="articles/articles/examples.html">Examples of using NetCoupler with different models</a>
+      <a href="articles/examples.html">Examples of using NetCoupler with different models</a>
     </li>
   </ul>
 </li>
@@ -73,7 +69,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/NetCoupler/NetCoupler/">
+  <a href="https://github.com/NetCoupler/NetCoupler/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -91,26 +87,26 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div id="netcoupler" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#netcoupler" class="anchor"></a>NetCoupler</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="netcoupler">NetCoupler<a class="anchor" aria-label="anchor" href="#netcoupler"></a>
+</h1></div>
 <!-- badges: start -->
 
 <p>The goal of NetCoupler is to estimate causal links between a set of -omic (e.g. metabolomics, lipidomics) or other high-dimensional metabolic data and either a disease outcome, an exposure, or both. The NetCoupler-algorithm, formulated by Clemens Wittenbecher and converted into an R package by Luke Johnston, links conditional dependency networks with an external outcome or exposure to identify direct effects between them.</p>
 <!-- TODO: Add figure demonstrating NetCoupler -->
 <p>See the <code><a href="articles/NetCoupler.html">vignette("NetCoupler")</a></code> for getting started.</p>
 </div>
-<div id="installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h1>
+<div class="section level1">
+<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h1>
 <p>So far there is only the development version.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"NetCoupler/NetCoupler"</span><span class="op">)</span></code></pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"NetCoupler/NetCoupler"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="contributing-and-code-of-conduct" class="section level1">
-<h1 class="hasAnchor">
-<a href="#contributing-and-code-of-conduct" class="anchor"></a>Contributing and Code of Conduct</h1>
+<div class="section level1">
+<h1 id="contributing-and-code-of-conduct">Contributing and Code of Conduct<a class="anchor" aria-label="anchor" href="#contributing-and-code-of-conduct"></a>
+</h1>
 <p>Checkout the <a href="CONTRIBUTING.html">guidelines</a> for details on contributing. Please note that the ‘NetCoupler’ project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 
@@ -118,55 +114,66 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/NetCoupler/NetCoupler/">https://​github.com/​NetCoupler/​NetCoupler/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/NetCoupler/NetCoupler/issues">https://​github.com/​NetCoupler/​NetCoupler/​issues</a>
-</li>
+<li><a href="https://github.com/NetCoupler/NetCoupler/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/NetCoupler/NetCoupler/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Luke Johnston <br><small class="roles"> Author, maintainer </small>  </li>
-<li>Clemens Wittenbecher <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html#citation">Citing NetCoupler</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/NetCoupler/NetCoupler/actions"><img src="https://github.com/NetCoupler/NetCoupler/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></li>
-<li><a href="https://codecov.io/gh/NetCoupler/NetCoupler?branch=main"><img src="https://codecov.io/gh/NetCoupler/NetCoupler/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li>Luke Johnston <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Clemens Wittenbecher <br><small class="roles"> Author </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/NetCoupler/NetCoupler/actions" class="external-link"><img src="https://github.com/NetCoupler/NetCoupler/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></li>
+<li><a href="https://codecov.io/gh/NetCoupler/NetCoupler?branch=main" class="external-link"><img src="https://codecov.io/gh/NetCoupler/NetCoupler/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Luke Johnston, Clemens Wittenbecher.</p>
+  <p></p>
+<p>Developed by Luke Johnston, Clemens Wittenbecher.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -174,6 +181,8 @@
 
   
 
+
+  
 
   </body>
 </html>

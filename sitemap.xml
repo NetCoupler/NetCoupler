@@ -22,6 +22,9 @@
     <loc>/articles/description.html</loc>
   </url>
   <url>
+    <loc>/articles/examples.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -43,15 +46,6 @@
     <loc>/reference/classify_effects.html</loc>
   </url>
   <url>
-    <loc>/reference/compute_adjacency_graph.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_adjacency_matrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_partial_corr_matrix.html</loc>
-  </url>
-  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
@@ -61,19 +55,10 @@
     <loc>/reference/nc_estimate_network.html</loc>
   </url>
   <url>
-    <loc>/reference/nc_plot_network.html</loc>
-  </url>
-  <url>
-    <loc>/reference/nc_plot_outcome_estimation.html</loc>
-  </url>
-  <url>
     <loc>/reference/nc_standardize.html</loc>
   </url>
   <url>
-    <loc>/reference/pc_dag_estimates.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pc_skeleton_estimates.html</loc>
+    <loc>/reference/pc_estimate_undirected_graph.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>

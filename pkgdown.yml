@@ -1,9 +1,9 @@
 pandoc: 2.7.3
-pkgdown: 1.6.1
+pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   NetCoupler: NetCoupler.html
-  articles/description: description.html
-  articles/examples: examples.html
-last_built: 2021-08-20T15:46Z
+  description: description.html
+  examples: examples.html
+last_built: 2022-02-15T10:27Z
 
