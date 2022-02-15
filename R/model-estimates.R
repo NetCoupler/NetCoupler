@@ -34,7 +34,8 @@
 #' @description
 #' \lifecycle{experimental}
 #'
-#' TODO: Describe more here (fill out vignette first).
+#' This is the main function that identifies potential links between external factors
+#' and the network. There are two functions to estimate and classify links:
 #'
 #' - `nc_estimate_exposure_links()`: Computes the model estimates for the exposure side.
 #' - `nc_estimate_outcome_links()`: Computes the model estimates for the exposure side.
