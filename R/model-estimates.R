@@ -211,7 +211,6 @@ compute_model_estimates <-
     network_combinations <- generate_all_network_combinations(edge_tbl)
 
     external_side <- rlang::arg_match(external_side)
-    # TODO: Change to not create formulas as environments (they take up a lot of space)
     formula_df <- generate_formula_df(
         network_object_tbl = network_combinations,
         ext_var = external_var,
