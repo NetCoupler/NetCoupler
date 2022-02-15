@@ -234,6 +234,8 @@ compute_model_estimates <-
         other_args <- c(other_args, model_arg_list)
 
     model_tbl <- formula_df %>%
+        # TODO: To add parallelization, might simply need to add uncomment out this and add furrr as dep
+        # furrr::future_pmap_dfr(
         purrr::pmap_dfr(
             run_model_and_tidy,
             model_function = model_function,
