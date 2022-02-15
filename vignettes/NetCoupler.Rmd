@@ -1,8 +1,5 @@
 ---
 title: "Getting started with NetCoupler"
-author: 
-    - "Clemens Wittenbecher"
-    - "Luke Johnston"
 date: "`r Sys.Date()`"
 bibliography: references.bib
 output: rmarkdown::html_vignette
