@@ -1,19 +1,16 @@
 Package: NetCoupler
 Title: Inference of Causal Links Between a Network and an External Variable
 Version: 0.0.4.9000
-Authors@R: 
-    c(person(given = "Luke",
-             family = "Johnston",
-             role = c("aut", "cre"),
-             email = "lwjohnst@gmail.com"),
-      person(given = "Clemens",
-             family = "Wittenbecher",
-             role = "aut",
-             email = "Clemens.Wittenbecher@dife.de"),
-      person(given = "Helena",
-             family = "Zacharias",
-             role = "ctb",
-             email = "helena.zacharias@helmholtz-muenchen.de"))
+Authors@R: c(
+    person("Luke", "Johnston", , "lwjohnst@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-4169-2616")),
+    person("Clemens", "Wittenbecher", , "Clemens.Wittenbecher@dife.de", role = "aut",
+           comment = c(ORCID = "0000-0001-7792-877X")),
+    person("Fabian", "Eichelmann", , "Fabian.Eichelmann@dife.de", role = "ctb"),
+    person("Helena", "Zacharias", , "helena.zacharias@helmholtz-muenchen.de", role = "ctb"),
+    person("Daniel", "Ibsen", , "dbi@ph.au.dk", role = "ctb",
+           comment = c(ORCID = "0000-0002-7038-4770"))
+  )
 Description: The NetCoupler algorithm identifies potential direct effects of 
     correlated, high-dimensional variables formed as a network with an external 
     variable. The external variable may act as the dependent/response variable 
