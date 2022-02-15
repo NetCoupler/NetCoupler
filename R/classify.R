@@ -25,6 +25,7 @@
 #'   between the exposure and the individual index network nodes, along with the
 #'   classification of direct effect or not.
 #' @keywords internal
+#' @noRd
 #' @seealso See the `vignette("description")` for a
 #'   detailed description of the algorithm used to classify direct effects.
 #'   See [nc_estimate_links] for examples on using NetCoupler.
@@ -32,10 +33,16 @@
 classify_effects <- function(data,
                              classify_option_list = list(single_metabolite_threshold = 0.05,
                                                          network_threshold = 0.1)) {
-    # TODO: Add check that classify_option_list has appropriate options.
-    # TODO: Use an attribute as a "check"?
+    if (checkmate::test_subset(names(classify_option_list),
+                               c("single_metabolite_threshold", "network_threshold"))) {
+        rlang::abort(c(
+            "You've given the wrong options for the `classify_option_list` argument.",
+            "i" = "Available options are `single_metabolite_threshold` and `network_threshold`."
+        ))
+    }
+
     assert_data_frame(data)
-    check_tbl(data)
+    checkmate::check_tbl(data)
 
     external_variable <- identify_external_variable(data)
 
