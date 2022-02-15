@@ -66,20 +66,6 @@ below this threshold.
 direct neighbour adjustments are classified as effects if below this threshold.
 This is assumed as a one-sided p-value threshold.
 }}
-
-\item{external_var}{Argument for internal function, use \code{outcome} or
-\code{exposure} arguments instead. The variable that links to the network
-variables ("external" to the network).}
-
-\item{external_side}{Argument for internal function. Character vector.
-Either "exposure" or "outcome", to indicate which side the external
-variable is on relative to the network.
-\itemize{
-\item Exposure indicating the implied directionality is from the external
-variable to the network variable.
-\item Outcome indicating the implied directionality is from the network variable
-to the external variable.
-}}
 }
 \value{
 Outputs a \link[tibble:tibble-package]{tibble} that contains the model
@@ -164,6 +150,6 @@ standardized_data \%>\%
 
 }
 \seealso{
-The vignette article "Examples" has more details on how to use
-NetCoupler with different models.
+\code{vignette("examples")} article has more
+details on how to use NetCoupler with different models.
 }

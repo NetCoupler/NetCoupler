@@ -32,7 +32,7 @@ nc_estimate_network <- function(data, cols = everything(), alpha = 0.01) {
 
     subset_data <- data %>%
         select({{cols}}) %>%
-        na.omit()
+        stats::na.omit()
 
     # TODO: Not sure why but this only has 9 of the 12 variables
     tbl_network <- subset_data %>%
@@ -70,15 +70,22 @@ as_edge_tbl <- function(network_object) {
 
 #' @export
 as_edge_tbl.tbl_graph <- function(network_object) {
+    network_as_df <- network_object %>%
+            igraph::as_data_frame() %>%
+            dplyr::rename(
+                "adjacency_weight" = "weight"
+            )
     dplyr::bind_rows(
-        network_object %>%
-            igraph::as_data_frame() %>%
-            dplyr::rename(source_node = from, target_node = to,
-                   adjacency_weight = weight),
-        network_object %>%
-            igraph::as_data_frame() %>%
-            dplyr::rename(source_node = to, target_node = from,
-                   adjacency_weight = weight)
+        network_as_df %>%
+            dplyr::rename(
+                "source_node" = "from",
+                "target_node" = "to"
+            ),
+        network_as_df %>%
+            dplyr::rename(
+                "source_node" = "to",
+                "target_node" = "from"
+            )
     ) %>%
         unique()
 }

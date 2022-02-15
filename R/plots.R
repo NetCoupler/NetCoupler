@@ -28,7 +28,8 @@ nc_plot_network <- function(data,
         fn_node_rename <- function(x) x
     assert_function(fn_node_rename)
 
-    graph_data_prep <- nc_tbl_adjacency_graph(data, edge_tbl) %>%
+    # TODO: Fix this.
+    graph_data_prep <- data %>%
         tidygraph::activate("edges") %>%
         tidygraph::mutate(edge_label = dplyr::if_else(
             abs(.data$weight) > edge_label_threshold,
@@ -64,7 +65,8 @@ plot_external_var <-
 
     external_var <- rlang::arg_match(external_var_side)
 
-    tbl_graph_edges <- nc_tbl_adjacency_graph(data, edge_tbl) %>%
+    # TODO: Fix this.
+    tbl_graph_edges <- data %>%
         tidygraph::activate("edges")
 
     tbl_model_edges <- convert_model_data_to_model_edges(data_model, external_var)

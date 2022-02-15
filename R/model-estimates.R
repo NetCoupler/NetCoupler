@@ -30,17 +30,6 @@
 #'   - `network_threshold`: Default of 0.1. P-values from any models that have
 #'   direct neighbour adjustments are classified as effects if below this threshold.
 #'   This is assumed as a one-sided p-value threshold.
-#' @param external_var Argument for internal function, use `outcome` or
-#'   `exposure` arguments instead. The variable that links to the network
-#'   variables ("external" to the network).
-#' @param external_side Argument for internal function. Character vector.
-#'   Either "exposure" or "outcome", to indicate which side the external
-#'   variable is on relative to the network.
-#'
-#'   - Exposure indicating the implied directionality is from the external
-#'   variable to the network variable.
-#'   - Outcome indicating the implied directionality is from the network variable
-#'   to the external variable.
 #'
 #' @description
 #' \lifecycle{experimental}
@@ -74,8 +63,8 @@
 #'   generated *before* classification. Access it with `attr(output,
 #'   "all_models_df")`.
 #'
-#' @seealso The vignette article "Examples" has more details on how to use
-#'   NetCoupler with different models.
+#' @seealso `vignette("examples")` article has more
+#'   details on how to use NetCoupler with different models.
 #'
 #' @examples
 #'
@@ -186,6 +175,26 @@ nc_estimate_outcome_links <-
         )
 }
 
+#' @title
+#' Main function to compute all the models between network and external variables.
+#'
+#' @inheritParams nc_estimate_links
+#' @param external_var Argument for internal function, use `outcome` or
+#'   `exposure` arguments instead. The variable that links to the network
+#'   variables ("external" to the network).
+#' @param external_side Argument for internal function. Character vector.
+#'   Either "exposure" or "outcome", to indicate which side the external
+#'   variable is on relative to the network.
+#'
+#'   - Exposure indicating the implied directionality is from the external
+#'   variable to the network variable.
+#'   - Outcome indicating the implied directionality is from the network variable
+#'   to the external variable.
+#'
+#' @seealso [nc_estimate_links]
+#' @noRd
+#' @keywords internal
+#'
 compute_model_estimates <-
     function(data,
              edge_tbl,
@@ -218,7 +227,7 @@ compute_model_estimates <-
         adj_vars = adjustment_vars
     )
 
-    variables_to_keep <- na.omit(unique(c(
+    variables_to_keep <- stats::na.omit(unique(c(
         network_combinations$index_node,
         purrr::flatten_chr(network_combinations$neighbours),
         external_var,
@@ -382,7 +391,7 @@ generate_formula_df <-
 #         pull(index_node) %>%
 #         unique()
 #
-#     de_vars <- na.omit(c(de_vars, de_vars_current))
+#     de_vars <- stats::na.omit(c(de_vars, de_vars_current))
 #
 #     count <- count + 1
 # }

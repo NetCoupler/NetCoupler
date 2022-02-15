@@ -33,7 +33,7 @@
 classify_effects <- function(data,
                              classify_option_list = list(single_metabolite_threshold = 0.05,
                                                          network_threshold = 0.1)) {
-    if (checkmate::test_subset(names(classify_option_list),
+    if (!checkmate::test_subset(names(classify_option_list),
                                c("single_metabolite_threshold", "network_threshold"))) {
         rlang::abort(c(
             "You've given the wrong options for the `classify_option_list` argument.",
@@ -42,7 +42,7 @@ classify_effects <- function(data,
     }
 
     assert_data_frame(data)
-    checkmate::check_tbl(data)
+    check_tbl(data)
 
     external_variable <- identify_external_variable(data)
 
