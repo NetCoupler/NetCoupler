@@ -69,29 +69,16 @@ as_edge_tbl <- function(network_object) {
 
 #' @export
 as_edge_tbl.tbl_graph <- function(network_object) {
-    nodes <- network_object %>%
-        tidygraph::activate("nodes") %>%
-        mutate(id = dplyr::row_number(.data$name)) %>%
-        tidygraph::as_tibble()
-
-    edges <- network_object %>%
-        tidygraph::activate("edges") %>%
-        tidygraph::as_tibble()
-
-    edge_table_partial <- tibble(
-        source_node = edges %>%
-            dplyr::left_join(nodes, by = c("from" = "id")) %>%
-            dplyr::pull(.data$name),
-        target_node = edges %>%
-            dplyr::left_join(nodes, by = c("to" = "id")) %>%
-            dplyr::pull(.data$name),
-        adjacency_weight = edges$weight
-    )
-
-    edge_table_partial %>%
-        rename(source_node = target_node, target_node = source_node) %>%
-        # Need to do both to get source and target for all metabolites.
-        dplyr::bind_rows(edge_table_partial) %>%
+    dplyr::bind_rows(
+        network_object %>%
+            igraph::as_data_frame() %>%
+            dplyr::rename(source_node = from, target_node = to,
+                   adjacency_weight = weight),
+        network_object %>%
+            igraph::as_data_frame() %>%
+            dplyr::rename(source_node = to, target_node = from,
+                   adjacency_weight = weight)
+    ) %>%
         unique()
 }
 
