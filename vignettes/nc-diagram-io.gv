@@ -6,8 +6,8 @@ digraph {
     df_data [label = 'Dataframe:\l- Metabolites\l- Outcome/Exposure\l']
     df_std [label = 'Dataframe:\l- Standardized Metabolites\l- Standardized Outcome/Exposure\l']
     df_edge [label = 'Edge table:\l- Nodes\l- Edges\l- Weights\l']
-    df_out_results [label = 'Dataframe:\l- Outcome\l- Nodes\l- Estimates\l- Effects\l']
-    df_exp_results [label = 'Dataframe:\l- Exposure\l- Nodes\l- Estimates\l- Effects\l']
+    df_out_results [label = 'Dataframe:\l- Outcome\l- Nodes\l- Estimates\l- Effects\l\lAttribute:\l- All models']
+    df_exp_results [label = 'Dataframe:\l- Exposure\l- Nodes\l- Estimates\l- Effects\l\lAttribute:\l- All models']
     df_joint [label = 'Dataframe:\l- Nodes\l- Edges\l- Weights/Estimates\l- Effects\l']
 
     node [group = '' shape = box style = 'filled, rounded' fillcolor = slategray2]
