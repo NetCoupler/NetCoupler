@@ -45,12 +45,13 @@ nc_estimate_network <- function(data, cols = everything(), alpha = 0.01) {
     )
 }
 
+#' @title
 #' Convert network graphs to edge tables as tibbles/data.frames.
 #'
 #' @description
 #' \lifecycle{experimental}
 #'
-#' @param network_object Network graph from e.g. [nc_estimate_network()].
+#' @param network_object Network graph from [nc_estimate_network()].
 #'
 #' @return A [tibble][tibble::tibble-package], with at least two columns:
 #'
@@ -90,6 +91,7 @@ as_edge_tbl.default <- function(network_object) {
         rlang::abort("We don't know how to handle the object given as `network_object`. This function only can accept `tbl_graph()` objects for now.")
 }
 
+#' @title
 #' Estimate the undirected graph of the metabolic data.
 #'
 #' @description
@@ -145,6 +147,7 @@ as_tbl_graph.pcAlgo <- function(pc_graph) {
         tidygraph::as_tbl_graph()
 }
 
+#' @title
 #' Compute the weighted adjacency matrix and use to create the graph with weighting.
 #'
 #' @param data Input data.
