@@ -15,7 +15,8 @@ nc_estimate_exposure_links(
   model_function,
   model_arg_list = NULL,
   exponentiate = FALSE,
-  implementation = c("updated", "original")
+  classify_option_list = list(single_metabolite_threshold = 0.05, network_threshold =
+    0.1)
 )
 
 nc_estimate_outcome_links(
@@ -26,7 +27,8 @@ nc_estimate_outcome_links(
   model_function,
   model_arg_list = NULL,
   exponentiate = FALSE,
-  implementation = c("updated", "original")
+  classify_option_list = list(single_metabolite_threshold = 0.05, network_threshold =
+    0.1)
 )
 }
 \arguments{
@@ -42,7 +44,8 @@ to an edge table using \code{as_edge_tbl()}.}
 
 \item{model_function}{A function for the model to use (e.g. \code{\link[stats:lm]{stats::lm()}},
 \code{\link[stats:glm]{stats::glm()}}, survival::coxph()). Can be any model as long as the
-function has the arguments \code{formula} and \code{data}.}
+function has the arguments \code{formula} and \code{data}. Type in the model function
+as a bare object (without \verb{()}, for instance as \code{lm}).}
 
 \item{model_arg_list}{Optional. A list containing the named arguments that
 will be passed to the model function. A simple example would be
@@ -53,8 +56,20 @@ usage.}
 \item{exponentiate}{Logical. Whether to exponentiate the log estimates, as
 computed with e.g. logistic regression models.}
 
-\item{external_var}{Argument for internal function. The variable that links
-to the network variables ("external" to the network).}
+\item{classify_option_list}{Classification options for direct, ambigious, or none
+effects. Options currently are:
+\itemize{
+\item \code{single_metabolite_threshold}: Default of 0.05. P-values from models with
+only the index metabolite (no neighbour adjustment) are classified as effects if
+below this threshold.
+\item \code{network_threshold}: Default of 0.1. P-values from any models that have
+direct neighbour adjustments are classified as effects if below this threshold.
+This is assumed as a one-sided p-value threshold.
+}}
+
+\item{external_var}{Argument for internal function, use \code{outcome} or
+\code{exposure} arguments instead. The variable that links to the network
+variables ("external" to the network).}
 
 \item{external_side}{Argument for internal function. Character vector.
 Either "exposure" or "outcome", to indicate which side the external
@@ -68,7 +83,28 @@ to the external variable.
 }
 \value{
 Outputs a \link[tibble:tibble-package]{tibble} that contains the model
-estimates from either the exposure or outcome side of the network.
+estimates from either the exposure or outcome side of the network as well
+as the effect classification. Each row represents the "no neighbour node
+adjusted" model and has the results for the outcome/exposure to index node
+pathway.
+Columns for the outcome are:
+\itemize{
+\item \code{outcome} or \code{exposure}: The name of the variable used as the external variable.
+\item \code{index_node}: The name of the metabolite used as the index node from the network.
+In combination with the outcome/exposure variable, they represent the individual
+model used for the classification.
+\item \code{estimate}: The estimate from the outcome/exposure and index node model.
+\item \code{std_error}: The standard error from the outcome/exposure and index node model.
+\item \code{fdr_p_value}: The False Discovery Rate-adjusted p-value from the
+outcome/exposure and index node model.
+\item \code{effect}: The NetCoupler classified effect between the index node and the
+outcome/exposure. Effects are classified as "direct" (there is a probable link
+based on the given thresholds), "ambigious" (there is a potential link but
+not all thresholds were passed), and "none" (no potential link seen).
+}
+
+The tibble output also has an attribute that contains all the models
+generated \emph{before} classification. Access it with \code{attr(output, "all_models_df")}.
 }
 \description{
 \lifecycle{experimental}
@@ -92,12 +128,16 @@ metabolite_network <- simulated_data \%>\%
     nc_estimate_network(starts_with("metabolite"))
 edge_table <- as_edge_tbl(metabolite_network)
 
-standardized_data \%>\%
+results <- standardized_data \%>\%
   nc_estimate_exposure_links(
     edge_tbl = edge_table,
     exposure = "exposure",
     model_function = lm
    )
+results
+
+# Get results of all models used prior to classification
+attr(results, "all_models_df")
 
 # Using a logistic regression
 standardized_data \%>\%
@@ -122,4 +162,8 @@ standardized_data \%>\%
    )
 }
 
+}
+\seealso{
+The vignette article "Examples" has more details on how to use
+NetCoupler with different models.
 }

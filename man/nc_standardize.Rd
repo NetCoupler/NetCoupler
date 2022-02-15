@@ -39,3 +39,6 @@ simulated_data \%>\%
 simulated_data \%>\%
   nc_standardize(starts_with("metabolite_"), "age")
 }
+\seealso{
+\link{nc_estimate_links} for more detailed examples or the \link{vignette("NetCoupler")}.
+}

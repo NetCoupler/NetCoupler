@@ -9,7 +9,8 @@ The simulated dataset is a \link[tibble:tibble-package]{tibble} with the
 following variables:
 \itemize{
 \item Two outcome variables (\code{outcome_continuous} and \code{outcome_binary}) along
-with survival time (\code{outcome_event_time}) used for the \code{outcome_binary}
+with survival time (\code{outcome_event_time}) that is used for the
+\code{outcome_binary} variable
 \item A generic \code{exposure} variable as continuous
 \item 12 \verb{metabolite_*} variables
 \item An \code{age} variable used as a confounder

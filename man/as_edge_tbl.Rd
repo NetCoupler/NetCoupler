@@ -7,7 +7,7 @@
 as_edge_tbl(network_object)
 }
 \arguments{
-\item{network_object}{Network graph from e.g. \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
+\item{network_object}{Network graph from \code{\link[=nc_estimate_network]{nc_estimate_network()}}.}
 }
 \value{
 A \link[tibble:tibble-package]{tibble}, with at least two columns:
