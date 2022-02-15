@@ -90,12 +90,16 @@
 #'     nc_estimate_network(starts_with("metabolite"))
 #' edge_table <- as_edge_tbl(metabolite_network)
 #'
-#' standardized_data %>%
+#' results <- standardized_data %>%
 #'   nc_estimate_exposure_links(
 #'     edge_tbl = edge_table,
 #'     exposure = "exposure",
 #'     model_function = lm
 #'    )
+#' results
+#'
+#' # Get results of all models used prior to classification
+#' attr(results, "all_models_df")
 #'
 #' # Using a logistic regression
 #' standardized_data %>%
@@ -145,9 +149,10 @@ nc_estimate_exposure_links <-
             external_side = "exposure"
         ) %>%
             dplyr::rename("exposure" = "external_var")
-        list(
-            full_model_list = multiple_models,
-            classified_effects = classify_effects(multiple_models, classify_option_list)
+
+        structure(
+            classify_effects(multiple_models, classify_option_list),
+            all_models_df = multiple_models
         )
     }
 
@@ -174,9 +179,10 @@ nc_estimate_outcome_links <-
             external_side = "outcome"
         ) %>%
             dplyr::rename("outcome" = "external_var")
-        list(
-            full_model_list = multiple_models,
-            classified_effects = classify_effects(multiple_models, classify_option_list)
+
+        structure(
+            classify_effects(multiple_models, classify_option_list),
+            all_models_df = multiple_models
         )
 }
 
