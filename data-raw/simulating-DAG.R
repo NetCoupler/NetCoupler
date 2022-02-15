@@ -12,21 +12,21 @@ metabolite_2 ~ 0.25*metabolite_3 + 0.25*metabolite_7
 metabolite_3 ~ 0.25*metabolite_4 + 0.25*metabolite_12
 metabolite_4 ~ 0.25*metabolite_5 + 0.25*metabolite_12
 metabolite_5 ~ 0.25*metabolite_6 + 0.25*metabolite_9
-metabolite_6 ~ 0.25*metabolite_10
+metabolite_6 ~ 0.25*metabolite_12
 metabolite_7 ~ 0.25*metabolite_8
-metabolite_8 ~ 0.25*metabolite_9
+metabolite_8 ~ 0.25*metabolite_9 + 0.25*metabolite_10
 metabolite_9 ~ 0.25*metabolite_10
-metabolite_10 ~ 0.25*metabolite_11 + 0.25*metabolite_12
+metabolite_10 ~ 0.25*metabolite_11
 
 # Exposure connections
-metabolite_1 ~ 0.5*exposure
-metabolite_8 ~ 0.5*exposure
-metabolite_10 ~ 0.5*exposure
+metabolite_1 ~ 0.2*exposure
+metabolite_8 ~ -0.5*exposure
+metabolite_10 ~ 0.3*exposure
 
 # Outcome connections
-outcome_continuous ~ 0.5*metabolite_3
-outcome_continuous ~ 0.5*metabolite_9
-outcome_continuous ~ 0.5*metabolite_12
+outcome_continuous ~ -0.2*metabolite_3
+outcome_continuous ~ 0.2*metabolite_9
+outcome_continuous ~ 0.4*metabolite_12
 
 # Covariance (confounders)
 # Need to figure out how this works.
