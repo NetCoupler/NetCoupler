@@ -44,7 +44,6 @@ Imports:
     tidygraph
 Suggests: 
     broom,
-    covr,
     knitr,
     rmarkdown,
     testthat (>= 2.1.0)
