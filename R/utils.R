@@ -1,6 +1,6 @@
 
 # Taken from forcats
-lvls_reorder <- function (f, idx, ordered = NA) {
+lvls_reorder <- function(f, idx, ordered = NA) {
     if (!is.numeric(idx)) {
         stop("`idx` must be numeric", call. = FALSE)
     }
@@ -12,7 +12,7 @@ lvls_reorder <- function (f, idx, ordered = NA) {
 }
 
 # Taken from forcats
-refactor <- function (f, new_levels, ordered = NA) {
+refactor <- function(f, new_levels, ordered = NA) {
     if (is.na(ordered)) {
         ordered <- is.ordered(f)
     }
