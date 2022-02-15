@@ -66,7 +66,6 @@ classify_effects <- function(data,
     return(classify_direct_effects)
 }
 
-
 # Helpers -----------------------------------------------------------------
 
 keep_xvar_model_estimates <- function(data, main_x_var) {
@@ -129,24 +128,22 @@ add_neighbours_by_model <- function(data, main_x_var) {
 keep_main_x_var_estimates <- function(data, main_x_var) {
     data %>%
         dplyr::filter(.data[[main_x_var]] == .data$term) %>%
-        mutate(adj_p_value = stats::p.adjust(.data$p_value, "fdr")) %>%
-        select(-all_of(c("term", "model_id")))
+        mutate(fdr_p_value = stats::p.adjust(.data$p_value, "fdr")) %>%
+        select(-all_of(c("term", "model_id", "p_value")))
 }
 
 keep_no_neighbour_models <- function(data, main_x_var) {
     data %>%
         dplyr::filter(dplyr::if_all(all_of("neighbour_vars"), ~ . == "")) %>%
         dplyr::rename(
-            no_neighbours_adj_p_value = .data$adj_p_value,
-            no_neighbours_p_value = .data$p_value,
+            no_neighbours_fdr_p_value = .data$fdr_p_value,
             no_neighbours_estimate = .data$estimate
         ) %>%
         select(all_of(
             c(
                 main_x_var,
                 "index_node",
-                "no_neighbours_adj_p_value",
-                "no_neighbours_p_value",
+                "no_neighbours_fdr_p_value",
                 "no_neighbours_estimate"
             )
         ))
@@ -173,12 +170,12 @@ add_effects_column <- function(data, ext_var, classify_option_list) {
     data %>%
         dplyr::group_by(.data[[ext_var]], .data$index_node) %>%
         mutate(effect = dplyr::case_when(
-            direct_effect_logic(.data$no_neighbours_adj_p_value,
+            direct_effect_logic(.data$no_neighbours_fdr_p_value,
                                 .data$nnm_has_same_direction_as_nm,
-                                .data$adj_p_value,
+                                .data$fdr_p_value,
                                 classify_option_list = classify_option_list) ~ "direct",
-            ambigious_effect_logic(.data$no_neighbours_adj_p_value,
-                                   .data$adj_p_value,
+            ambigious_effect_logic(.data$no_neighbours_fdr_p_value,
+                                   .data$fdr_p_value,
                                    classify_option_list = classify_option_list) ~ "ambiguous",
             TRUE ~ "none"
         )) %>%
