@@ -12,7 +12,8 @@
 #' @param adjustment_vars Optional. Variables to adjust for in the models.
 #' @param model_function A function for the model to use (e.g. [stats::lm()],
 #'   [stats::glm()], survival::coxph()). Can be any model as long as the
-#'   function has the arguments `formula` and `data`.
+#'   function has the arguments `formula` and `data`. Type in the model function
+#'   as a bare object (without `()`, for instance as `lm`).
 #' @param model_arg_list Optional. A list containing the named arguments that
 #'   will be passed to the model function. A simple example would be
 #'   `list(family = binomial(link = "logit"))` to specify that the `glm` model
@@ -20,8 +21,18 @@
 #'   usage.
 #' @param exponentiate Logical. Whether to exponentiate the log estimates, as
 #'   computed with e.g. logistic regression models.
-#' @param external_var Argument for internal function. The variable that links
-#'   to the network variables ("external" to the network).
+#' @param classify_option_list Classification options for direct, ambigious, or none
+#'   effects. Options currently are:
+#'
+#'   - `single_metabolite_threshold`: Default of 0.05. P-values from models with
+#'   only the index metabolite (no neighbour adjustment) are classified as effects if
+#'   below this threshold.
+#'   - `network_threshold`: Default of 0.1. P-values from any models that have
+#'   direct neighbour adjustments are classified as effects if below this threshold.
+#'   This is assumed as a one-sided p-value threshold.
+#' @param external_var Argument for internal function, use `outcome` or
+#'   `exposure` arguments instead. The variable that links to the network
+#'   variables ("external" to the network).
 #' @param external_side Argument for internal function. Character vector.
 #'   Either "exposure" or "outcome", to indicate which side the external
 #'   variable is on relative to the network.
@@ -40,10 +51,31 @@
 #' - `nc_estimate_outcome_links()`: Computes the model estimates for the exposure side.
 #'
 #' @return Outputs a [tibble][tibble::tibble-package] that contains the model
-#'   estimates from either the exposure or outcome side of the network.
+#'   estimates from either the exposure or outcome side of the network as well
+#'   as the effect classification. Each row represents the "no neighbour node
+#'   adjusted" model and has the results for the outcome/exposure to index node
+#'   pathway.
+#'   Columns for the outcome are:
 #'
-#' @seealso The vignette ... has more details on how to use NetCoupler with
-#'   different models.
+#'   - `outcome` or `exposure`: The name of the variable used as the external variable.
+#'   - `index_node`: The name of the metabolite used as the index node from the network.
+#'   In combination with the outcome/exposure variable, they represent the individual
+#'   model used for the classification.
+#'   - `estimate`: The estimate from the outcome/exposure and index node model.
+#'   - `std_error`: The standard error from the outcome/exposure and index node model.
+#'   - `fdr_p_value`: The False Discovery Rate-adjusted p-value from the
+#'   outcome/exposure and index node model.
+#'   - `effect`: The NetCoupler classified effect between the index node and the
+#'   outcome/exposure. Effects are classified as "direct" (there is a probable link
+#'   based on the given thresholds), "ambigious" (there is a potential link but
+#'   not all thresholds were passed), and "none" (no potential link seen).
+#'
+#'   The tibble output also has an attribute that contains all the models
+#'   generated *before* classification. Access it with `attr(output,
+#'   "all_models_df")`.
+#'
+#' @seealso The vignette article "Examples" has more details on how to use
+#'   NetCoupler with different models.
 #'
 #' @examples
 #'
