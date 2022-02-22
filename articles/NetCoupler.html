@@ -53,9 +53,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/description.html">Implementation details of NetCoupler</a>
-    </li>
-    <li>
       <a href="../articles/examples.html">Examples of using NetCoupler with different models</a>
     </li>
   </ul>
@@ -85,10 +82,8 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting started with NetCoupler</h1>
-                        <h4 data-toc-skip class="author">Clemens Wittenbecher</h4>
-                        <h4 data-toc-skip class="author">Luke Johnston</h4>
             
-            <h4 data-toc-skip class="date">2022-02-15</h4>
+            <h4 data-toc-skip class="date">2022-02-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/NetCoupler/NetCoupler/blob/HEAD/vignettes/NetCoupler.Rmd" class="external-link"><code>vignettes/NetCoupler.Rmd</code></a></small>
       <div class="hidden name"><code>NetCoupler.Rmd</code></div>
@@ -97,9 +92,13 @@
 
     
     
-<p><img src="https://img.shields.io/badge/document%20status-rough%20draft-red?style=flat-square"></p>
 <p>The goal of NetCoupler is to estimate causal links between a set of -omic (e.g. metabolomics, lipidomics) or other high-dimensional data and an external variable, such as a disease outcome, an exposure, or both. The NetCoupler-algorithm, initially formulated during Clemens’ PhD thesis <span class="citation">(Wittenbecher 2017)</span>, links a conditional dependency network with an external variable (i.e. an outcome or exposure) to identify network-independent associations between the network variables and the external variable, classified as direct effects.</p>
+<!-- TODO: Add link to the description vignette -->
 <p>A typical use case we have in mind would be if a researcher might be interested in exploring potential pathways that exist between a health exposure like red meat consumption, its impact on the metabolic profile, and the subsequent impact on an outcome like type 2 diabetes incidence.</p>
+<p>So for instance, you want to ask questions to get answers that looks like:</p>
+<div class="figure">
+<img src="articles/aim-output.png" alt=""><p class="caption">Answers to specific types of questions that NetCoupler can help with.</p>
+</div>
 <p>The input for NetCoupler includes:</p>
 <ol style="list-style-type: decimal">
 <li>Standardized metabolic or other high-dimensional data.</li>
@@ -108,8 +107,16 @@
 <li>Modeling method (e.g. linear regression with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>), including confounders to adjust for.</li>
 </ol>
 <!-- TODO: Add figure demonstrating NetCoupler --><p>The final output is the modeling results along with the results from NetCoupler’s classification. Results can then be displayed as a joint network model in graphical format.</p>
-<div class="section level2">
-<h2 id="overall-framework">Overall framework<a class="anchor" aria-label="anchor" href="#overall-framework"></a>
+<p>There are a few key assumptions to consider before using NetCoupler for your own research purposes.</p>
+<!-- TODO: Add link to assumptions of PC-algorithm -->
+<ol style="list-style-type: decimal">
+<li>-omics data is the basis for the network. We haven’t tested this on non-omics datasets, so can’t guarantee it works as intended.</li>
+<li>The variables used for the metabolic network are numerical</li>
+<li>Metabolic data should have a theoretical network underlying it.</li>
+<li>Missing data are not used in any of the NetCoupler processes.</li>
+</ol>
+<!-- TODO: Add other assumptions --><div class="section level2">
+<h2 id="overall-package-framework">Overall package framework<a class="anchor" aria-label="anchor" href="#overall-package-framework"></a>
 </h2>
 <p>NetCoupler has several frameworks in mind:</p>
 <ul>
@@ -117,7 +124,12 @@
 <li>Works with <a href="https://tidyselect.r-lib.org/" class="external-link">tidyselect</a> helpers (e.g. <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with()</a></code>, <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains()</a></code>).</li>
 <li>Is auto-complete friendly (e.g. start function names with <code>nc_</code>).</li>
 <li>Inputs and outputs of functions are <a href="https://tibble.tidyverse.org/" class="external-link">tibbles</a>/dataframes or <a href="https://tidygraph.data-imaginist.com/" class="external-link">tidygraph tibbles</a>.</li>
-<li>Generic modeling approach by using model and settings as function argument inputs. <!-- - Works with the [tidymodel](https://www.tidymodels.org/) approach, such as by  --> <!-- making use of [parsnip](https://parsnip.tidymodels.org/) functions to make the  --> <!-- models. -->
+<li>Generic modeling approach by using model and settings as function argument inputs.
+<ul>
+<li>This allows flexibility with what model can be used (e.g. linear regression, cox models).</li>
+<li>Almost all functionality of modeling in R is available here, for instance handling of missing data or of categorical variables. <!-- - Works with the [tidymodel](https://www.tidymodels.org/) approach, such as by  --> <!-- making use of [parsnip](https://parsnip.tidymodels.org/) functions to make the  --> <!-- models. -->
+</li>
+</ul>
 </li>
 </ul>
 </div>
@@ -129,9 +141,17 @@
 <li>
 <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code>: The algorithm in general, but especially the network estimation method, is sensitive to the values and distribution of the variables. Scaling the variables by standardizing, mean-centering, and natural log transforming them are important to obtaining more accurate estimations.</li>
 <li>
-<code><a href="../reference/nc_estimate_network.html">nc_estimate_network()</a></code>: Estimate the connections between metabolic variables as a undirected graph based on dependencies between variables. This network is used to identify metabolic variables that are connected to each other as neighbours.</li>
+<code><a href="../reference/nc_estimate_network.html">nc_estimate_network()</a></code>: Estimate the connections between metabolic variables as a undirected graph based on dependencies between variables. This network is used to identify metabolic variables that are connected to each other as neighbours.
+<ul>
+<li>We plan on implementing other network estimators aside from the PC-algorithm at some point in the future.</li>
+</ul>
+</li>
 <li>
-<code><a href="../reference/nc_estimate_links.html">nc_estimate_exposure_links()</a></code> and <code><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links()</a></code>: Uses the standardized data and the estimated network to classify the conditionally independent relationship between each metabolic variable and an external variable (e.g. an outcome or an exposure) as either being a direct, ambiguous, or no effect relationship.</li>
+<code><a href="../reference/nc_estimate_links.html">nc_estimate_exposure_links()</a></code> and <code><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links()</a></code>: Uses the standardized data and the estimated network to classify the conditionally independent relationship between each metabolic variable and an external variable (e.g. an outcome or an exposure) as either being a direct, ambiguous, or no effect relationship.
+<ul>
+<li>Setting the threshold for classifying effects as direct, ambigious, or none is done through the argument <code>classify_option_list</code>. See the help documentation of the estimating functions for more details. For larger datasets, with more sample size and variables included in the network, we <em>strongly</em> recommend lowering the threshold used to reduce the risk of false positives.</li>
+</ul>
+</li>
 <li>
 <code>nc_join_links()</code>: <strong>Not implemented yet.</strong> Join together the exposure- and outcome-side estimated links.</li>
 <li>
@@ -146,7 +166,7 @@
 <div class="section level2">
 <h2 id="simple-example">Simple example<a class="anchor" aria-label="anchor" href="#simple-example"></a>
 </h2>
-<p>The below is an example using a simulated dataset for demonstrating NetCoupler.</p>
+<p>The below is an example using a simulated dataset for demonstrating NetCoupler. For more examples, particularly on how to use with different models, check out the <code><a href="../articles/examples.html">vignette("examples")</a></code>.</p>
 <div class="section level3">
 <h3 id="estimating-the-metabolic-network">Estimating the metabolic network<a class="anchor" aria-label="anchor" href="#estimating-the-metabolic-network"></a>
 </h3>
@@ -155,12 +175,12 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NetCoupler/NetCoupler" class="external-link">NetCoupler</a></span><span class="op">)</span>
 <span class="va">std_metabolic_data</span> <span class="op">&lt;-</span> <span class="va">simulated_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>If you intend to also adjust for potential confounders when estimating the exposure or outcome side connections, you can include the potential impact these confounders may have on the network by regressing the confounders on the metabolic variables. Then the residuals can be extracted and used when constructing the network. You do this also with the <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code> function.</p>
+<p>If you have potential confounders that you need to adjust for during the estimating links phase of NetCoupler, you’ll need to include these confounding variables when standardizing the metabolic variables. You do this by regressing the confounding variables on the metabolic variables by using the <code>regressed_on</code> argument of <code><a href="../reference/nc_standardize.html">nc_standardize()</a></code>. This will automatically first standardize the variables, run models on the metabolic variables that includes the confounding variables, and then extract the residuals from the model which are then used to construct the network. Here’s an example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">std_metabolic_data</span> <span class="op">&lt;-</span> <span class="va">simulated_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span>,
                    regressed_on <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></code></pre></div>
-<p>After that, you can estimate the network.</p>
+<p>After that, you can estimate the network. The network is by default estimated using the PC-algorithm. You can read more about it in the help page of the <code><a href="../reference/pc_estimate_undirected_graph.html">pc_estimate_undirected_graph()</a></code> internal function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Make partial independence network from metabolite data</span>
 <span class="va">metabolite_network</span> <span class="op">&lt;-</span> <span class="va">std_metabolic_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -181,7 +201,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">standardized_data</span> <span class="op">&lt;-</span> <span class="va">simulated_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/nc_standardize.html">nc_standardize</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Now you can estimate the outcome or exposure and identify direct effects for either the exposure side (<code>exposure -&gt; metabolite</code>) or the outcome side (<code>metabolite -&gt; outcome</code>). For more details on the algorithm, see the <code><a href="../articles/description.html">vignette("description")</a></code>. For the exposure side, the function identifies whether a link between the exposure and an index node (one metabolic variable in the network) exists, independent of potential confounders and from neighbouring nodes (other metabolic variables linked to the index variable). Depending on how consistent and strong the link is, the effect is classified as “direct”, “ambiguous”, or “none”.</p>
+<p>Now you can estimate the outcome or exposure and identify direct effects for either the exposure side (<code>exposure -&gt; metabolite</code>) or the outcome side (<code>metabolite -&gt; outcome</code>). For the exposure side, the function identifies whether a link between the exposure and an index node (one metabolic variable in the network) exists, independent of potential confounders and from neighbouring nodes (other metabolic variables linked to the index variable). Depending on how consistent and strong the link is, the effect is classified as “direct”, “ambiguous”, or “none”. <!-- For more details on the algorithm, see the `vignette("description")`. --></p>
 <p>In the example below, we specifically generated the simulated data so that the exposure is associated with metabolites 1, 8, and 12. And as we can see, those links have been correctly identified.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">outcome_estimates</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
@@ -238,6 +258,7 @@
         model_function <span class="op">=</span> <span class="va">lm</span>,
         adjustment_vars <span class="op">=</span> <span class="st">"age"</span>
     <span class="op">)</span></code></pre></div>
+<!-- TODO: More about when to adjust and why and how. -->
 <!-- ### Plotting  -->
 <!-- To visualize the results of the linked network graph and the effect -->
 <!-- classification, there are two functions to show the exposure and the outcome -->
@@ -280,13 +301,17 @@
 <!-- plan(sequential) -->
 <!-- ``` -->
 <!-- - complete cases for all variables used by netcoupler -->
+</div>
+</div>
+<div class="section level2 unnumbered">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <div id="refs" class="references">
 <div id="ref-Colombo2014">
 <p>Colombo, Diego, and Marloes H. Maathuis. 2014. “Order-Independent Constraint-Based Causal Structure Learning.” <em>Journal of Machine Learning Research</em> 15 (1): 3741–82. <a href="http://dl.acm.org/citation.cfm?id=2627435.2750365" class="external-link">http://dl.acm.org/citation.cfm?id=2627435.2750365</a>.</p>
 </div>
 <div id="ref-Wittenbecher2017">
 <p>Wittenbecher, Clemens. 2017. “Linking Whole-Grain Bread, Coffee, and Red Meat to the Risk of Type 2 Diabetes.” Doctoralthesis, Universität Potsdam. <a href="https://nbn-resolving.org/urn:nbn:de:kobv:517-opus4-404592" class="external-link">https://nbn-resolving.org/urn:nbn:de:kobv:517-opus4-404592</a>.</p>
-</div>
 </div>
 </div>
 </div>

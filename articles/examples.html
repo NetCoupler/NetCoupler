@@ -53,9 +53,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/description.html">Implementation details of NetCoupler</a>
-    </li>
-    <li>
       <a href="../articles/examples.html">Examples of using NetCoupler with different models</a>
     </li>
   </ul>
@@ -94,13 +91,17 @@
 
     
     
-<p>This article contains a list of models that you could use in NetCoupler.</p>
+<p>This article contains a list of models that you could use in NetCoupler as well as some published real-world examples of it being used.</p>
 <p>There are some caveats to most of these examples, except for when a section explicitly indicates otherwise:</p>
 <ul>
 <li>Most of the models do not include further adjustment for confounders.</li>
 <li>Most models only show the outcome-side estimation, for brevity. However, the code for running exposure-side estimation is almost the exact same.</li>
 </ul>
-<p>Across the different models, there are some general features, which is described in more depth in the <a href="netcoupler.html">Getting Started</a> article. First load up the packages.</p>
+<p>Across the different models, there are some general features, which is described in more depth in the <a href="netcoupler.html">Getting Started</a> article.</p>
+<div class="section level3">
+<h3 id="pre-processing">Pre-processing<a class="anchor" aria-label="anchor" href="#pre-processing"></a>
+</h3>
+<p>First load up the packages.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NetCoupler/NetCoupler" class="external-link">NetCoupler</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></code></pre></div>
@@ -130,9 +131,9 @@
     <span class="fu"><a href="../reference/nc_estimate_network.html">nc_estimate_network</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </li>
 </ol>
-<div class="section level3">
-<h3 id="outcome-vs-exposure-side">Outcome vs exposure side<a class="anchor" aria-label="anchor" href="#outcome-vs-exposure-side"></a>
-</h3>
+<div class="section level4">
+<h4 id="outcome-vs-exposure-side">Outcome vs exposure side<a class="anchor" aria-label="anchor" href="#outcome-vs-exposure-side"></a>
+</h4>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lm_results_outcome</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
@@ -148,9 +149,10 @@
     model_function <span class="op">=</span> <span class="va">lm</span>
   <span class="op">)</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="linear-regression">Linear regression<a class="anchor" aria-label="anchor" href="#linear-regression"></a>
-</h2>
+</div>
+<div class="section level3">
+<h3 id="linear-regression">Linear regression<a class="anchor" aria-label="anchor" href="#linear-regression"></a>
+</h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lm_results</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
@@ -159,12 +161,12 @@
     model_function <span class="op">=</span> <span class="va">lm</span>
   <span class="op">)</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="logistic-regression">Logistic regression<a class="anchor" aria-label="anchor" href="#logistic-regression"></a>
-</h2>
 <div class="section level3">
-<h3 id="binary-logistic-regression">Binary Logistic Regression<a class="anchor" aria-label="anchor" href="#binary-logistic-regression"></a>
+<h3 id="logistic-regression">Logistic regression<a class="anchor" aria-label="anchor" href="#logistic-regression"></a>
 </h3>
+<div class="section level4">
+<h4 id="binary-logistic-regression">Binary Logistic Regression<a class="anchor" aria-label="anchor" href="#binary-logistic-regression"></a>
+</h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">glm_bin_results</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
@@ -182,10 +184,10 @@
 -->
 </div>
 </div>
-<div class="section level2">
-<h2 id="cox-regression">Cox Regression<a class="anchor" aria-label="anchor" href="#cox-regression"></a>
-</h2>
-<p>TODO: Include <code><a href="https://rdrr.io/pkg/survival/man/cluster.html" class="external-link">cluster()</a></code>, <code><a href="https://rdrr.io/pkg/survival/man/strata.html" class="external-link">strata()</a></code>.</p>
+<div class="section level3">
+<h3 id="cox-regression">Cox Regression<a class="anchor" aria-label="anchor" href="#cox-regression"></a>
+</h3>
+<!-- TODO: Include `cluster()`, `strata()`. -->
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span>
 
@@ -227,6 +229,18 @@
 ## Longitudinal data? 
 
 -->
+</div>
+<div class="section level2">
+<h2 id="real-world-uses-in-published-works">Real-world uses in published works<a class="anchor" aria-label="anchor" href="#real-world-uses-in-published-works"></a>
+</h2>
+<div id="refs" class="references">
+<div id="ref-Wittenbecher2022">
+<p>Wittenbecher, C., R. Cuadrat, L. Johnston, F. Eichelmann, S. Jäger, O. Kuxhaus, M. Prada, et al. 2022. “Dihydroceramide- and Ceramide-Profiling Provides Insights into Human Cardiometabolic Disease Etiology.” <em>Nature Communications</em> 13 (1). <a href="https://doi.org/10.1038/s41467-022-28496-1" class="external-link">https://doi.org/10.1038/s41467-022-28496-1</a>.</p>
+</div>
+<div id="ref-Wittenbecher2017">
+<p>Wittenbecher, Clemens. 2017. “Linking Whole-Grain Bread, Coffee, and Red Meat to the Risk of Type 2 Diabetes.” Doctoralthesis, Universität Potsdam. <a href="https://nbn-resolving.org/urn:nbn:de:kobv:517-opus4-404592" class="external-link">https://nbn-resolving.org/urn:nbn:de:kobv:517-opus4-404592</a>.</p>
+</div>
+</div>
 </div>
   </div>
 
