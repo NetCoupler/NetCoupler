@@ -7,7 +7,7 @@
 ^dev$
 ^CODE_OF_CONDUCT\.md$
 ^\.github$
-^vignettes/articles/description\.Rmd$
+^vignettes/articles/_description\.Rmd$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

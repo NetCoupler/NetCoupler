@@ -1,5 +1,8 @@
 ---
 title: "Examples of using NetCoupler with different models"
+bibliography: ../references.bib
+nocite: |
+    @Wittenbecher2022, @Wittenbecher2017
 ---
 
 ```{r setup, include = FALSE}
@@ -16,7 +19,8 @@ make_table <- function(object, caption = NULL) {
 }
 ```
 
-This article contains a list of models that you could use in NetCoupler.
+This article contains a list of models that you could use in NetCoupler as well
+as some published real-world examples of it being used.
 
 There are some caveats to most of these examples, except for when a section
 explicitly indicates otherwise:
@@ -27,6 +31,9 @@ the code for running exposure-side estimation is almost the exact same.
 
 Across the different models, there are some general features, which is described
 in more depth in the [Getting Started](netcoupler.html) article.
+
+## Pre-processing
+
 First load up the packages.
 
 ```{r}
@@ -135,7 +142,7 @@ glm_bin_results$classified_effects %>%
 
 ## Cox Regression
 
-TODO: Include `cluster()`, `strata()`.
+<!-- TODO: Include `cluster()`, `strata()`. -->
 
 ```{r}
 library(survival)
@@ -185,3 +192,5 @@ coxph_results$classified_effects %>%
 ## Longitudinal data? 
 
 -->
+
+# Real-world uses in published works

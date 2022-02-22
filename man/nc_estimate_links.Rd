@@ -61,10 +61,12 @@ effects. Options currently are:
 \itemize{
 \item \code{single_metabolite_threshold}: Default of 0.05. P-values from models with
 only the index metabolite (no neighbour adjustment) are classified as effects if
-below this threshold.
+below this threshold. For larger sample sizes and networks, we recommend lowering
+the threshold to reduce risk of false positives.
 \item \code{network_threshold}: Default of 0.1. P-values from any models that have
 direct neighbour adjustments are classified as effects if below this threshold.
-This is assumed as a one-sided p-value threshold.
+This is assumed as a one-sided p-value threshold. Like the threshold above,
+a lower value should be used for larger sample sizes and networks.
 }}
 }
 \value{
@@ -95,7 +97,8 @@ generated \emph{before} classification. Access it with \code{attr(output, "all_m
 \description{
 \lifecycle{experimental}
 
-TODO: Describe more here (fill out vignette first).
+This is the main function that identifies potential links between external factors
+and the network. There are two functions to estimate and classify links:
 \itemize{
 \item \code{nc_estimate_exposure_links()}: Computes the model estimates for the exposure side.
 \item \code{nc_estimate_outcome_links()}: Computes the model estimates for the exposure side.

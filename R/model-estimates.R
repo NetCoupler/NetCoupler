@@ -26,10 +26,12 @@
 #'
 #'   - `single_metabolite_threshold`: Default of 0.05. P-values from models with
 #'   only the index metabolite (no neighbour adjustment) are classified as effects if
-#'   below this threshold.
+#'   below this threshold. For larger sample sizes and networks, we recommend lowering
+#'   the threshold to reduce risk of false positives.
 #'   - `network_threshold`: Default of 0.1. P-values from any models that have
 #'   direct neighbour adjustments are classified as effects if below this threshold.
-#'   This is assumed as a one-sided p-value threshold.
+#'   This is assumed as a one-sided p-value threshold. Like the threshold above,
+#'   a lower value should be used for larger sample sizes and networks.
 #'
 #' @description
 #' \lifecycle{experimental}

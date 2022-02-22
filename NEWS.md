@@ -1,16 +1,20 @@
 # NetCoupler (development version)
 
+* General preparation for submitting package to CRAN.
+
 ## New features
 
-* Added two plotting functions for the model estimation side of things:
-`nc_plot_exposure_estimation()` and `nc_plot_outcome_estimation()`
-* Added ability to parallelize code with furrr (#141)
+* Added to `nc_estimate_*` function output the full model list as an attribute,
+that is really only necessary for those interested in the underlying models used 
+for classifying the effects
 * Added a continuous outcome variable to simulated data that also links in with
 the DAG so that the linkage is more obvious (#97)
 * Added function to create an edge table (#117)
 * Incorporate tidyselect helpers into functions for selection of variables (#62)
-* Added Getting Started vignette as well as a more detailed article on the
-implementation of NetCoupler (#70)
+* Added Getting Started vignette and an article on examples of using different models (#70)
+* Added argument to `nc_estimate_*_links()` functions to set thresholds for
+classifying links (#157)
+* Added weights to be included to `as_edge_tbl()` (#142)
 
 ## Removed features
 
@@ -21,12 +25,16 @@ computing speed (they slowed things down quite a bit)
 
 ## Internal changes
 
-* Use standard GitHub Actions and remove AppVeyor.
+* Output all models used for classification as an attribute for the `nc_estimate_*` 
+functions output
+* Use lavaan instead of dagitty to generate the simulated data
+* Use standard GitHub Actions and remove AppVeyor
+* Refactored some code within estimation method so it runs faster
 * Tidied up the unit tests to run faster
 * Removed duplicate or extra roxygen examples and instead referenced a common 
 source with `@seealso`
-* Removed survival dependency.
-* Switch to using main instead of master branch.
+* Removed survival dependency
+* Switch to using main instead of master branch
 
 # NetCoupler 0.0.4
 

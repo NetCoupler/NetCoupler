@@ -16,8 +16,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-![](https://img.shields.io/badge/document%20status-rough%20draft-red?style=flat-square)
-
 The goal of NetCoupler is to estimate causal links between a set of -omic (e.g.
 metabolomics, lipidomics) or other high-dimensional data and an external variable,
 such as a disease outcome, an exposure, or both. The NetCoupler-algorithm,
@@ -26,10 +24,16 @@ conditional dependency network with an external variable (i.e. an outcome or
 exposure) to identify network-independent associations between the network
 variables and the external variable, classified as direct effects.
 
+<!-- TODO: Add link to the description vignette -->
+
 A typical use case we have in mind would be if a researcher might be interested
 in exploring potential pathways that exist between a health exposure like red
 meat consumption, its impact on the metabolic profile, and the subsequent impact
 on an outcome like type 2 diabetes incidence.
+
+So for instance, you want to ask questions to get answers that looks like:
+
+![Answers to specific types of questions that NetCoupler can help with.](vignettes/aim-output.png)
 
 The input for NetCoupler includes:
 
@@ -46,7 +50,20 @@ The final output is the modeling results along with the results from
 NetCoupler's classification. Results can then be displayed as a joint network
 model in graphical format.
 
-## Overall framework
+There are a few key assumptions to consider before using NetCoupler for your
+own research purposes.
+
+<!-- TODO: Add link to assumptions of PC-algorithm -->
+
+1. -omics data is the basis for the network. We haven't tested this on non-omics
+datasets, so can't guarantee it works as intended.
+1. The variables used for the metabolic network are numerical
+1. Metabolic data should have a theoretical network underlying it.
+1. Missing data are not used in any of the NetCoupler processes.
+
+<!-- TODO: Add other assumptions -->
+
+## Overall package framework
 
 NetCoupler has several frameworks in mind:
 
@@ -59,6 +76,10 @@ NetCoupler has several frameworks in mind:
 [tibbles](https://tibble.tidyverse.org/)/dataframes or [tidygraph tibbles](https://tidygraph.data-imaginist.com/).
 - Generic modeling approach by using model and settings as function argument
 inputs.
+    - This allows flexibility with what model can be used (e.g. linear regression,
+    cox models).
+    - Almost all functionality of modeling in R is available here, for instance
+    handling of missing data or of categorical variables.
 <!-- - Works with the [tidymodel](https://www.tidymodels.org/) approach, such as by  -->
 <!-- making use of [parsnip](https://parsnip.tidymodels.org/) functions to make the  -->
 <!-- models. -->
@@ -76,11 +97,18 @@ transforming them are important to obtaining more accurate estimations.
 as a undirected graph based on dependencies between variables. This network is
 used to identify metabolic variables that are connected to each other as
 neighbours.
+    - We plan on implementing other network estimators aside from the PC-algorithm
+    at some point in the future.
 - `nc_estimate_exposure_links()` and `nc_estimate_outcome_links()`: Uses the
 standardized data and the estimated network to classify the conditionally
 independent relationship between each metabolic variable and an external
 variable (e.g. an outcome or an exposure) as either being a direct, ambiguous,
 or no effect relationship.
+    - Setting the threshold for classifying effects as direct, ambigious, or none
+    is done through the argument `classify_option_list`. See the help documentation
+    of the estimating functions for more details. For larger datasets, with more
+    sample size and variables included in the network, we *strongly* recommend
+    lowering the threshold used to reduce the risk of false positives.
 - `nc_join_links()`: **Not implemented yet.** Join together the exposure- and outcome-side estimated links.
 - `nc_plot_network()`: **Not implemented yet.** Visualize the connections
 estimated from `nc_estimate_network()`.
@@ -93,6 +121,8 @@ either `nc_estimate_exposure_links()`, `nc_estimate_outcome_links()`, or
 ## Simple example
 
 The below is an example using a simulated dataset for demonstrating NetCoupler.
+For more examples, particularly on how to use with different models,
+check out the `vignette("examples")`.
 
 ### Estimating the metabolic network
 
@@ -109,12 +139,14 @@ std_metabolic_data <- simulated_data %>%
     nc_standardize(starts_with("metabolite"))
 ```
 
-If you intend to also adjust for potential confounders when estimating
-the exposure or outcome side connections,
-you can include the potential impact these confounders may have on 
-the network by regressing the confounders on the metabolic variables.
-Then the residuals can be extracted and used when constructing the network.
-You do this also with the `nc_standardize()` function. 
+If you have potential confounders that you need to adjust for during the estimating
+links phase of NetCoupler, you'll need to include these confounding variables
+when standardizing the metabolic variables. You do this by regressing the confounding
+variables on the metabolic variables by using the `regressed_on` argument
+of `nc_standardize()`. This will automatically first standardize the variables,
+run models on the metabolic variables that includes the confounding variables,
+and then extract the residuals from the model which are then used to construct
+the network. Here's an example:
 
 ```{r metabolic-standardize-residuals, eval=FALSE}
 std_metabolic_data <- simulated_data %>% 
@@ -122,7 +154,9 @@ std_metabolic_data <- simulated_data %>%
                    regressed_on = "age")
 ```
 
-After that, you can estimate the network.
+After that, you can estimate the network. The network is by default estimated
+using the PC-algorithm. You can read more about it in the help page of the
+`pc_estimate_undirected_graph()` internal function.
 
 ```{r create-network}
 # Make partial independence network from metabolite data
@@ -156,7 +190,6 @@ standardized_data <- simulated_data %>%
 Now you can estimate the outcome or exposure and identify direct effects
 for either the exposure side (`exposure -> metabolite`) 
 or the outcome side (`metabolite -> outcome`).
-For more details on the algorithm, see the `vignette("description")`.
 For the exposure side, 
 the function identifies whether a link between the exposure 
 and an index node (one metabolic variable in the network) exists,
@@ -164,6 +197,7 @@ independent of potential confounders
 and from neighbouring nodes (other metabolic variables linked to the index variable).
 Depending on how consistent and strong the link is,
 the effect is classified as "direct", "ambiguous", or "none".
+<!-- For more details on the algorithm, see the `vignette("description")`. -->
 
 In the example below, we specifically generated the simulated data so that
 the exposure is associated with metabolites 1, 8, and 12.
@@ -200,6 +234,8 @@ outcome_estimates <- standardized_data %>%
         adjustment_vars = "age"
     )
 ```
+
+<!-- TODO: More about when to adjust and why and how. -->
 
 <!-- ### Plotting  -->
 
@@ -250,3 +286,5 @@ outcome_estimates <- standardized_data %>%
 <!-- ``` -->
 
 <!-- - complete cases for all variables used by netcoupler -->
+
+## References

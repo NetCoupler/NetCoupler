@@ -17,16 +17,18 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Luke Johnston \email{lwjohnst@gmail.com}
+\strong{Maintainer}: Luke Johnston \email{lwjohnst@gmail.com} (\href{https://orcid.org/0000-0003-4169-2616}{ORCID})
 
 Authors:
 \itemize{
-  \item Clemens Wittenbecher \email{Clemens.Wittenbecher@dife.de}
+  \item Clemens Wittenbecher \email{Clemens.Wittenbecher@dife.de} (\href{https://orcid.org/0000-0001-7792-877X}{ORCID})
 }
 
 Other contributors:
 \itemize{
+  \item Fabian Eichelmann \email{Fabian.Eichelmann@dife.de} [contributor]
   \item Helena Zacharias \email{helena.zacharias@helmholtz-muenchen.de} [contributor]
+  \item Daniel Ibsen \email{dbi@ph.au.dk} (\href{https://orcid.org/0000-0002-7038-4770}{ORCID}) [contributor]
 }
 
 }

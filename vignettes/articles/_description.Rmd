@@ -11,6 +11,8 @@ knitr::opts_chunk$set(
 
 ![](https://img.shields.io/badge/document%20status-rough%20draft-red?style=flat-square)
 
+TODO: Add more detail about PC algorithm here, or at least like to the pc_* function.
+
 ## Explanation of NetCoupler
 
 The *NetCoupler*-algorithm operates by taking the following steps:
