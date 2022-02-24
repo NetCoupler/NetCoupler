@@ -191,13 +191,28 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span>
 
-<span class="va">coxph_results</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>surv_object <span class="op">=</span> <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">survival_time</span>, event <span class="op">=</span> <span class="va">case_status</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+<span class="va">coxph_results_cluster</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>
+        time_start <span class="op">=</span> <span class="va">age</span>,
+        time_end <span class="op">=</span> <span class="va">time_start</span> <span class="op">+</span> <span class="va">outcome_event_time</span>,
+        surv_object <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span>
+            time <span class="op">=</span> <span class="va">time_start</span>,
+            time2 <span class="op">=</span> <span class="va">time_end</span>,
+            event <span class="op">=</span> <span class="va">outcome_binary</span>
+        <span class="op">)</span>,
+        strata_age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/strata.html" class="external-link">strata</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">age</span><span class="op">)</span><span class="op">)</span>
+    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+    <span class="co"># summary()</span>
   <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
     edge_tbl <span class="op">=</span> <span class="va">edge_table</span>,
     outcome <span class="op">=</span> <span class="st">"surv_object"</span>,
-    model_function <span class="op">=</span> <span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span>
-  <span class="op">)</span></code></pre></div>
+    adjustment_vars <span class="op">=</span> <span class="st">"strata_age"</span>,
+    model_function <span class="op">=</span> <span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span>,
+    <span class="co"># TODO: Test that this works with missingness too.</span>
+    model_arg_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cluster <span class="op">=</span> <span class="va">standardized_data</span><span class="op">$</span><span class="va">id</span><span class="op">)</span>
+  <span class="op">)</span>
+
+<span class="co"># coxph(Surv() ~ strata(age) + metabolite_1, cluster = id)</span></code></pre></div>
 <!-- 
 ## Poisson regression 
 
