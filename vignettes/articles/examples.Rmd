@@ -147,13 +147,28 @@ glm_bin_results$classified_effects %>%
 ```{r}
 library(survival)
 
-coxph_results <- standardized_data %>%
-  mutate(surv_object = survival::Surv(time = survival_time, event = case_status)) %>% 
+coxph_results_cluster <- standardized_data %>%
+    mutate(
+        time_start = age,
+        time_end = time_start + outcome_event_time,
+        surv_object = Surv(
+            time = time_start,
+            time2 = time_end,
+            event = outcome_binary
+        ),
+        strata_age = strata(as.integer(age))
+    ) %>%
+    # summary()
   nc_estimate_outcome_links(
     edge_tbl = edge_table,
     outcome = "surv_object",
-    model_function = survival::coxph
+    adjustment_vars = "strata_age",
+    model_function = survival::coxph,
+    # TODO: Test that this works with missingness too.
+    model_arg_list = list(cluster = standardized_data$id)
   )
+
+# coxph(Surv() ~ strata(age) + metabolite_1, cluster = id)
 ```
 
 ```{r, echo=FALSE}
