@@ -75,6 +75,13 @@ regressed on to the variables that will be standardized.
 
 ### Outcome vs exposure side
 
+Let's revisit this image:
+
+![General form for questions that NetCoupler aims to help answer.](vignettes/aim-question.png)
+
+If we want to estimate the links on the left hand side (the exposure side),
+where to 
+
 ```{r}
 lm_results_outcome <- standardized_data %>%
   nc_estimate_outcome_links(
