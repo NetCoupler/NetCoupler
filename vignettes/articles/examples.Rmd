@@ -124,8 +124,7 @@ glm_bin_results <- standardized_data %>%
     outcome = "case_status",
     model_function = glm,
     model_arg_list = list(family = binomial),
-    exponentiate = TRUE,
-    implementation = "original"
+    exponentiate = TRUE
   )
 ```
 
@@ -138,6 +137,8 @@ glm_bin_results$classified_effects %>%
 ### Ordinal Logistic Regression 
 
 ### Nominal Logistic Regression
+
+### Conditional Logistic Regression
 -->
 
 ## Cox Regression
