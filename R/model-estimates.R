@@ -230,13 +230,13 @@ compute_model_estimates <-
         adj_vars = adjustment_vars
     )
 
+    # TODO: Could drop this if I use butcher::axe_data to reduce size of output
     variables_to_keep <- stats::na.omit(unique(c(
         network_combinations$index_node,
         purrr::flatten_chr(network_combinations$neighbours),
         external_var,
         adjustment_vars
     )))
-
     model_data <- data %>%
         select(all_of(variables_to_keep)) %>%
         stats::na.omit()
@@ -356,6 +356,7 @@ generate_formula_df <-
             purrr::pmap(c) %>%
             map(unique) %>%
             map2(external_input$y, ~.x[!.x %in% .y]) %>%
+            # TODO: Is this fine?
             map(stats::na.omit)
 
         tibble(
