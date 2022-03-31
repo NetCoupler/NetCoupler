@@ -30,10 +30,10 @@ A typical use case we have in mind would be if a researcher might be interested
 in exploring potential pathways that exist between a health exposure like red
 meat consumption, its impact on the metabolic profile, and the subsequent impact
 on an outcome like type 2 diabetes incidence.
+So for instance, you want to ask questions to get answers that look like the
+figure below.
 
-So for instance, you want to ask questions to get answers that looks like:
-
-![Answers to specific types of questions that NetCoupler can help with.](vignettes/aim-output.png)
+![The structure of questions that NetCoupler aims to help answers or explore.](aim-output.png)
 
 The input for NetCoupler includes:
 
@@ -80,6 +80,7 @@ inputs.
     cox models).
     - Almost all functionality of modeling in R is available here, for instance
     handling of missing data or of categorical variables.
+
 <!-- - Works with the [tidymodel](https://www.tidymodels.org/) approach, such as by  -->
 <!-- making use of [parsnip](https://parsnip.tidymodels.org/) functions to make the  -->
 <!-- models. -->
