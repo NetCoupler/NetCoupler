@@ -38,6 +38,12 @@ simulated_data \%>\%
 # Extract residuals by regressing on a variable
 simulated_data \%>\%
   nc_standardize(starts_with("metabolite_"), "age")
+
+# Works with factors too
+simulated_data \%>\%
+  dplyr::mutate(Sex = as.factor(sample(rep(c("F", "M"), times = nrow(.) / 2)))) \%>\%
+  nc_standardize(starts_with("metabolite_"), c("age", "Sex"))
+
 }
 \seealso{
 \link{nc_estimate_links} for more detailed examples or the \code{vignette("NetCoupler")}.

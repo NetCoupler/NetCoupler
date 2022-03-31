@@ -2,7 +2,7 @@ Package: NetCoupler
 Title: Inference of Causal Links Between a Network and an External Variable
 Version: 0.0.4.9000
 Authors@R: c(
-    person("Luke", "Johnston", , "lwjohnst@gmail.com", role = c("aut", "cre"),
+    person("Luke", "Johnston", , "lwjohnst@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0003-4169-2616")),
     person("Clemens", "Wittenbecher", , "Clemens.Wittenbecher@dife.de", role = "aut",
            comment = c(ORCID = "0000-0001-7792-877X")),
@@ -37,10 +37,10 @@ Imports:
     tidyselect,
     ggplot2,
     utils,
-    furrr,
     tidygraph
 Suggests: 
     broom,
+    furrr,
     knitr,
     rmarkdown,
     testthat (>= 2.1.0)

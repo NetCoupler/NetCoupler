@@ -71,10 +71,19 @@ sim_event_time_data <-
     as_tibble() %>%
     rename(outcome_binary = status, outcome_event_time = eventtime)
 
-simulated_data <-
-    full_join(sim_data,
-              sim_event_time_data) %>%
-    mutate(age = age + 50)
+insert_random_missingness <- function(data) {
+    purrr::map_df(data, ~ .[sample(
+        c(TRUE, NA),
+        prob = c(0.98, 0.02),
+        size = length(.),
+        replace = TRUE
+    )])
+}
+
+simulated_data <- sim_data %>%
+    full_join(sim_event_time_data) %>%
+    mutate(age = age + 50) %>%
+    insert_random_missingness()
 
 # Save dataset ------------------------------------------------------------
 

@@ -21,7 +21,7 @@
 #'   usage.
 #' @param exponentiate Logical. Whether to exponentiate the log estimates, as
 #'   computed with e.g. logistic regression models.
-#' @param classify_option_list Classification options for direct, ambigious, or none
+#' @param classify_option_list A List with classification options for direct, ambigious, or none
 #'   effects. Options currently are:
 #'
 #'   - `single_metabolite_threshold`: Default of 0.05. P-values from models with
@@ -71,7 +71,6 @@
 #'
 #' @examples
 #'
-#' \dontrun{
 #' library(dplyr)
 #' standardized_data <- simulated_data %>%
 #'     nc_standardize(starts_with("metabolite"))
@@ -97,7 +96,7 @@
 #' standardized_data %>%
 #'   nc_estimate_outcome_links(
 #'     edge_tbl = edge_table,
-#'     outcome = "case_status",
+#'     outcome = "outcome_binary",
 #'     model_function = glm,
 #'     adjustment_vars = "age",
 #'     model_arg_list = list(family = binomial(link = "logit")),
@@ -114,7 +113,6 @@
 #'     adjustment_vars = c("age", "Random", "Sex"),
 #'     model_function = lm
 #'    )
-#' }
 #'
 NULL
 
@@ -230,25 +228,17 @@ compute_model_estimates <-
         adj_vars = adjustment_vars
     )
 
-    # TODO: Could drop this if I use butcher::axe_data to reduce size of output
-    variables_to_keep <- stats::na.omit(unique(c(
-        network_combinations$index_node,
-        purrr::flatten_chr(network_combinations$neighbours),
-        external_var,
-        adjustment_vars
-    )))
-    model_data <- data %>%
-        select(all_of(variables_to_keep)) %>%
-        stats::na.omit()
-
-    other_args <- list(data = model_data)
+    other_args <- list(data = data)
     if (!is.null(model_arg_list))
         other_args <- c(other_args, model_arg_list)
 
+    pmap_dfr <- purrr::pmap_dfr
+    if (!requireNamespace("furrr", quietly = TRUE)) {
+        pmap_dfr <- furrr::future_pmap_dfr
+    }
+
     model_tbl <- formula_df %>%
-        # TODO: To add parallelization, might simply need to add uncomment out this and add furrr as dep
-        # furrr::future_pmap_dfr(
-        purrr::pmap_dfr(
+        pmap_dfr(
             run_model_and_tidy,
             model_function = model_function,
             model_args = other_args,

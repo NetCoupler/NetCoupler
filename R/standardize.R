@@ -32,6 +32,12 @@
 #' # Extract residuals by regressing on a variable
 #' simulated_data %>%
 #'   nc_standardize(starts_with("metabolite_"), "age")
+#'
+#' # Works with factors too
+#' simulated_data %>%
+#'   dplyr::mutate(Sex = as.factor(sample(rep(c("F", "M"), times = nrow(.) / 2)))) %>%
+#'   nc_standardize(starts_with("metabolite_"), c("age", "Sex"))
+#'
 nc_standardize <- function(data, cols = everything(), regressed_on = NULL) {
     if (!is.null(regressed_on)) {
         assert_character(regressed_on)
@@ -53,10 +59,12 @@ log_standardize <- function(x) {
     as.numeric(scale(log(x)))
 }
 
-log_regress_standardize <- function(x, regressed_on) {
+log_regress_standardize <- function(data, x, regressed_on) {
     # TODO: Decide which method to regress by. lm only?
-    logged_x <- log(x)
-    residual_x <- stats::residuals(stats::glm.fit(y = logged_x, x = regressed_on))
+    data[x] <- log(data[x])
+    formula <- stats::reformulate(regressed_on, response = x)
+    residual_x <- stats::glm(formula = formula, data = data) %>%
+        stats::residuals()
     as.numeric(scale(residual_x))
 }
 
@@ -91,12 +99,10 @@ extract_residuals <- function(cols, data, regressed_on, id_var = ".id_variable")
         select(all_of(c(cols, regressed_on, id_var))) %>%
         stats::na.omit()
 
-    metabolic_var <- no_missing[[cols]]
-    regress_on_vars <- no_missing[regressed_on]
-
     metabolic_residuals <-
-        log_regress_standardize(metabolic_var,
-                                 regress_on_vars)
+        log_regress_standardize(no_missing,
+                                cols,
+                                regressed_on)
 
     no_missing[cols] <- metabolic_residuals
 

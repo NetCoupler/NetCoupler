@@ -13,12 +13,3 @@ expect_correct_model_results <- function(.actual, .expected_metabolites) {
     expect_identical(sort(.actual$index_node),
                      sort(.expected_metabolites))
 }
-
-insert_random_missingness <- function(data) {
-    purrr::map_df(data, ~ .[sample(
-        c(TRUE, NA),
-        prob = c(0.98, 0.02),
-        size = length(.),
-        replace = TRUE
-    )])
-}

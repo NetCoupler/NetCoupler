@@ -11,11 +11,11 @@ standardized_with_residuals <- simulated_data %>%
 
 test_that("logging and scaling works", {
     metabolite_means <- standardized %>%
-        colSums() %>%
+        colSums(na.rm = TRUE) %>%
         round(0)
 
     metabolite_sd <- standardized %>%
-        purrr::map_dbl(sd) %>%
+        purrr::map_dbl(sd, na.rm = TRUE) %>%
         round(0)
 
     expect_equal(sum(metabolite_means), 0)
@@ -25,11 +25,11 @@ test_that("logging and scaling works", {
 
 test_that("standardization with residuals works", {
     metabolite_means_resid <- standardized_with_residuals %>%
-        colSums() %>%
+        colSums(na.rm = TRUE) %>%
         round(0)
 
     metabolite_sd_resid <- standardized_with_residuals %>%
-        purrr::map_dbl(sd) %>%
+        purrr::map_dbl(sd, na.rm = TRUE) %>%
         round(0)
 
     expect_equal(sum(metabolite_means_resid), 0)
@@ -37,11 +37,5 @@ test_that("standardization with residuals works", {
     expect_false(identical(simulated_data, standardized_with_residuals))
     expect_false(identical(standardized, standardized_with_residuals))
 })
-
-# TODO: Add tests for random missingness
-# simulated_data %>%
-#   mutate(Random = rnorm(n(), 10, 2)) %>%
-#   insert_random_missingness() %>%
-#   nc_standardize(matches("metabolite_"), c("age", "Random"))
 
 # TODO: Add test for highly skewed data?
