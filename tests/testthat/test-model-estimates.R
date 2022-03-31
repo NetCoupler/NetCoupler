@@ -126,22 +126,6 @@ test_that("assertion checks pass", {
     )
 })
 
-test_that("missingness in data still provides results", {
-    set.seed(21451)
-    missingness_data <- insert_random_missingness(std_sim_data)
-    metabolite_network <- missingness_data %>%
-        select(starts_with("metabolite")) %>%
-        nc_estimate_network()
-    exposure_estimates <- missingness_data %>%
-        nc_estimate_exposure_links(
-            edge_tbl = as_edge_tbl(metabolite_network),
-            exposure = "exposure",
-            model_function = lm
-        )
-
-    expect_correct_model_results(exposure_estimates, metabolite_names)
-})
-
 # test_that("computes when using survival::Surv and coxph", {
 #     skip_on_ci()
 #     skip_if_not_installed("survival")
