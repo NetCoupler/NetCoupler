@@ -230,25 +230,17 @@ compute_model_estimates <-
         adj_vars = adjustment_vars
     )
 
-    # TODO: Could drop this if I use butcher::axe_data to reduce size of output
-    variables_to_keep <- stats::na.omit(unique(c(
-        network_combinations$index_node,
-        purrr::flatten_chr(network_combinations$neighbours),
-        external_var,
-        adjustment_vars
-    )))
-    model_data <- data %>%
-        select(all_of(variables_to_keep)) %>%
-        stats::na.omit()
-
-    other_args <- list(data = model_data)
+    other_args <- list(data = data)
     if (!is.null(model_arg_list))
         other_args <- c(other_args, model_arg_list)
 
+    pmap_dfr <- purrr::pmap_dfr
+    if (!requireNamespace("furrr", quietly = TRUE)) {
+        pmap_dfr <- furrr::future_pmap_dfr
+    }
+
     model_tbl <- formula_df %>%
-        # TODO: To add parallelization, might simply need to add uncomment out this and add furrr as dep
-        # furrr::future_pmap_dfr(
-        purrr::pmap_dfr(
+        pmap_dfr(
             run_model_and_tidy,
             model_function = model_function,
             model_args = other_args,
