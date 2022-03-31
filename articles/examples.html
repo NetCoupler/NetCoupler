@@ -46,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -98,9 +98,9 @@
 <li>Most models only show the outcome-side estimation, for brevity. However, the code for running exposure-side estimation is almost the exact same.</li>
 </ul>
 <p>Across the different models, there are some general features, which is described in more depth in the <a href="netcoupler.html">Getting Started</a> article.</p>
-<div class="section level3">
-<h3 id="pre-processing">Pre-processing<a class="anchor" aria-label="anchor" href="#pre-processing"></a>
-</h3>
+<div class="section level2">
+<h2 id="pre-processing">Pre-processing<a class="anchor" aria-label="anchor" href="#pre-processing"></a>
+</h2>
 <p>First load up the packages.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NetCoupler/NetCoupler" class="external-link">NetCoupler</a></span><span class="op">)</span>
@@ -131,28 +131,35 @@
     <span class="fu"><a href="../reference/nc_estimate_network.html">nc_estimate_network</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"metabolite"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </li>
 </ol>
-<div class="section level4">
-<h4 id="outcome-vs-exposure-side">Outcome vs exposure side<a class="anchor" aria-label="anchor" href="#outcome-vs-exposure-side"></a>
-</h4>
+<div class="section level3">
+<h3 id="outcome-vs-exposure-side">Outcome vs exposure side<a class="anchor" aria-label="anchor" href="#outcome-vs-exposure-side"></a>
+</h3>
+<p>Let’s revisit this image:</p>
+<div class="figure">
+<img src="articles/aim-question.png" alt=""><p class="caption">General form for questions that NetCoupler aims to help answer.</p>
+</div>
+<p>All types of models can be used for either the left hand side of this graph (the exposure side) or the right hand side (the outcome). If we want to estimate the links on the exposure side, where we’re interested in how a variable might influence the network, we would use the <code><a href="../reference/nc_estimate_links.html">nc_estimate_exposure_links()</a></code> function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lm_results_outcome</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
-    edge_tbl <span class="op">=</span> <span class="va">edge_table</span>,
-    outcome <span class="op">=</span> <span class="st">"outcome_continuous"</span>,
-    model_function <span class="op">=</span> <span class="va">lm</span>
-  <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lm_results_exposure</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+<code class="sourceCode R"><span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_exposure_links</a></span><span class="op">(</span>
     edge_tbl <span class="op">=</span> <span class="va">edge_table</span>,
     exposure <span class="op">=</span> <span class="st">"exposure"</span>,
     model_function <span class="op">=</span> <span class="va">lm</span>
   <span class="op">)</span></code></pre></div>
+<p>If we are interested the outcome side, where we want to know how the network might influence the outcome, we would use the <code><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links()</a></code> function.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
+    edge_tbl <span class="op">=</span> <span class="va">edge_table</span>,
+    outcome <span class="op">=</span> <span class="st">"outcome_continuous"</span>,
+    model_function <span class="op">=</span> <span class="va">lm</span>
+  <span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="linear-regression">Linear regression<a class="anchor" aria-label="anchor" href="#linear-regression"></a>
-</h3>
+<div class="section level2">
+<h2 id="linear-regression">Linear regression<a class="anchor" aria-label="anchor" href="#linear-regression"></a>
+</h2>
+<p>This is the easiest and will probably be the most commonly used modeling method used when running NetCoupler. Adding additional arguments to settings to the <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> (or <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm()</a></code>) function can be done by using the <code>model_args_list</code> argument.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lm_results</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
@@ -161,58 +168,62 @@
     model_function <span class="op">=</span> <span class="va">lm</span>
   <span class="op">)</span></code></pre></div>
 </div>
+<div class="section level2">
+<h2 id="logistic-regression">Logistic regression<a class="anchor" aria-label="anchor" href="#logistic-regression"></a>
+</h2>
 <div class="section level3">
-<h3 id="logistic-regression">Logistic regression<a class="anchor" aria-label="anchor" href="#logistic-regression"></a>
+<h3 id="binary-logistic-regression">Binary Logistic Regression<a class="anchor" aria-label="anchor" href="#binary-logistic-regression"></a>
 </h3>
-<div class="section level4">
-<h4 id="binary-logistic-regression">Binary Logistic Regression<a class="anchor" aria-label="anchor" href="#binary-logistic-regression"></a>
-</h4>
+<p>Probably the second most common model would be the binary classic logistic regression. Unlike the linear regression modeling above, we need to use the <code>model_arg_list</code> argument in order to tell <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm()</a></code> to use the binomial method for model estimation.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">glm_bin_results</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
     edge_tbl <span class="op">=</span> <span class="va">edge_table</span>,
-    outcome <span class="op">=</span> <span class="st">"case_status"</span>,
+    outcome <span class="op">=</span> <span class="st">"outcome_binary"</span>,
     model_function <span class="op">=</span> <span class="va">glm</span>,
     model_arg_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span>,
-    exponentiate <span class="op">=</span> <span class="cn">TRUE</span>,
-    implementation <span class="op">=</span> <span class="st">"original"</span>
+    exponentiate <span class="op">=</span> <span class="cn">TRUE</span>
   <span class="op">)</span></code></pre></div>
 <!-- 
 ### Ordinal Logistic Regression 
 
 ### Nominal Logistic Regression
+
+### Conditional Logistic Regression
 -->
 </div>
 </div>
-<div class="section level3">
-<h3 id="cox-regression">Cox Regression<a class="anchor" aria-label="anchor" href="#cox-regression"></a>
-</h3>
-<!-- TODO: Include `cluster()`, `strata()`. -->
+<div class="section level2">
+<h2 id="cox-proportional-hazards-regression">Cox proportional hazards regression<a class="anchor" aria-label="anchor" href="#cox-proportional-hazards-regression"></a>
+</h2>
+<p>With Cox models, the response/y variable usually needs to be a <code><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">survival::Surv()</a></code> object. While you can use this function in the <code>outcome</code>/<code>exposure</code> argument of the <code><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links()</a></code> or <code><a href="../reference/nc_estimate_links.html">nc_estimate_exposure_links()</a></code> functions, to keep the code and output a bit cleaner, we recommend creating the survival object beforehand with <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span>
+<span class="va">cox_surv_data</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>surv_object <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span>
+        time <span class="op">=</span> <span class="va">age</span>,
+        time2 <span class="op">=</span> <span class="va">age</span> <span class="op">+</span> <span class="va">outcome_event_time</span>,
+        event <span class="op">=</span> <span class="va">outcome_binary</span>
+    <span class="op">)</span><span class="op">)</span> 
 
-<span class="va">coxph_results_cluster</span> <span class="op">&lt;-</span> <span class="va">standardized_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>
-        time_start <span class="op">=</span> <span class="va">age</span>,
-        time_end <span class="op">=</span> <span class="va">time_start</span> <span class="op">+</span> <span class="va">outcome_event_time</span>,
-        surv_object <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span>
-            time <span class="op">=</span> <span class="va">time_start</span>,
-            time2 <span class="op">=</span> <span class="va">time_end</span>,
-            event <span class="op">=</span> <span class="va">outcome_binary</span>
-        <span class="op">)</span>,
-        strata_age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/strata.html" class="external-link">strata</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">age</span><span class="op">)</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-    <span class="co"># summary()</span>
+<span class="va">coxph_results</span> <span class="op">&lt;-</span> <span class="va">cox_surv_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
     edge_tbl <span class="op">=</span> <span class="va">edge_table</span>,
     outcome <span class="op">=</span> <span class="st">"surv_object"</span>,
-    adjustment_vars <span class="op">=</span> <span class="st">"strata_age"</span>,
-    model_function <span class="op">=</span> <span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span>,
-    <span class="co"># TODO: Test that this works with missingness too.</span>
-    model_arg_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cluster <span class="op">=</span> <span class="va">standardized_data</span><span class="op">$</span><span class="va">id</span><span class="op">)</span>
-  <span class="op">)</span>
-
-<span class="co"># coxph(Surv() ~ strata(age) + metabolite_1, cluster = id)</span></code></pre></div>
+    <span class="co"># Can also use Surv directly.</span>
+    <span class="co"># outcome = "Surv(time = time_start, time2 = time_end, event = outcome_binary)",</span>
+    model_function <span class="op">=</span> <span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span>
+  <span class="op">)</span></code></pre></div>
+<p>You might want to add a clustering to calculate robust standard errors or to add a strata variable. You add these directly to the adjustment variable argument.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">coxph_results_cluster</span> <span class="op">&lt;-</span> <span class="va">cox_surv_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">age</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="../reference/nc_estimate_links.html">nc_estimate_outcome_links</a></span><span class="op">(</span>
+        edge_tbl <span class="op">=</span> <span class="va">edge_table</span>,
+        outcome <span class="op">=</span> <span class="st">"surv_object"</span>,
+        adjustment_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"strata(age)"</span>, <span class="st">"cluster(id)"</span><span class="op">)</span>,
+        model_function <span class="op">=</span> <span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span>
+    <span class="op">)</span></code></pre></div>
 <!-- 
 ## Poisson regression 
 
@@ -244,10 +255,7 @@
 ## Longitudinal data? 
 
 -->
-</div>
-<div class="section level2">
-<h2 id="real-world-uses-in-published-works">Real-world uses in published works<a class="anchor" aria-label="anchor" href="#real-world-uses-in-published-works"></a>
-</h2>
+<!-- # Real-world uses in published works -->
 <div id="refs" class="references">
 <div id="ref-Wittenbecher2022">
 <p>Wittenbecher, C., R. Cuadrat, L. Johnston, F. Eichelmann, S. Jäger, O. Kuxhaus, M. Prada, et al. 2022. “Dihydroceramide- and Ceramide-Profiling Provides Insights into Human Cardiometabolic Disease Etiology.” <em>Nature Communications</em> 13 (1). <a href="https://doi.org/10.1038/s41467-022-28496-1" class="external-link">https://doi.org/10.1038/s41467-022-28496-1</a>.</p>
