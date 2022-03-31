@@ -37,10 +37,10 @@ Imports:
     tidyselect,
     ggplot2,
     utils,
-    furrr,
     tidygraph
 Suggests: 
     broom,
+    furrr,
     knitr,
     rmarkdown,
     testthat (>= 2.1.0)
