@@ -9,9 +9,11 @@ nocite: |
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = FALSE,
+  purl = FALSE
 )
 
+# To use when this is pre-rendered.
 make_table <- function(object, caption = NULL) {
     object %>%
         mutate(across(where(is.numeric), round, digits = 3)) %>% 
@@ -79,24 +81,14 @@ Let's revisit this image:
 
 ![General form for questions that NetCoupler aims to help answer.](vignettes/aim-question.png)
 
-If we want to estimate the links on the left hand side (the exposure side),
-where to 
+All types of models can be used for either the left hand side of this graph
+(the exposure side) or the right hand side (the outcome).
+If we want to estimate the links on the exposure side,
+where we're interested in how a variable might influence the network, 
+we would use the `nc_estimate_exposure_links()` function.
 
-```{r}
-lm_results_outcome <- standardized_data %>%
-  nc_estimate_outcome_links(
-    edge_tbl = edge_table,
-    outcome = "outcome_continuous",
-    model_function = lm
-  )
-```
-
-```{r, echo=FALSE}
-make_table(lm_results_outcome$classified_effects)
-```
-
-```{r}
-lm_results_exposure <- standardized_data %>%
+```{r, eval=FALSE}
+standardized_data %>%
   nc_estimate_exposure_links(
     edge_tbl = edge_table,
     exposure = "exposure",
@@ -104,7 +96,24 @@ lm_results_exposure <- standardized_data %>%
   )
 ```
 
+If we are interested the outcome side,
+where we want to know how the network might influence the outcome, we
+would use the `nc_estimate_outcome_links()` function.
+
+```{r, eval=FALSE}
+standardized_data %>%
+  nc_estimate_outcome_links(
+    edge_tbl = edge_table,
+    outcome = "outcome_continuous",
+    model_function = lm
+  )
+```
+
 ## Linear regression
+
+This is the easiest and will probably be the most commonly used modeling method
+used when running NetCoupler. Adding additional arguments to settings to the
+`lm()` (or `glm()`) function can be done by using the `model_args_list` argument.
 
 ```{r}
 lm_results <- standardized_data %>%
@@ -123,6 +132,10 @@ lm_results$classified_effects %>%
 ## Logistic regression
 
 ### Binary Logistic Regression
+
+Probably the second most common model would be the binary classic logistic regression.
+Unlike the linear regression modeling above, we need to use the `model_arg_list`
+argument in order to tell `glm()` to use the binomial method for model estimation.
 
 ```{r}
 glm_bin_results <- standardized_data %>%
@@ -148,40 +161,50 @@ glm_bin_results$classified_effects %>%
 ### Conditional Logistic Regression
 -->
 
-## Cox Regression
+## Cox proportional hazards regression
 
-<!-- TODO: Include `cluster()`, `strata()`. -->
+With Cox models, the response/y variable usually needs to be a `survival::Surv()`
+object. While you can use this function in the `outcome`/`exposure` argument
+of the `nc_estimate_outcome_links()` or `nc_estimate_exposure_links()` functions, 
+to keep the code and output a bit cleaner, we recommend creating the survival
+object beforehand with `mutate()`.
 
 ```{r}
 library(survival)
+cox_surv_data <- standardized_data %>%
+    mutate(surv_object = Surv(
+        time = age,
+        time2 = age + outcome_event_time,
+        event = outcome_binary
+    )) 
 
-coxph_results_cluster <- standardized_data %>%
-    mutate(
-        time_start = age,
-        time_end = time_start + outcome_event_time,
-        surv_object = Surv(
-            time = time_start,
-            time2 = time_end,
-            event = outcome_binary
-        ),
-        strata_age = strata(as.integer(age))
-    ) %>%
-    # summary()
+coxph_results <- cox_surv_data %>%
   nc_estimate_outcome_links(
     edge_tbl = edge_table,
     outcome = "surv_object",
-    adjustment_vars = "strata_age",
-    model_function = survival::coxph,
-    # TODO: Test that this works with missingness too.
-    model_arg_list = list(cluster = standardized_data$id)
+    # Can also use Surv directly.
+    # outcome = "Surv(time = time_start, time2 = time_end, event = outcome_binary)",
+    model_function = survival::coxph
   )
-
-# coxph(Surv() ~ strata(age) + metabolite_1, cluster = id)
 ```
 
 ```{r, echo=FALSE}
 coxph_results$classified_effects %>% 
     make_table("Model results and classification for Cox models.")
+```
+
+You might want to add a clustering to calculate robust standard errors or to add
+a strata variable. You add these directly to the adjustment variable argument.
+
+```{r}
+coxph_results_cluster <- cox_surv_data %>%
+    mutate(age = as.integer(age)) %>%
+    nc_estimate_outcome_links(
+        edge_tbl = edge_table,
+        outcome = "surv_object",
+        adjustment_vars = c("strata(age)", "cluster(id)"),
+        model_function = survival::coxph
+    )
 ```
 
 <!-- 
@@ -216,4 +239,4 @@ coxph_results$classified_effects %>%
 
 -->
 
-# Real-world uses in published works
+<!-- # Real-world uses in published works -->
