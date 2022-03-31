@@ -262,28 +262,29 @@ outcome_estimates <- standardized_data %>%
 <!-- ) -->
 <!-- ``` -->
 
-<!-- ## Slow code? Use parallel processing with future -->
+## Slow code? Use parallel processing with future
 
-<!-- If the analysis is taking a while, you can use the future package to speed things -->
-<!-- up by implementing parallel processing. Set the `.parallel` argument to `TRUE` -->
-<!-- in either `nc_estimate_outcome_links()` or `nc_estimate_exposure_links()` and then use -->
-<!-- the future package with a given `plan()`. If you use RStudio, the only usable -->
-<!-- strategy is `multisession`. After you run your code, close up the parallel -->
-<!-- processing by putting it back to normal with `plan(sequential)`. Using the future -->
-<!-- package you can speed up the processing by almost 2.5 times. -->
+If the analysis is taking a while, you can use the future package to speed things
+up by implementing parallel processing. It's easy to use parallel processing with
+NetCoupler since it uses the future package. By setting the "processing plan" with
+`future::plan()` to `multisession`, NetCoupler will use parallel processing for its
+computationally intensive component of the algorithm.
+After you run your code, close up the parallel
+processing by putting it back to normal with `plan(sequential)`. Using the future
+package you can speed up the processing by almost 2.5 times.
 
-<!-- ```{r future-parallel-processing, eval=FALSE} -->
-<!-- library(future) -->
-<!-- plan(multisession) -->
-<!-- outcome_estimates <- standardized_data %>% -->
-<!--     nc_estimate_outcome_links( -->
-<!--         edge_tbl = as_edge_tbl(metabolite_network), -->
-<!--         outcome = "outcome_continuous", -->
-<!--         model_function = lm, -->
-<!--         .parallel = TRUE -->
-<!--     ) -->
-<!-- plan(sequential) -->
-<!-- ``` -->
+```{r future-parallel-processing, eval=FALSE}
+# You'll need to have furrr installed for this to work.
+library(future)
+plan(multisession)
+outcome_estimates <- standardized_data %>%
+    nc_estimate_outcome_links(
+        edge_tbl = as_edge_tbl(metabolite_network),
+        outcome = "outcome_continuous",
+        model_function = lm
+    )
+plan(sequential)
+```
 
 <!-- - complete cases for all variables used by netcoupler -->
 
