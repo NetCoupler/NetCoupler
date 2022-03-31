@@ -21,7 +21,7 @@
 #'   usage.
 #' @param exponentiate Logical. Whether to exponentiate the log estimates, as
 #'   computed with e.g. logistic regression models.
-#' @param classify_option_list Classification options for direct, ambigious, or none
+#' @param classify_option_list A List with classification options for direct, ambigious, or none
 #'   effects. Options currently are:
 #'
 #'   - `single_metabolite_threshold`: Default of 0.05. P-values from models with
