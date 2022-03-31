@@ -56,7 +56,7 @@ usage.}
 \item{exponentiate}{Logical. Whether to exponentiate the log estimates, as
 computed with e.g. logistic regression models.}
 
-\item{classify_option_list}{Classification options for direct, ambigious, or none
+\item{classify_option_list}{A List with classification options for direct, ambigious, or none
 effects. Options currently are:
 \itemize{
 \item \code{single_metabolite_threshold}: Default of 0.05. P-values from models with
@@ -106,7 +106,6 @@ and the network. There are two functions to estimate and classify links:
 }
 \examples{
 
-\dontrun{
 library(dplyr)
 standardized_data <- simulated_data \%>\%
     nc_standardize(starts_with("metabolite"))
@@ -149,7 +148,6 @@ standardized_data \%>\%
     adjustment_vars = c("age", "Random", "Sex"),
     model_function = lm
    )
-}
 
 }
 \seealso{

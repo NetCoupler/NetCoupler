@@ -35,7 +35,7 @@
 #'
 #' # Works with factors too
 #' simulated_data %>%
-#'   mutate(Sex = as.factor(sample(rep(c("F", "M"), times = nrow(.) / 2)))) %>%
+#'   dplyr::mutate(Sex = as.factor(sample(rep(c("F", "M"), times = nrow(.) / 2)))) %>%
 #'   nc_standardize(starts_with("metabolite_"), c("age", "Sex"))
 #'
 nc_standardize <- function(data, cols = everything(), regressed_on = NULL) {

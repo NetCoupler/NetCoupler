@@ -71,7 +71,6 @@
 #'
 #' @examples
 #'
-#' \dontrun{
 #' library(dplyr)
 #' standardized_data <- simulated_data %>%
 #'     nc_standardize(starts_with("metabolite"))
@@ -114,7 +113,6 @@
 #'     adjustment_vars = c("age", "Random", "Sex"),
 #'     model_function = lm
 #'    )
-#' }
 #'
 NULL
 
