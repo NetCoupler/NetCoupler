@@ -30,19 +30,6 @@ test_that("network is created", {
     )
 })
 
-test_that("network is constructed even with missingness", {
-    metabolite_network_na <- simulated_data %>%
-        insert_random_missingness() %>%
-        nc_estimate_network(starts_with("metabolite"))
-
-    expect_identical(class(metabolite_network_na)[1], "tbl_graph")
-
-    # For number of neighbours, etc
-    edges <- as_edge_tbl(metabolite_network_na)
-    edges <- unique(c(edges$source_node, edges$target_node))
-    expect_true(all(edges %in% names(metabolite_data)))
-})
-
 # test_that("edge table generates correct output", {
 #     # TODO: Fill this out
 # })
