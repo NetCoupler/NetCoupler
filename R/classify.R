@@ -23,16 +23,7 @@
 #'   See [nc_estimate_links] for examples on using NetCoupler.
 #'
 classify_effects <- function(data,
-                             classify_option_list = list(single_metabolite_threshold = 0.05,
-                                                         network_threshold = 0.1)) {
-    if (!checkmate::test_subset(names(classify_option_list),
-                               c("single_metabolite_threshold", "network_threshold"))) {
-        rlang::abort(c(
-            "You've given the wrong options for the `classify_option_list` argument.",
-            "i" = "Available options are `single_metabolite_threshold` and `network_threshold`."
-        ))
-    }
-
+                             classify_option_list = classify_options()) {
     assert_data_frame(data)
     check_tbl(data)
 
