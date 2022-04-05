@@ -66,7 +66,13 @@ let us know by opening an Issue or submitting a Pull Request (see the
 
 # Installation
 
-There is no CRAN version yet. To install the development version, use:
+To install the official CRAN version, use:
+
+```{r, eval=FALSE}
+install.packages("NetCoupler")
+```
+
+To install the development version, use:
 
 ```{r, eval=FALSE}
 # install.packages("remotes")
