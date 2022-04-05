@@ -11,7 +11,7 @@ classify_options(
 )
 }
 \arguments{
-\item{single_metabolite_threshold, network_threshold, direct_effect_adjustment}{See \code{nc_estimate_links} for details.}
+\item{single_metabolite_threshold, network_threshold, direct_effect_adjustment}{See the \code{classify_option_list} argument in \link{nc_estimate_links} for details.}
 }
 \value{
 List with options for the classification.

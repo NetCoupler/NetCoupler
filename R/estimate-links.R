@@ -285,7 +285,7 @@ compute_model_estimates <-
 #' Classification options for direct, ambigious, and no effect.
 #'
 #' @param single_metabolite_threshold,network_threshold,direct_effect_adjustment
-#'   See `nc_estimate_links` for details.
+#'   See the `classify_option_list` argument in [nc_estimate_links] for details.
 #'
 #' @return List with options for the classification.
 #' @export
