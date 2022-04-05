@@ -14,3 +14,4 @@
 ^vignettes/articles$
 ^_ignore$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
