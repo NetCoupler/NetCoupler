@@ -11,15 +11,7 @@
 #'
 #' @param data Multi-model estimates generated from [nc_estimate_exposure_links()] or
 #'   [nc_estimate_outcome_links()] that contain the model summaries.
-#' @param classify_option_list Classification options for direct, ambigious, or none
-#'   effects. Options currently are:
-#'
-#'   - `single_metabolite_threshold`: Default of 0.05. P-values from models with
-#'   only the index metabolite (no neighbour adjustment) are classified as effects if
-#'   below this threshold.
-#'   - `network_threshold`: Default of 0.1. P-values from any models that have
-#'   direct neighbour adjustments are classified as effects if below this threshold.
-#'   This is assumed as a one-sided p-value threshold.
+#' @inheritParams nc_estimate_links
 #'
 #' @return Outputs a [tibble][tibble::tibble-package] with model estimates
 #'   between the exposure and the individual index network nodes, along with the
