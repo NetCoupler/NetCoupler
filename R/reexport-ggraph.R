@@ -1,12 +1,12 @@
 # TODO: Re-export them when we get to the plotting functions.
-#' @importFrom ggraph scale_edge_width
+# @importFrom ggraph scale_edge_width
 # @export
-ggraph::scale_edge_width
+# ggraph::scale_edge_width
 
-#' @importFrom ggraph scale_edge_colour_gradient
+# @importFrom ggraph scale_edge_colour_gradient
 # @export
-ggraph::scale_edge_colour_gradient
+# ggraph::scale_edge_colour_gradient
 
-#' @importFrom ggraph guide_edge_colourbar
+# @importFrom ggraph guide_edge_colourbar
 # @export
-ggraph::guide_edge_colourbar
+# ggraph::guide_edge_colourbar

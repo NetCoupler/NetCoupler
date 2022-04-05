@@ -23,7 +23,6 @@ Depends:
 Imports: 
     checkmate,
     dplyr,
-    ggraph,
     ids,
     igraph,
     lifecycle,

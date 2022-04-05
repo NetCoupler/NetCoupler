@@ -3,7 +3,6 @@
 #' @importFrom dplyr select mutate group_by if_else
 #' @importFrom rlang .data
 #' @importFrom purrr map map_dfr map2 imap imap_dfr
-#' @import ggraph
 #' @keywords internal
 "_PACKAGE"
 
