@@ -33,7 +33,11 @@ on an outcome like type 2 diabetes incidence.
 So for instance, you want to ask questions to get answers that look like the
 figure below.
 
-![The structure of questions that NetCoupler aims to help answers or explore.](aim-output.png)
+```{r}
+#| echo = FALSE,
+#| fig.cap = "The structure of questions that NetCoupler aims to help answers or explore."
+knitr::include_graphics("aim-output.png")
+```
 
 The input for NetCoupler includes:
 
@@ -117,7 +121,15 @@ estimated from `nc_estimate_network()`.
 either `nc_estimate_exposure_links()`, `nc_estimate_outcome_links()`, or
 `nc_join_links()`.
 
-![NetCoupler functions and their input and ouput. Input and output objects are the light gray boxes, while the light blue boxes are the currently available functions, and the light orange boxes are functions planned to be developed.](nc-diagram-io.png)
+```{r}
+#| echo = FALSE,
+#| out.width = "60%",
+#| fig.cap = "NetCoupler functions and their input and ouput. Input and output 
+#|      objects are the light gray boxes, while the light blue boxes are the 
+#|      currently available functions, and the light orange boxes are functions 
+#|      planned to be developed."
+knitr::include_graphics("nc-diagram-io.png", dpi = 144)
+```
 
 ## Simple example
 

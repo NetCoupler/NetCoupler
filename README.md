@@ -28,7 +28,7 @@ to confirm a **pre-specified and explicit** hypothesis, similar to how
 structural equation models are used. However, this might be a more niche
 use.
 
-![Overview of the NetCoupler algorithm.](vignettes/algorithm.svg)
+![Overview of the NetCoupler algorithm.](man/figures/algorithm.svg)
 
 Why or when might you want to use NetCoupler?
 
@@ -44,12 +44,12 @@ Basically, if you’re research question or objective has the general form
 of:
 
 ![Type of questions or objectives that NetCoupler aims to help
-answer.](vignettes/aim-question.png)
+answer.](man/figures/aim-question.png)
 
 … So that you can ultimately have an answer that looks like:
 
 ![General result that NetCoupler provides that might help answer your
-question.](vignettes/aim-output.png)
+question.](man/figures/aim-output.png)
 
 There are a few vignettes available in this package:
 

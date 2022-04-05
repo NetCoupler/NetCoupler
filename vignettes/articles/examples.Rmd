@@ -73,13 +73,18 @@ regressed on to the variables that will be standardized.
         nc_standardize(starts_with("metabolite"),
                        regressed_on = "age") %>%
         nc_estimate_network(starts_with("metabolite"))
-```
+    ```
 
 ### Outcome vs exposure side
 
 Let's revisit this image:
 
-![General form for questions that NetCoupler aims to help answer.](../aim-question.png)
+```{r}
+#| echo = FALSE,
+#| eval = TRUE,
+#| fig.cap = "General form for questions that NetCoupler aims to help answer."
+knitr::include_graphics("aim-question.png")
+```
 
 All types of models can be used for either the left hand side of this graph
 (the exposure side) or the right hand side (the outcome).

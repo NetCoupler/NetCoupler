@@ -7,8 +7,8 @@ output: github_document
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-"
+  comment = "#>"
+  # fig.path = "man/figures/"
 )
 ```
 
@@ -33,7 +33,7 @@ and used to complement other analyses for a research question. It could also
 be used to confirm a **pre-specified and explicit** hypothesis, similar to how
 structural equation models are used. However, this might be a more niche use.
 
-![Overview of the NetCoupler algorithm.](vignettes/algorithm.svg)
+![Overview of the NetCoupler algorithm.](man/figures/algorithm.svg)
 
 Why or when might you want to use NetCoupler?
 
@@ -46,7 +46,7 @@ to your variable of interest.
 
 Basically, if you're research question or objective has the general form of:
 
-![Type of questions or objectives that NetCoupler aims to help answer.](vignettes/aim-question.png)
+![Type of questions or objectives that NetCoupler aims to help answer.](man/figures/aim-question.png)
 
 ... So that you can ultimately have an answer that looks like:
 
