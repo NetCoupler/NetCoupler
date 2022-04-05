@@ -49,7 +49,7 @@ answer.](man/figures/aim-question.png)
 … So that you can ultimately have an answer that looks like:
 
 ![General result that NetCoupler provides that might help answer your
-question.](man/figures/aim-output.png)
+question.](vignettes/aim-output.png)
 
 There are a few vignettes available in this package:
 
