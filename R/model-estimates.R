@@ -21,8 +21,8 @@
 #'   usage.
 #' @param exponentiate Logical. Whether to exponentiate the log estimates, as
 #'   computed with e.g. logistic regression models.
-#' @param classify_option_list A List with classification options for direct, ambigious, or none
-#'   effects. Options currently are:
+#' @param classify_option_list A list with classification options for direct, ambigious, or no
+#'   effects. Used with the `classify_options()` function with the arguments:
 #'
 #'   - `single_metabolite_threshold`: Default of 0.05. P-values from models with
 #'   only the index metabolite (no neighbour adjustment) are classified as effects if
@@ -32,6 +32,9 @@
 #'   direct neighbour adjustments are classified as effects if below this threshold.
 #'   This is assumed as a one-sided p-value threshold. Like the threshold above,
 #'   a lower value should be used for larger sample sizes and networks.
+#'   - `direct_effect_adjustment`: Default is NA. After running the algorithm once,
+#'   sometimes it's useful to adjust for the direct effects identified to confirm
+#'   whether other links exist.
 #'
 #' @description
 #' \lifecycle{experimental}
@@ -114,6 +117,16 @@
 #'     model_function = lm
 #'    )
 #'
+#' # Adjusting for a previous direct effect
+#' standardized_data %>%
+#'   nc_estimate_exposure_links(
+#'     edge_tbl = edge_table,
+#'     exposure = "exposure",
+#'     model_function = lm,
+#'     adjustment_vars = "age",
+#'     classify_option_list = classify_options(direct_effect_adjustment = c("metabolite_1"))
+#'   )
+#'
 NULL
 
 #' @rdname nc_estimate_links
@@ -126,8 +139,7 @@ nc_estimate_exposure_links <-
              model_function,
              model_arg_list = NULL,
              exponentiate = FALSE,
-             classify_option_list = list(single_metabolite_threshold = 0.05,
-                                         network_threshold = 0.1)) {
+             classify_option_list = classify_options()) {
         multiple_models <- compute_model_estimates(
             data = data,
             edge_tbl = edge_tbl,
@@ -136,7 +148,8 @@ nc_estimate_exposure_links <-
             model_function = model_function,
             model_arg_list = model_arg_list,
             exponentiate = exponentiate,
-            external_side = "exposure"
+            external_side = "exposure",
+            direct_effect_adjustment = classify_option_list$direct_effect_adjustment
         ) %>%
             dplyr::rename("exposure" = "external_var")
 
@@ -156,8 +169,7 @@ nc_estimate_outcome_links <-
              model_function,
              model_arg_list = NULL,
              exponentiate = FALSE,
-             classify_option_list = list(single_metabolite_threshold = 0.05,
-                                         network_threshold = 0.1)) {
+             classify_option_list = classify_options()) {
         multiple_models <- compute_model_estimates(
             data = data,
             edge_tbl = edge_tbl,
@@ -166,7 +178,8 @@ nc_estimate_outcome_links <-
             model_function = model_function,
             model_arg_list = model_arg_list,
             exponentiate = exponentiate,
-            external_side = "outcome"
+            external_side = "outcome",
+            direct_effect_adjustment = classify_option_list$direct_effect_adjustment
         ) %>%
             dplyr::rename("outcome" = "external_var")
 
@@ -174,12 +187,15 @@ nc_estimate_outcome_links <-
             classify_effects(multiple_models, classify_option_list),
             all_models_df = multiple_models
         )
-}
+    }
 
 #' @title
 #' Main function to compute all the models between network and external variables.
 #'
 #' @inheritParams nc_estimate_links
+#' @param direct_effect_adjustment Argument for internal function. Character vector.
+#'   Direct effect variables identified from a previous iteration of NetCoupler
+#'   to confirm that no other links exist.
 #' @param external_var Argument for internal function, use `outcome` or
 #'   `exposure` arguments instead. The variable that links to the network
 #'   variables ("external" to the network).
@@ -204,7 +220,8 @@ compute_model_estimates <-
              model_function,
              model_arg_list = NULL,
              exponentiate = FALSE,
-             external_side = c("exposure", "outcome")) {
+             external_side = c("exposure", "outcome"),
+             direct_effect_adjustment = NA) {
 
     # TODO: Use tidy eval style input for variables.
     assert_data_frame(data)
@@ -213,12 +230,17 @@ compute_model_estimates <-
     # TODO: This check needs to be better constructed
     if (!any(is.na(adjustment_vars)))
         assert_character(adjustment_vars)
+    if (!any(is.na(direct_effect_adjustment))) {
+        assert_character(direct_effect_adjustment)
+        adjustment_vars <- stats::na.omit(c(adjustment_vars, direct_effect_adjustment))
+    }
     if (!is.null(model_arg_list))
         assert_list(model_arg_list)
     assert_logical(exponentiate)
     assert_function(model_function)
 
-    network_combinations <- generate_all_network_combinations(edge_tbl)
+    network_combinations <- generate_all_network_combinations(edge_tbl) %>%
+        dplyr::filter(!.data$index_node %in% direct_effect_adjustment)
 
     external_side <- rlang::arg_match(external_side)
     formula_df <- generate_formula_df(
@@ -258,6 +280,18 @@ compute_model_estimates <-
         dplyr::rename_with(~ gsub("\\.", "_", .))
 
     return(tidied_models)
+    }
+
+#' @rdname nc_estimate_links
+#' @export
+classify_options <- function(single_metabolite_threshold = 0.05,
+                             network_threshold = 0.1,
+                             direct_effect_adjustment = NA) {
+    list(
+        single_metabolite_threshold = single_metabolite_threshold,
+        network_threshold = network_threshold,
+        direct_effect_adjustment = direct_effect_adjustment
+    )
 }
 
 # Helpers -----------------------------------------------------------------
