@@ -54,14 +54,16 @@ Basically, if you're research question or objective has the general form of:
 
 There are a few vignettes available in this package:
 
-- [Get Started](vignette/NetCoupler.Rmd) (`vignette("NetCoupler")`)
+- [Get Started](https://netcoupler.github.io/NetCoupler/articles/NetCoupler.html)
+(`vignette("NetCoupler")`)
 describes a simple overview of how and when to use NetCoupler, as well as a
 basic explanation of some of the components of NetCoupler.
-- [Examples with different models](vignettes/articles/examples.Rmd)
+- [Examples with different models](https://netcoupler.github.io/NetCoupler/articles/examples.html)
 (`vignette("examples")`) lists different models we've tested that work with
 NetCoupler. If you have tried a model out that isn't listed and seen success,
 let us know by opening an Issue or submitting a Pull Request (see the 
-[contributing guidelines](.github/CONTRIBUTING.md) for instructions on doing this).
+[contributing guidelines](https://github.com/NetCoupler/NetCoupler/blob/main/.github/CONTRIBUTING.md)
+for instructions on doing this).
 <!-- TODO: Add link to description vignette when its done -->
 
 # Installation
@@ -81,7 +83,8 @@ remotes::install_github("NetCoupler/NetCoupler")
 
 # Contributing and Code of Conduct
 
-Checkout the [guidelines](.github/CONTRIBUTING.md) for details on contributing.
+Checkout the [guidelines](https://github.com/NetCoupler/NetCoupler/blob/main/.github/CONTRIBUTING.md)
+for details on contributing.
 Please note that the 'NetCoupler' project is released with a
-[Contributor Code of Conduct](CODE_OF_CONDUCT.md).
+[Contributor Code of Conduct](https://github.com/NetCoupler/NetCoupler/blob/main/CODE_OF_CONDUCT.md).
 By contributing to this project, you agree to abide by its terms.
