@@ -79,7 +79,7 @@ regressed on to the variables that will be standardized.
 
 Let's revisit this image:
 
-![General form for questions that NetCoupler aims to help answer.](vignettes/aim-question.png)
+![General form for questions that NetCoupler aims to help answer.](../aim-question.png)
 
 All types of models can be used for either the left hand side of this graph
 (the exposure side) or the right hand side (the outcome).
