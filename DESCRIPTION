@@ -34,7 +34,6 @@ Imports:
     stats,
     tibble,
     tidyselect,
-    ggplot2,
     utils,
     tidygraph
 Suggests: 
