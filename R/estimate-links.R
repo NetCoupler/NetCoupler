@@ -282,7 +282,12 @@ compute_model_estimates <-
     return(tidied_models)
     }
 
-#' @rdname nc_estimate_links
+#' Classification options for direct, ambigious, and no effect.
+#'
+#' @param single_metabolite_threshold,network_threshold,direct_effect_adjustment
+#'   See `nc_estimate_links` for details.
+#'
+#' @return List with options for the classification.
 #' @export
 classify_options <- function(single_metabolite_threshold = 0.05,
                              network_threshold = 0.1,
@@ -386,9 +391,8 @@ generate_formula_df <-
             map(stats::na.omit)
 
         # Drop cases where neighbour variable is also adjusted for via direct effect adjustment.
-        filter_pattern <- adj_vars %>%
-            paste0(collapse = "|") %>%
-            paste0("^(", ., ")$")
+        filter_pattern <- paste0(adj_vars, collapse = "|")
+        filter_pattern <- paste0("^(", filter_pattern, ")$")
 
         tibble(
             y = external_input$y,

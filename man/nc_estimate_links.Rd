@@ -4,7 +4,6 @@
 \alias{nc_estimate_links}
 \alias{nc_estimate_exposure_links}
 \alias{nc_estimate_outcome_links}
-\alias{classify_options}
 \title{Compute model estimates between an external (exposure or outcome) variable
 and a network.}
 \usage{
@@ -28,12 +27,6 @@ nc_estimate_outcome_links(
   model_arg_list = NULL,
   exponentiate = FALSE,
   classify_option_list = classify_options()
-)
-
-classify_options(
-  single_metabolite_threshold = 0.05,
-  network_threshold = 0.1,
-  direct_effect_adjustment = NA
 )
 }
 \arguments{
@@ -159,12 +152,11 @@ standardized_data \%>\%
 
 # Adjusting for a previous direct effect
 standardized_data \%>\%
-  mutate(Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) \%>\%
   nc_estimate_exposure_links(
     edge_tbl = edge_table,
     exposure = "exposure",
     model_function = lm,
-    adjustment_vars = c("age", "Sex"),
+    adjustment_vars = "age",
     classify_option_list = classify_options(direct_effect_adjustment = c("metabolite_1"))
   )
 
