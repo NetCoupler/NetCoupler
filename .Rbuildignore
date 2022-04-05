@@ -13,3 +13,4 @@
 ^pkgdown$
 ^vignettes/articles$
 ^_ignore$
+^cran-comments\.md$
