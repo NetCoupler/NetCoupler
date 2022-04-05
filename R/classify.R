@@ -29,6 +29,10 @@ classify_effects <- function(data,
 
     external_variable <- identify_external_variable(data)
 
+    data <- data %>%
+        dplyr::mutate(network_neighbours = purrr::map_chr(.data$network_neighbours,
+                                                          paste0, collapse = ","))
+
     xvar_model_estimates <- data %>%
         round_p_values() %>%
         keep_xvar_model_estimates(external_variable)
@@ -54,32 +58,10 @@ classify_effects <- function(data,
 keep_xvar_model_estimates <- function(data, main_x_var) {
     switch(main_x_var,
            outcome = data %>%
-               add_neighbours_by_model("index_node") %>%
                keep_main_x_var_estimates("index_node"),
            exposure = data %>%
-               add_neighbours_by_model(main_x_var) %>%
                keep_main_x_var_estimates(main_x_var)
            )
-}
-
-extract_neighbour_nodes <-
-    function(term_var,
-             adj_var,
-             main_x_var) {
-
-    adjusted_variables <- adj_var %>%
-        unique() %>%
-        strsplit(", ") %>%
-        unlist() %>%
-        paste(collapse = "|")
-
-    main_x_var <- unique(main_x_var)
-    term_var <- term_var[!term_var %in% main_x_var]
-
-    neighbour_nodes <- term_var[term_var != "(Intercept)"]
-
-    neighbour_nodes[!grepl(adjusted_variables, neighbour_nodes)] %>%
-        paste(collapse = ", ")
 }
 
 identify_external_variable <- function(x) {
@@ -95,19 +77,6 @@ round_p_values <- function(data) {
     mutate(data, dplyr::across("p_value", ~ round(., 6)))
 }
 
-add_neighbours_by_model <- function(data, main_x_var) {
-    data %>%
-        dplyr::group_by(.data$model_id) %>%
-        mutate(
-            neighbour_vars = extract_neighbour_nodes(
-                .data$term,
-                .data$adjusted_vars,
-                .data[[main_x_var]]
-            )
-        ) %>%
-        dplyr::ungroup()
-}
-
 keep_main_x_var_estimates <- function(data, main_x_var) {
     data %>%
         dplyr::filter(.data[[main_x_var]] == .data$term) %>%
@@ -117,7 +86,7 @@ keep_main_x_var_estimates <- function(data, main_x_var) {
 
 keep_no_neighbour_models <- function(data, main_x_var) {
     data %>%
-        dplyr::filter(dplyr::if_all(all_of("neighbour_vars"), ~ . == "")) %>%
+        dplyr::filter(dplyr::if_all(all_of("network_neighbours"), ~ . == "")) %>%
         dplyr::rename(
             no_neighbours_fdr_p_value = .data$fdr_p_value,
             no_neighbours_estimate = .data$estimate
@@ -142,7 +111,7 @@ add_comparison_columns <- function(data) {
                 sign(.data$no_neighbours_estimate),
             # For no neighbour model, have variable be NA
             nnm_has_same_direction_as_nm = dplyr::if_else(
-                .data$neighbour_vars == "",
+                .data$network_neighbours == "",
                 NA,
                 .data$nnm_has_same_direction_as_nm
             )
@@ -190,12 +159,12 @@ ambigious_effect_logic <- function(nnm_pvalue, pvalue, classify_option_list) {
 
 keep_relevant_data <- function(data) {
     data %>%
-        dplyr::filter(.data$neighbour_vars == "") %>%
+        dplyr::filter(.data$network_neighbours == "") %>%
         select(-matches("no_neighbour|nnm_"),
                -all_of(c(
                    "statistic",
                    "adjusted_vars",
-                   "neighbour_vars"
+                   "network_neighbours"
                )))
 }
 

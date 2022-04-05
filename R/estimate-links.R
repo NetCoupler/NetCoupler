@@ -296,13 +296,14 @@ classify_options <- function(single_metabolite_threshold = 0.05,
 
 # Helpers -----------------------------------------------------------------
 
-run_model_and_tidy <- function(x, y, index_node, model_function, model_args, exponentiate) {
+run_model_and_tidy <- function(x, y, index_node, network_neighbours, model_function, model_args, exponentiate) {
     formula <- stats::reformulate(termlabels = x, response = y)
     function_with_args_as_list <- purrr::lift_dl(model_function)
     model_args <- c(list(formula = formula),
                     model_args)
     function_with_args_as_list(model_args) %>%
-        tidy_models(index_node = index_node, exponentiate = exponentiate)
+        tidy_models(index_node = index_node, exponentiate = exponentiate,
+                    network_neighbours = network_neighbours)
 }
 
 all_neighbour_combinations <- function(edge_tbl) {
@@ -314,13 +315,14 @@ all_neighbour_combinations <- function(edge_tbl) {
     unlist(all_combinations, recursive = FALSE)
 }
 
-tidy_models <- function(model_object, index_node, exponentiate) {
+tidy_models <- function(model_object, index_node, exponentiate, network_neighbours) {
     model_id <- ids::random_id(1, bytes = 8)
     model_estimates <- model_object %>%
         broom::tidy(exponentiate = exponentiate, conf.int = FALSE) %>%
         # Give a unique id for the model.
         mutate(model_id = model_id,
-               index_node = index_node)
+               index_node = index_node,
+               network_neighbours = list(network_neighbours))
 
     model_estimates
     # For now, this code increases computing time for not much benefit (that I see)
@@ -383,10 +385,17 @@ generate_formula_df <-
             # TODO: Is this fine?
             map(stats::na.omit)
 
+        # Drop cases where neighbour variable is also adjusted for via direct effect adjustment.
+        filter_pattern <- adj_vars %>%
+            paste0(collapse = "|") %>%
+            paste0("^(", ., ")$")
+
         tibble(
             y = external_input$y,
             x = xvar_input,
-            index_node = network_object_tbl$index_node
+            index_node = network_object_tbl$index_node,
+            network_neighbours = network_object_tbl$neighbours
         ) %>%
-            dplyr::distinct()
+            dplyr::filter(!grepl(filter_pattern, .data$network_neighbours)) %>%
+            dplyr::distinct(.data$x, .data$y, .keep_all = TRUE)
     }
