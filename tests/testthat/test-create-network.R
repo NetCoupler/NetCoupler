@@ -1,14 +1,14 @@
 context("Create metabolic variable network")
 
-# Making partial independence network from metabolite data
-metabolite_data <- simulated_data %>%
-    select(starts_with("metabolite"))
-
-metabolite_network <- metabolite_data %>%
-    nc_standardize() %>%
-    nc_estimate_network()
 
 test_that("network is created", {
+    # Making partial independence network from metabolite data
+    metabolite_data <- simulated_data %>%
+        select(starts_with("metabolite"))
+
+    metabolite_network <- metabolite_data %>%
+        nc_standardize() %>%
+        nc_estimate_network()
     # For number of edges
     # Not sure how to test number of edges properly, since the set number in
     # the simulated data doesn't mean the network estimation will have the same
