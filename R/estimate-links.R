@@ -74,7 +74,6 @@
 #'
 #' @examples
 #'
-#' library(dplyr)
 #' standardized_data <- simulated_data %>%
 #'     nc_standardize(starts_with("metabolite"))
 #'
@@ -104,27 +103,6 @@
 #'     adjustment_vars = "age",
 #'     model_arg_list = list(family = binomial(link = "logit")),
 #'     exponentiate = TRUE
-#'   )
-#'
-#' # Adding random confounders to adjust for
-#' standardized_data %>%
-#'   mutate(Random = rnorm(nrow(.)),
-#'          Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) %>%
-#'   nc_estimate_exposure_links(
-#'     edge_tbl = edge_table,
-#'     exposure = "exposure",
-#'     adjustment_vars = c("age", "Random", "Sex"),
-#'     model_function = lm
-#'    )
-#'
-#' # Adjusting for a previous direct effect
-#' standardized_data %>%
-#'   nc_estimate_exposure_links(
-#'     edge_tbl = edge_table,
-#'     exposure = "exposure",
-#'     model_function = lm,
-#'     adjustment_vars = "age",
-#'     classify_option_list = classify_options(direct_effect_adjustment = c("metabolite_1"))
 #'   )
 #'
 NULL

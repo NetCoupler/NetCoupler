@@ -11,7 +11,7 @@ Authors@R: c(
     person("Daniel", "Ibsen", , "dbi@ph.au.dk", role = "ctb",
            comment = c(ORCID = "0000-0002-7038-4770"))
   )
-Description: The NetCoupler algorithm identifies potential direct effects of 
+Description: The 'NetCoupler' algorithm identifies potential direct effects of 
     correlated, high-dimensional variables formed as a network with an external 
     variable. The external variable may act as the dependent/response variable 
     or as an independent/predictor variable to the network. 
