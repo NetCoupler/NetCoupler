@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NetCoupler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -61,10 +61,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="development version" id="netcoupler-development-version">NetCoupler (development version)<a class="anchor" aria-label="anchor" href="#netcoupler-development-version"></a></h2>
+<h2 class="page-header" data-toc-text="0.1.0" id="netcoupler-010">NetCoupler 0.1.0<a class="anchor" aria-label="anchor" href="#netcoupler-010"></a></h2>
 <ul><li>General preparation for submitting package to CRAN.</li>
 </ul><div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-0-1-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-1-0"></a></h3>
 <ul><li>Added to <code>nc_estimate_*</code> function output the full model list as an attribute, that is really only necessary for those interested in the underlying models used for classifying the effects</li>
 <li>Added a continuous outcome variable to simulated data that also links in with the DAG so that the linkage is more obvious (<a href="https://github.com/NetCoupler/NetCoupler/issues/97" class="external-link">#97</a>)</li>
 <li>Added function to create an edge table (<a href="https://github.com/NetCoupler/NetCoupler/issues/117" class="external-link">#117</a>)</li>
@@ -74,12 +74,12 @@
 <li>Added weights to be included to <code><a href="../reference/as_edge_tbl.html">as_edge_tbl()</a></code> (<a href="https://github.com/NetCoupler/NetCoupler/issues/142" class="external-link">#142</a>)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="removed-features-development-version">Removed features<a class="anchor" aria-label="anchor" href="#removed-features-development-version"></a></h3>
+<h3 id="removed-features-0-1-0">Removed features<a class="anchor" aria-label="anchor" href="#removed-features-0-1-0"></a></h3>
 <ul><li>Removed <code>nc_classify_effects()</code> and <code>nc_filter_estimates()</code>, merged them into the two main estimation functions instead</li>
 <li>Model summary statistics for <code>lm</code> and <code>glm</code> models were removed for improving computing speed (they slowed things down quite a bit)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="internal-changes-development-version">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-development-version"></a></h3>
+<h3 id="internal-changes-0-1-0">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-0-1-0"></a></h3>
 <ul><li>Output all models used for classification as an attribute for the <code>nc_estimate_*</code> functions output</li>
 <li>Use lavaan instead of dagitty to generate the simulated data</li>
 <li>Use standard GitHub Actions and remove AppVeyor</li>
