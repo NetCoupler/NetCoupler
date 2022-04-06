@@ -92,18 +92,8 @@
 #' results
 #'
 #' # Get results of all models used prior to classification
-#' attr(results, "all_models_df")
+#  # attr(results, "all_models_df")
 #'
-#' # Using a logistic regression
-#' standardized_data %>%
-#'   nc_estimate_outcome_links(
-#'     edge_tbl = edge_table,
-#'     outcome = "outcome_binary",
-#'     model_function = glm,
-#'     adjustment_vars = "age",
-#'     model_arg_list = list(family = binomial(link = "logit")),
-#'     exponentiate = TRUE
-#'   )
 #'
 NULL
 

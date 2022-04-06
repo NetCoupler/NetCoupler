@@ -107,7 +107,6 @@ and the network. There are two functions to estimate and classify links:
 }
 \examples{
 
-library(dplyr)
 standardized_data <- simulated_data \%>\%
     nc_standardize(starts_with("metabolite"))
 
@@ -126,39 +125,7 @@ results <- standardized_data \%>\%
 results
 
 # Get results of all models used prior to classification
-attr(results, "all_models_df")
 
-# Using a logistic regression
-standardized_data \%>\%
-  nc_estimate_outcome_links(
-    edge_tbl = edge_table,
-    outcome = "outcome_binary",
-    model_function = glm,
-    adjustment_vars = "age",
-    model_arg_list = list(family = binomial(link = "logit")),
-    exponentiate = TRUE
-  )
-
-# Adding random confounders to adjust for
-standardized_data \%>\%
-  mutate(Random = rnorm(nrow(.)),
-         Sex = sample(rep(c("F", "M"), times = nrow(.) / 2))) \%>\%
-  nc_estimate_exposure_links(
-    edge_tbl = edge_table,
-    exposure = "exposure",
-    adjustment_vars = c("age", "Random", "Sex"),
-    model_function = lm
-   )
-
-# Adjusting for a previous direct effect
-standardized_data \%>\%
-  nc_estimate_exposure_links(
-    edge_tbl = edge_table,
-    exposure = "exposure",
-    model_function = lm,
-    adjustment_vars = "age",
-    classify_option_list = classify_options(direct_effect_adjustment = c("metabolite_1"))
-  )
 
 }
 \seealso{
