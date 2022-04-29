@@ -4,7 +4,7 @@ Version: 0.1.0.9000
 Authors@R: c(
     person("Luke", "Johnston", , "lwjohnst@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0003-4169-2616")),
-    person("Clemens", "Wittenbecher", , "Clemens.Wittenbecher@dife.de", role = "aut",
+    person("Clemens", "Wittenbecher", , "Clemens.Wittenbecher@dife.de", role = c("aut", "cph"),
            comment = c(ORCID = "0000-0001-7792-877X")),
     person("Fabian", "Eichelmann", , "Fabian.Eichelmann@dife.de", role = "ctb"),
     person("Helena", "Zacharias", , "helena.zacharias@helmholtz-muenchen.de", role = "ctb"),
