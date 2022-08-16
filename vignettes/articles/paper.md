@@ -36,13 +36,13 @@ bibliography: paper.bib
 
 ## Underlying principles
 
+## Comparison to other software
+
 # Projects using NetCoupler
 
 - List of references
 
 - List of projects
-
-# Comparison to other software
 
 # Acknowledgements
 
