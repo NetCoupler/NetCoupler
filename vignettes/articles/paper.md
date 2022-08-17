@@ -9,23 +9,26 @@ authors:
     corresponding: true 
     affiliation: "1, 2"
   - name: Fabian Eichelmann
-    corresponding: true 
+    orcid: 
     affiliation: 3
   - name: Daniel Ibsen
+    orcid: 
+    affiliation: 4
   - name: Clemens Wittenbecher
     orcid: 0000-0001-7792-877X
     equal-contrib: true 
-    corresponding: true 
-    affiliation: "4"
+    affiliation: 5
 affiliations:
  - name: Steno Diabetes Center Aarhus, Denmark
    index: 1
  - name: Aarhus University, Denmark
    index: 2
- - name: DIfE?
+ - name: 
    index: 3
- - name: SciLifeLab, Division of Food Science and Nutrition, Department of Biology and Biological Engineering, Chalmers University of Technology, Sweden
+ - name: 
    index: 4
+ - name: SciLifeLab, Division of Food Science and Nutrition, Department of Biology and Biological Engineering, Chalmers University of Technology, Sweden
+   index: 5
 date: 16 August 2022
 bibliography: paper.bib
 editor_options: 
@@ -62,12 +65,21 @@ NetCoupler works by connecting several analytic approaches together in a
 way that allows for flexibility in the type of models used throughout
 the analysis. For instance, linear regression models can be used when
 the data are continuous while survival models can use when it time to
-event data.
+event data. 
 
 # Statement of need
 
 > *Illustrates the research purpose of the software and places it in the
 > context of related work*
+
+In fields such as epidemiology, we often work in settings where conducting
+controlled experiments to test potential causality is near impossible or at least
+extremely difficult. In these areas of research, causal inference or causal
+reasoning that doesn't require controlled environments has become more commonly
+integrated into study designs and analytic approaches. We also have increasing
+access to powerful data generating technologies, such as metabolomics, lipidomics,
+or proteomics, and inevitably research questions begin combining causal inference
+with these -omic methods. As a result ...
 
 ## Underlying principles
 
@@ -79,7 +91,7 @@ The first use of the NetCoupler algorithm (not package) was in Clemens
 Wittenbecher's PhD thesis [@Wittenbecher2017]. We have so far presented
 work using NetCoupler at several conferences
 [@Johnston2020,@Johnston2021a,@Johnston2021,@Johnston2020a] and a
-published paper TODO: add DOI. Aside from these scientific outputs,
+published paper [@Wittenbecher2022]. Aside from these scientific outputs,
 NetCoupler is in use in several ongoing projects, such as one in the [UK
 Biobank](https://gitlab.com/lwjohnst/ecc-cmd-ukb) and TODO: add Daniel's
 project.
