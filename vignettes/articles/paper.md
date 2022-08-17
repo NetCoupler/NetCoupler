@@ -22,15 +22,48 @@ affiliations:
    index: 1
  - name: Aarhus University, Denmark
    index: 2
- - name: 
+ - name: DIfE?
    index: 3
  - name: SciLifeLab, Division of Food Science and Nutrition, Department of Biology and Biological Engineering, Chalmers University of Technology, Sweden
    index: 4
 date: 16 August 2022
 bibliography: paper.bib
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 # Summary
+
+*A summary describing the high-level functionality and purpose of the
+software for a diverse, non-specialist audience.*
+
+Within the biomedical sciences, data measurement technologies such as
+with metabolomics generate large volumes of data. These technologies
+usually produce hundreds of variables that analytically can be quite
+challenging to adequately analyze. More often, and especially in health
+science, researchers are using these data to help answer questions on
+what might influence these metabolic characteristics and how these
+metabolic characteristics might influence disease states. Essentially,
+to begin examining possible causal pathways between "exposures" (like
+diet or exercise) and "outcomes" (like diseases such as diabetes).
+
+
+We created NetCoupler to assist us and our colleagues in answering
+research questions that revolve around exploring these possible causal
+pathways between an exposure (like diet), a network of hypothetically
+connected variables (like proteins within the blood), and an outcome
+(like diabetes). While NetCoupler could potentially be used in a wide
+variety of research fields and questions, we designed it around largely
+datasets that contain many metabolic variables (such as with
+metabolomics) and when there is a hypothetical causal pathways
+underlying the metabolic variables based on biological rationale.
+
+NetCoupler works by connecting several analytic approaches together in a
+way that allows for flexibility in the type of models used throughout
+the analysis. For instance, linear regression models can be used when
+the data are continuous while survival models can use when it time to
+event data.
 
 # Statement of need
 
@@ -40,10 +73,22 @@ bibliography: paper.bib
 
 # Projects using NetCoupler
 
-- List of references
-
-- List of projects
+-   List of references
+    -   My conferences presentations using it:
+        -   Poster:
+            -   <https://posters.lwjohnst.com/2020/easd/index.html>
+            -   <https://posters.lwjohnst.com/2020/dda-network/index.html>
+        -   Slides:
+            -   <https://slides.lwjohnst.com/user/2021-07-06/index.html#1>
+            -   <https://slides.lwjohnst.com/des/2021-05-21/index.html#1>
+            -   <https://slides.lwjohnst.com/iarc/2020-12-16/index.html#1>
+-   List of projects
+    -   <https://gitlab.com/lwjohnst/ecc-cmd-ukb>
+    -   Daniel I.'s project?
 
 # Acknowledgements
+
+Luke Johnston was supported by a Danish Diabetes Academy Postdoctoral
+Fellowship Award... TODO: fill in later.
 
 # References
