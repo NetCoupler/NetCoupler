@@ -35,8 +35,8 @@ editor_options:
 
 # Summary
 
-*A summary describing the high-level functionality and purpose of the
-software for a diverse, non-specialist audience.*
+> *A summary describing the high-level functionality and purpose of the
+> software for a diverse, non-specialist audience.*
 
 Within the biomedical sciences, data measurement technologies such as
 with metabolomics generate large volumes of data. These technologies
@@ -47,7 +47,6 @@ what might influence these metabolic characteristics and how these
 metabolic characteristics might influence disease states. Essentially,
 to begin examining possible causal pathways between "exposures" (like
 diet or exercise) and "outcomes" (like diseases such as diabetes).
-
 
 We created NetCoupler to assist us and our colleagues in answering
 research questions that revolve around exploring these possible causal
@@ -67,24 +66,23 @@ event data.
 
 # Statement of need
 
+> *Illustrates the research purpose of the software and places it in the
+> context of related work*
+
 ## Underlying principles
 
 ## Comparison to other software
 
 # Projects using NetCoupler
 
--   List of references
-    -   My conferences presentations using it:
-        -   Poster:
-            -   <https://posters.lwjohnst.com/2020/easd/index.html>
-            -   <https://posters.lwjohnst.com/2020/dda-network/index.html>
-        -   Slides:
-            -   <https://slides.lwjohnst.com/user/2021-07-06/index.html#1>
-            -   <https://slides.lwjohnst.com/des/2021-05-21/index.html#1>
-            -   <https://slides.lwjohnst.com/iarc/2020-12-16/index.html#1>
--   List of projects
-    -   <https://gitlab.com/lwjohnst/ecc-cmd-ukb>
-    -   Daniel I.'s project?
+The first use of the NetCoupler algorithm (not package) was in Clemens
+Wittenbecher's PhD thesis [@Wittenbecher2017]. We have so far presented
+work using NetCoupler at several conferences
+[@Johnston2020,@Johnston2021a,@Johnston2021,@Johnston2020a] and a
+published paper TODO: add DOI. Aside from these scientific outputs,
+NetCoupler is in use in several ongoing projects, such as one in the [UK
+Biobank](https://gitlab.com/lwjohnst/ecc-cmd-ukb) and TODO: add Daniel's
+project.
 
 # Acknowledgements
 
