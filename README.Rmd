@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# NetCoupler
+# NetCoupler: Inference of Causal Links Between a Network and an External Variable
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/NetCoupler/NetCoupler/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NetCoupler/NetCoupler/actions/workflows/R-CMD-check.yaml)
