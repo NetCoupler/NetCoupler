@@ -9,3 +9,4 @@ docs/
 *_files
 *_cache
 _ignore
+*.tmp
