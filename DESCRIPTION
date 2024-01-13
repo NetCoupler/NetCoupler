@@ -16,7 +16,7 @@ Description: The 'NetCoupler' algorithm identifies potential direct effects of
     variable. The external variable may act as the dependent/response variable 
     or as an independent/predictor variable to the network. 
 License: MIT + file LICENSE
-URL: https://github.com/NetCoupler/NetCoupler
+URL: https://github.com/NetCoupler/NetCoupler, https://netcoupler.github.io/NetCoupler/
 BugReports: https://github.com/NetCoupler/NetCoupler/issues
 Depends: 
     R (>= 3.5.0)
