@@ -86,10 +86,10 @@ replace_with_residuals <- function(data, cols, regressed_on) {
 
     standardized_data <- data_with_residuals %>%
         dplyr::full_join(data_without_metabolic_vars, by = ".id_variable") %>%
-        dplyr::arrange(.data$.id_variable) %>%
+        dplyr::arrange(".id_variable") %>%
         # To put in original ordering
         dplyr::relocate(all_of(names(data_with_id_var))) %>%
-        select(-.data$.id_variable)
+        select(-".id_variable")
 
     return(standardized_data)
 }

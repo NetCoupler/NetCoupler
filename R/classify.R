@@ -88,8 +88,8 @@ keep_no_neighbour_models <- function(data, main_x_var) {
     data %>%
         dplyr::filter(dplyr::if_all(all_of("network_neighbours"), ~ . == "")) %>%
         dplyr::rename(
-            no_neighbours_fdr_p_value = .data$fdr_p_value,
-            no_neighbours_estimate = .data$estimate
+            no_neighbours_fdr_p_value = "fdr_p_value",
+            no_neighbours_estimate = "estimate"
         ) %>%
         select(all_of(
             c(
