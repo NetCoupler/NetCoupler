@@ -11,6 +11,7 @@
 
 -   Set up `rhub` GitHub Action workflow to check CRAN compatibility
     more fully.
+-   Remove Codecov because of issues with connection to it.
 
 # NetCoupler 0.1.0
 

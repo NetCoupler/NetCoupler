@@ -5,8 +5,6 @@
 
 <!-- badges: start -->
 
-[![Codecov test
-coverage](https://codecov.io/gh/NetCoupler/NetCoupler/branch/main/graph/badge.svg)](https://app.codecov.io/gh/NetCoupler/NetCoupler/branch/main)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![R-CMD-check](https://github.com/NetCoupler/NetCoupler/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NetCoupler/NetCoupler/actions/workflows/R-CMD-check.yaml)
 [![CRAN
