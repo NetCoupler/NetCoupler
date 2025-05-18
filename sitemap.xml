@@ -1,69 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/404.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/articles/NetCoupler.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/articles/examples.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/index.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/NetCoupler-package.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/as_edge_tbl.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/classify_options.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/nc_estimate_links.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/nc_estimate_network.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/nc_standardize.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/pc_estimate_undirected_graph.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://netcoupler.github.io/NetCoupler/reference/simulated_data.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://netcoupler.github.io/NetCoupler/404.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/CONTRIBUTING.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/LICENSE-text.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/LICENSE.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/articles/NetCoupler.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/articles/examples.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/articles/index.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/authors.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/index.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/news/index.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/NetCoupler-package.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/as_edge_tbl.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/classify_options.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/index.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/nc_estimate_links.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/nc_estimate_network.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/nc_standardize.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/pc_estimate_undirected_graph.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/pipe.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/reexports.html</loc></url>
+<url><loc>https://netcoupler.github.io/NetCoupler/reference/simulated_data.html</loc></url>
 </urlset>
+

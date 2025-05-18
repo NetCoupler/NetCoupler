@@ -1,11 +1,10 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
+  articles/examples: examples.html
   NetCoupler: NetCoupler.html
-  examples: examples.html
-last_built: 2024-01-13T20:32Z
+last_built: 2025-05-18T17:49Z
 urls:
   reference: https://netcoupler.github.io/NetCoupler/reference
   article: https://netcoupler.github.io/NetCoupler/articles
-
