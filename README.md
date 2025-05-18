@@ -5,18 +5,13 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/NetCoupler/NetCoupler/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NetCoupler/NetCoupler/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/NetCoupler/NetCoupler/branch/main/graph/badge.svg)](https://app.codecov.io/gh/NetCoupler/NetCoupler/branch/main)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-[![Project Status: WIP – Initial development is in progress, but there
-has not yet been a stable, usable release suitable for the
-public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![R-CMD-check](https://github.com/NetCoupler/NetCoupler/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NetCoupler/NetCoupler/actions/workflows/R-CMD-check.yaml)
 [![CRAN
-checks](https://cranchecks.info/badges/worst/NetCoupler)](https://cran.r-project.org/web/checks/check_results_NetCoupler.html)
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+status](https://www.r-pkg.org/badges/version/NetCoupler)](https://CRAN.R-project.org/package=NetCoupler)
+
 <!-- badges: end -->
 
 The goal of NetCoupler is to estimate potential causal links between a
@@ -33,7 +28,12 @@ to confirm a **pre-specified and explicit** hypothesis, similar to how
 structural equation models are used. However, this might be a more niche
 use.
 
-![Overview of the NetCoupler algorithm.](man/figures/algorithm.svg)
+<figure>
+<img src="man/figures/algorithm.svg"
+alt="Overview of the NetCoupler algorithm." />
+<figcaption aria-hidden="true">Overview of the NetCoupler
+algorithm.</figcaption>
+</figure>
 
 Why or when might you want to use NetCoupler?
 
@@ -48,30 +48,38 @@ Why or when might you want to use NetCoupler?
 Basically, if you’re research question or objective has the general form
 of:
 
-![Type of questions or objectives that NetCoupler aims to help
-answer.](man/figures/aim-question.png)
+<figure>
+<img src="man/figures/aim-question.png"
+alt="Type of questions or objectives that NetCoupler aims to help answer." />
+<figcaption aria-hidden="true">Type of questions or objectives that
+NetCoupler aims to help answer.</figcaption>
+</figure>
 
 … So that you can ultimately have an answer that looks like:
 
-![General result that NetCoupler provides that might help answer your
-question.](vignettes/aim-output.png)
+<figure>
+<img src="vignettes/aim-output.png"
+alt="General result that NetCoupler provides that might help answer your question." />
+<figcaption aria-hidden="true">General result that NetCoupler provides
+that might help answer your question.</figcaption>
+</figure>
 
 There are a few vignettes available in this package:
 
--   [Get
-    Started](https://netcoupler.github.io/NetCoupler/articles/NetCoupler.html)
-    (`vignette("NetCoupler")`) describes a simple overview of how and
-    when to use NetCoupler, as well as a basic explanation of some of
-    the components of NetCoupler.
--   [Examples with different
-    models](https://netcoupler.github.io/NetCoupler/articles/examples.html)
-    (`vignette("examples")`) lists different models we’ve tested that
-    work with NetCoupler. If you have tried a model out that isn’t
-    listed and seen success, let us know by opening an Issue or
-    submitting a Pull Request (see the [contributing
-    guidelines](https://github.com/NetCoupler/NetCoupler/blob/main/.github/CONTRIBUTING.md)
-    for instructions on doing this).
-    <!-- TODO: Add link to description vignette when its done -->
+- [Get
+  Started](https://netcoupler.github.io/NetCoupler/articles/NetCoupler.html)
+  (`vignette("NetCoupler")`) describes a simple overview of how and when
+  to use NetCoupler, as well as a basic explanation of some of the
+  components of NetCoupler.
+- [Examples with different
+  models](https://netcoupler.github.io/NetCoupler/articles/examples.html)
+  (`vignette("examples")`) lists different models we’ve tested that work
+  with NetCoupler. If you have tried a model out that isn’t listed and
+  seen success, let us know by opening an Issue or submitting a Pull
+  Request (see the [contributing
+  guidelines](https://github.com/NetCoupler/NetCoupler/blob/main/.github/CONTRIBUTING.md)
+  for instructions on doing this).
+  <!-- TODO: Add link to description vignette when its done -->
 
 # Installation
 
