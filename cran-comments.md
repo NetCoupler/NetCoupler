@@ -1,14 +1,9 @@
+## CRAN submission
+
+This fixes a CRAN note about "later-stage \Sexpr{} expressions".
 
 ## R CMD check results
 
-For most checks (GitHub Actions, winbuilder, rhub), there is only one note.
+Ran local (Ubuntu 24.04), GitHub Actions, winbuilder, and rhub checks.
 
-0 errors | 0 warnings | 1 note
-
-* This is a new release.
-
-For rhub Windows builder, it says:
-
-* checking for detritus in the temp directory ... NOTE
-Found the following files/directories:
-  'lastMiKTeXException'
+0 errors \| 0 warnings \| 0 note
