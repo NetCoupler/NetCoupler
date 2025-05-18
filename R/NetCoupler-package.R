@@ -7,8 +7,8 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom lifecycle deprecated
 #' @importFrom tibble tibble
-#' @importFrom lifecycle deprecate_soft
 ## usethis namespace: end
 NULL
 

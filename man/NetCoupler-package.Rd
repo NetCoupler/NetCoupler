@@ -12,6 +12,7 @@ The 'NetCoupler' algorithm identifies potential direct effects of correlated, hi
 Useful links:
 \itemize{
   \item \url{https://github.com/NetCoupler/NetCoupler}
+  \item \url{https://netcoupler.github.io/NetCoupler/}
   \item Report bugs at \url{https://github.com/NetCoupler/NetCoupler/issues}
 }
 
@@ -21,7 +22,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Clemens Wittenbecher \email{Clemens.Wittenbecher@dife.de} (\href{https://orcid.org/0000-0001-7792-877X}{ORCID})
+  \item Clemens Wittenbecher \email{Clemens.Wittenbecher@dife.de} (\href{https://orcid.org/0000-0001-7792-877X}{ORCID}) [copyright holder]
 }
 
 Other contributors:

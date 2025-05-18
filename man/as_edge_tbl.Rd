@@ -19,7 +19,7 @@ represents the strength of the link between two nodes.
 }
 }
 \description{
-\lifecycle{experimental}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \seealso{
 See \link{nc_estimate_links} for examples on using NetCoupler.

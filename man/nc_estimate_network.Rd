@@ -20,7 +20,7 @@ Outputs a \code{\link[tidygraph:tbl_graph]{tidygraph::tbl_graph()}} with the sta
 well as the edge weights.
 }
 \description{
-\lifecycle{experimental}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 The main NetCoupler network creator.
 Uses the input data to estimate the underlying undirected graph.

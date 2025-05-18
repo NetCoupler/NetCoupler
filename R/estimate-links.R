@@ -37,7 +37,7 @@
 #'   whether other links exist.
 #'
 #' @description
-#' \lifecycle{experimental}
+#' `r lifecycle::badge('experimental')`
 #'
 #' This is the main function that identifies potential links between external factors
 #' and the network. There are two functions to estimate and classify links:

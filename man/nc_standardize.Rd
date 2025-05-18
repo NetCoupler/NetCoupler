@@ -21,7 +21,7 @@ Outputs a \link[tibble:tibble-package]{tibble} object, with the original metabol
 variables now standardized.
 }
 \description{
-\lifecycle{experimental}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Can standardize by either 1) \code{\link[=log]{log()}}-transforming and then applying \code{\link[=scale]{scale()}}
 (mean-center and scaled by standard deviation), or 2) if \code{regressed_on}

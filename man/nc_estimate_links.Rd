@@ -96,7 +96,7 @@ The tibble output also has an attribute that contains all the models
 generated \emph{before} classification. Access it with \code{attr(output, "all_models_df")}.
 }
 \description{
-\lifecycle{experimental}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This is the main function that identifies potential links between external factors
 and the network. There are two functions to estimate and classify links:

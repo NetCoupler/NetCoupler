@@ -2,7 +2,7 @@
 #' Classify direct, ambiguous, or no effect between exposure and network nodes.
 #'
 #' @description
-#' \lifecycle{experimental}
+#' `r lifecycle::badge('experimental')`
 #'
 #' Using the output of the [nc_estimate_exposure_links()] or [nc_estimate_outcome_links()],
 #' classify whether the exposure variable has a direct, ambiguous, or no link

@@ -2,7 +2,7 @@
 #' Create an estimate of the metabolic network as an undirected graph.
 #'
 #' @description
-#' \lifecycle{experimental}
+#' `r lifecycle::badge('experimental')`
 #'
 #' The main NetCoupler network creator.
 #' Uses the input data to estimate the underlying undirected graph.
@@ -49,7 +49,7 @@ nc_estimate_network <- function(data, cols = everything(), alpha = 0.01) {
 #' Convert network graphs to edge tables as tibbles/data.frames.
 #'
 #' @description
-#' \lifecycle{experimental}
+#' `r lifecycle::badge('experimental')`
 #'
 #' @param network_object Network graph from [nc_estimate_network()].
 #'

@@ -3,7 +3,7 @@
 #' Standardize the metabolic variables.
 #'
 #' @description
-#' \lifecycle{experimental}
+#' `r lifecycle::badge('experimental')`
 #'
 #' Can standardize by either 1) [log()]-transforming and then applying [scale()]
 #' (mean-center and scaled by standard deviation), or 2) if `regressed_on`
