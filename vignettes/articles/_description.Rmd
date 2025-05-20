@@ -11,43 +11,50 @@ knitr::opts_chunk$set(
 
 ![](https://img.shields.io/badge/document%20status-rough%20draft-red?style=flat-square)
 
-TODO: Add more detail about PC algorithm here, or at least like to the pc_* function.
+TODO: Add more detail about PC algorithm here, or at least like to the
+pc\_\* function.
 
 ## Explanation of NetCoupler
 
 The *NetCoupler*-algorithm operates by taking the following steps:
 
-1. The implementation of the PC-algorithm [1] in the pcalg package [@Kalisch2012] is
-applied to estimate the skeleton of the underlying directed acyclic graph (DAG)
-that generated the complex exposure data (e.g., metabolomics data).
-1. For each network variable (e.g., metabolite), the adjacency set (all direct
-neighbors) is extracted from this undirected network. Assuming complete coverage
-of the measurements, the Markov parents of the network variable are necessarily
-a subset of its direct network neighbors. Adjustment for the Markov parents is
-sufficient to block all confounding influences by other network-variables
-(d-separation). Adjusting for descendants should be avoided because it can
-potentially introduce collider bias.
-1. A multi-model procedure is applied. The relation of each network variable
-with time-to-the event of interest is adjusted for every possible subset of
-direct neighbors. Thereby, a confidence set of estimates is generated, which
-necessarily contains the valid direct effect estimate.
-1. Network variables are classified based on the bounds of this confidence set
-of possible direct effects. As default, network variables are classified as
-directly affecting the outcome only if the confidence set of possible direct
-effects contains exclusively significant and consistent effect estimates.
-1. The multi-model procedure is looped with adjusting all models for the
-previously identified direct effects (because these are potential confounders
-but cannot be colliders) until no further direct effects are identified.
+1.  The implementation of the PC-algorithm [1] in the pcalg package
+    [@Kalisch2012] is applied to estimate the skeleton of the underlying
+    directed acyclic graph (DAG) that generated the complex exposure
+    data (e.g., metabolomics data).
+2.  For each network variable (e.g., metabolite), the adjacency set (all
+    direct neighbors) is extracted from this undirected network.
+    Assuming complete coverage of the measurements, the Markov parents
+    of the network variable are necessarily a subset of its direct
+    network neighbors. Adjustment for the Markov parents is sufficient
+    to block all confounding influences by other network-variables
+    (d-separation). Adjusting for descendants should be avoided because
+    it can potentially introduce collider bias.
+3.  A multi-model procedure is applied. The relation of each network
+    variable with time-to-the event of interest is adjusted for every
+    possible subset of direct neighbors. Thereby, a confidence set of
+    estimates is generated, which necessarily contains the valid direct
+    effect estimate.
+4.  Network variables are classified based on the bounds of this
+    confidence set of possible direct effects. As default, network
+    variables are classified as directly affecting the outcome only if
+    the confidence set of possible direct effects contains exclusively
+    significant and consistent effect estimates.
+5.  The multi-model procedure is looped with adjusting all models for
+    the previously identified direct effects (because these are
+    potential confounders but cannot be colliders) until no further
+    direct effects are identified.
 
-A similar procedure is provided to identify direct influences of external
-factors on network variables.
+A similar procedure is provided to identify direct influences of
+external factors on network variables.
 
-Given that 1) an exposure can potentially affect metabolite concentrations
-(`exposure -> metabolic network`) and that 2) metabolites can potentially
-affect the development of a disease (`metabolic network -> outcome`), two
-algorithms are needed, one for the exposure side and one for the disease/outcome
-side. The explanation and description of NetCoupler are taken heavily from
-Clemens Wittenbecher's PhD thesis [@Wittenbecher2017].
+Given that 1) an exposure can potentially affect metabolite
+concentrations (`exposure -> metabolic network`) and that 2) metabolites
+can potentially affect the development of a disease
+(`metabolic network -> outcome`), two algorithms are needed, one for the
+exposure side and one for the disease/outcome side. The explanation and
+description of NetCoupler are taken heavily from Clemens Wittenbecher's
+PhD thesis [@Wittenbecher2017].
 
 ### Metabolic network estimation
 
@@ -56,20 +63,20 @@ TODO: Explain PC algorithm..?
 #### Directed acyclic graph skeleton estimation
 
 The estimate the underlying directed acyclic graph (DAG) skeleton of the
-metabolite network, NetCoupler uses an implementation of the PC-algorithm 
-[@Kalisch2012;@Maathuis2010;@Spirtes2001;@Colombo2014]. Because of this, the
-assumptions from the PC-algorithm apply to NetCoupler. The output of this
-algorithm is a graphical model (`G`) of the underlying network that is used by
-NetCoupler.
+metabolite network, NetCoupler uses an implementation of the
+PC-algorithm [@Kalisch2012; @Maathuis2010; @Spirtes2001]. Because of
+this, the assumptions from the PC-algorithm apply to NetCoupler. The
+output of this algorithm is a graphical model (`G`) of the underlying
+network that is used by NetCoupler.
 
 ### Exposure-side network effect estimation
 
-The exposure-side network retrieves a range of potential direct effects of
-exogenous {{word?}} factors on the metabolite network. The 
-algorithmic pseudocode from functional programming perspective
-for the exposure-side estimation is:
+The exposure-side network retrieves a range of potential direct effects
+of exogenous {{word?}} factors on the metabolite network. The
+algorithmic pseudocode from functional programming perspective for the
+exposure-side estimation is:
 
-```
+```         
 input DAG skeleton
 input data with network variables (M), exposure (X), 
     and confounder (C) variables
@@ -104,63 +111,71 @@ output confidence set of effects of X on M, based on DAG skeleton
     where each index node has a classification
 ```
 
-This assumes full source population information. For applications to a sample of
-the population, the following decision rules were applied:
+This assumes full source population information. For applications to a
+sample of the population, the following decision rules were applied:
 
-1. Consider the exposure-metabolite pair only if associated at a false discovery
-rate (FDR) controlled p-value <0.01 based on a model *not adjusted* for the adjacent
-metabolites (`S` is empty {{correct?}}, the marginal model).
-2. Consider the effect estimates as zero (0) if the p-value is >0.05.
+1.  Consider the exposure-metabolite pair only if associated at a false
+    discovery rate (FDR) controlled p-value \<0.01 based on a model *not
+    adjusted* for the adjacent metabolites (`S` is empty {{correct?}},
+    the marginal model).
+2.  Consider the effect estimates as zero (0) if the p-value is \>0.05.
 
-For a given exposure, a metabolite would be classified as non-affected if the
-FDR-adjusted p-value was non-significant in the marginal model. If there was
-a significant FDR-controlled p-value in the marginal model and all estimates in
-the confidence set (`CS` {{? correct?}}) were significant and consistent, then
-the metabolite would be classified as affected by the exposure. Other metabolites
-would be classified as ambiguous with respect to the exposure.
+For a given exposure, a metabolite would be classified as non-affected
+if the FDR-adjusted p-value was non-significant in the marginal model.
+If there was a significant FDR-controlled p-value in the marginal model
+and all estimates in the confidence set (`CS` {{? correct?}}) were
+significant and consistent, then the metabolite would be classified as
+affected by the exposure. Other metabolites would be classified as
+ambiguous with respect to the exposure.
 
-{{TODO: reduce reliance on p-values or use another metric? Or do some bootstrapping/CV?}}
+{{TODO: reduce reliance on p-values or use another metric? Or do some
+bootstrapping/CV?}}
 
-The outer loop includes identifying directly affected metabolites into the fixed
-model part. Then the procedure was repeated on the still ambiguous metabolites 
-to check whether further unambiguous classification was possible based on the
-additional information. In the applied version of NetCoupler, this was limited
-to metabolites in the same connected components, which are defined as a group of
-two or more directly linked metabolites that were all associated with the
-exposure in the marginal model.
+The outer loop includes identifying directly affected metabolites into
+the fixed model part. Then the procedure was repeated on the still
+ambiguous metabolites to check whether further unambiguous
+classification was possible based on the additional information. In the
+applied version of NetCoupler, this was limited to metabolites in the
+same connected components, which are defined as a group of two or more
+directly linked metabolites that were all associated with the exposure
+in the marginal model.
 
-The rationale was that indirect effects could only be mediated by metabolites
-that were themselves (directly or indirectly) affected by the exposure. These
-metabolites were expected to be marginally associated with the exposure.
-In theory, there could be possible scenarios where the incidental cancellation
-of several direct and indirect effects concealed exposure-dependency in the 
-marginal model [@Pearl2009]
+The rationale was that indirect effects could only be mediated by
+metabolites that were themselves (directly or indirectly) affected by
+the exposure. These metabolites were expected to be marginally
+associated with the exposure. In theory, there could be possible
+scenarios where the incidental cancellation of several direct and
+indirect effects concealed exposure-dependency in the marginal model
+[@Pearl2009]
 
-Still, high abundance of incidental cancellations are considered unlikely based
-on observed correlation structures and the chance to unambiguously resolve such
-complicated scenarios in the applied modelling approach is low {{proof of
-claim?}}. Therefore, the pragmatic decision was taken to adjust remaining
-ambiguous metabolites only for directly affected metabolites identified within
-the same connected component.
+Still, high abundance of incidental cancellations are considered
+unlikely based on observed correlation structures and the chance to
+unambiguously resolve such complicated scenarios in the applied
+modelling approach is low {{proof of claim?}}. Therefore, the pragmatic
+decision was taken to adjust remaining ambiguous metabolites only for
+directly affected metabolites identified within the same connected
+component.
 
 {{TODO: rearrange this}}
 
-Network adjustments were used to resolve indirect effects mediated by another
-network variable (e.g. `exposure -> mediating metabolite -> metabolite`).
+Network adjustments were used to resolve indirect effects mediated by
+another network variable (e.g.
+`exposure -> mediating metabolite -> metabolite`).
 
 ### Outcome-side network effect estimation
 
-The outcome-side network retrieves direct effects of network variables on later
-occurring events.
+The outcome-side network retrieves direct effects of network variables
+on later occurring events.
 
-There are similarities to the exposure-side algorithm for the outcome-side
-algorithm, except that the directionality is reversed (`metabolite -> outcome`).
-This change in directionality also has implications on the decision rules.
-There may also be potential network-variable confounders and introduction
-of spurious associations (`metabolite <- confounding metabolite -> outcome`).
-The general algorithm for the outcome-side estimation is:
+There are similarities to the exposure-side algorithm for the
+outcome-side algorithm, except that the directionality is reversed
+(`metabolite -> outcome`). This change in directionality also has
+implications on the decision rules. There may also be potential
+network-variable confounders and introduction of spurious associations
+(`metabolite <- confounding metabolite -> outcome`). The general
+algorithm for the outcome-side estimation is:
 
-```
+```         
 Aim: To estimate independentdirect effects between a network
 INPUT graphical DAG skeleton model (G) 
 INPUT data with network variables (M), outcome (O), and confounders (C)
@@ -199,66 +214,65 @@ classification of every Mi from M as
     ambiguous (Mi -- O)
 ```
 
+Where `AMB` is {{meaning?}}, `PE` is {{meaning?}}, `adj(G, Mi)` is the
+set of nodes adjust to `Mi` in `G` that are congruent ($\equiv$) to
+direct neighbors of `Mi` in `G`.
 
+An indirect effect, unlike confounding, is not biased. Decision rules
+were adjusted to avoid bias:
 
-Where `AMB` is {{meaning?}}, `PE` is {{meaning?}}, `adj(G, Mi)` is the set of
-nodes adjust to `Mi` in `G` that are congruent ($\equiv$) to direct neighbors of
-`Mi` in `G`.
+1.  Consider a metabolite-outcome pair only if significantly associated
+    at a FDR-adjusted p-value \<0.1 based on a model adjusted for all
+    adjacent metabolites (`S = adj(Mi)`)
+2.  Consider effect estimates as 0 if p-value is \>0.05
 
-An indirect effect, unlike confounding, is not biased. Decision rules were adjusted
-to avoid bias:
-
-1. Consider a metabolite-outcome pair only if significantly associated at a
-FDR-adjusted p-value <0.1 based on a model adjusted for all adjacent metabolites
-(`S = adj(Mi)`)
-1. Consider effect estimates as 0 if p-value is >0.05
-
-Metabolites are classified as affecting the outcome if the FDR-adjusted p-value
-was significant in the model adjusted for the full adjacency set and all estimates
-in the confidence set are significant and consistent. Metabolites are considered
-not directly affecting the outcome if they were not significantly associated in
-the model adjusted for the full adjacency set. All others were considered
-ambiguous.
+Metabolites are classified as affecting the outcome if the FDR-adjusted
+p-value was significant in the model adjusted for the full adjacency set
+and all estimates in the confidence set are significant and consistent.
+Metabolites are considered not directly affecting the outcome if they
+were not significantly associated in the model adjusted for the full
+adjacency set. All others were considered ambiguous.
 
 ### Step-wise iteration for full network estimation
 
-1. The DAG skeleton of the metabolite network is estimated
-2. Initial, tentative links are formed with the exposure-side of the network.
-3. Direct effects are estimated between exposure and network.
-4. Repeat identification of links, classifying as unaffected or ambiguous and 
-deleting indirect links.
-5. Initial, tentative links are formed with the outcome-side of the network.
-6. Direct effects are estimated between the network and the outcome.
-7. Repeat link identification, deleting indirect links and classifying others as
-unaffected or ambiguous.
-8. Combine the exposure-side and outcome-side network estimates into a joint 
-graphical model.
-
+1.  The DAG skeleton of the metabolite network is estimated
+2.  Initial, tentative links are formed with the exposure-side of the
+    network.
+3.  Direct effects are estimated between exposure and network.
+4.  Repeat identification of links, classifying as unaffected or
+    ambiguous and deleting indirect links.
+5.  Initial, tentative links are formed with the outcome-side of the
+    network.
+6.  Direct effects are estimated between the network and the outcome.
+7.  Repeat link identification, deleting indirect links and classifying
+    others as unaffected or ambiguous.
+8.  Combine the exposure-side and outcome-side network estimates into a
+    joint graphical model.
 
 <!-- TODO: Put this into a bib file. -->
 
-1. *Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse Causal Graphs.
-Social Science Computer Review 1991;9:62-72.*
+1.  *Spirtes P, Glymour C. An Algorithm for Fast Recovery of Sparse
+    Causal Graphs. Social Science Computer Review 1991;9:62-72.*
 
 <!-- thesis https://publishup.uni-potsdam.de/frontdoor/index/index/searchtype/collection/id/17105/start/1/rows/10/facetNumber_author_facet/all/doctypefq/doctoralthesis/docId/40459 -->
 
-2 *Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis, Peter
-Buehlmann (2012). Causal Inference Using Graphical Models with the R Package
-pcalg. Journal of Statistical Software, 47(11), 1-26. URL
-http://www.jstatsoft.org/v47/i11/.*
+2 *Markus Kalisch, Martin Maechler, Diego Colombo, Marloes H. Maathuis,
+Peter Buehlmann (2012). Causal Inference Using Graphical Models with the
+R Package pcalg. Journal of Statistical Software, 47(11), 1-26. URL
+<http://www.jstatsoft.org/v47/i11/>.*
 
 ## Confidence ranges based on multi-model procedures
 
-The estimated DAG skeleton ... {{complete later. Not clear about this right now.
-(page 43 of thesis)}}
+The estimated DAG skeleton ... {{complete later. Not clear about this
+right now. (page 43 of thesis)}}
 
 ## Data pre-processing
 
-Metabolic variables should be log-transformed and standardized on potential
-confounders {{this the best way?}} by regressing on age, sex, BMI, and prevalence
-of hypertension and using the residual variance in further models. Metabolites were
-then scaled (mean of zero and standard deviation of one). {{both regressed and
-scaled?}} 
+Metabolic variables should be log-transformed and standardized on
+potential confounders {{this the best way?}} by regressing on age, sex,
+BMI, and prevalence of hypertension and using the residual variance in
+further models. Metabolites were then scaled (mean of zero and standard
+deviation of one). {{both regressed and scaled?}}
 
-Apply transformations (log-transformation, standardization, regressing on)
-to the high dimensional metabolic data.
+Apply transformations (log-transformation, standardization, regressing
+on) to the high dimensional metabolic data.

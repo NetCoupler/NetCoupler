@@ -16,22 +16,23 @@ knitr::opts_chunk$set(
 )
 ```
 
-The goal of NetCoupler is to estimate causal links between a set of -omic (e.g.
-metabolomics, lipidomics) or other high-dimensional data and an external variable,
-such as a disease outcome, an exposure, or both. The NetCoupler-algorithm,
-initially formulated during Clemens' PhD thesis [@Wittenbecher2017], links a
-conditional dependency network with an external variable (i.e. an outcome or
-exposure) to identify network-independent associations between the network
-variables and the external variable, classified as direct effects.
+The goal of NetCoupler is to estimate causal links between a set of
+-omic (e.g. metabolomics, lipidomics) or other high-dimensional data and
+an external variable, such as a disease outcome, an exposure, or both.
+The NetCoupler-algorithm, initially formulated during Clemens' PhD
+thesis [@Wittenbecher2017], links a conditional dependency network with
+an external variable (i.e. an outcome or exposure) to identify
+network-independent associations between the network variables and the
+external variable, classified as direct effects.
 
 <!-- TODO: Add link to the description vignette -->
 
-A typical use case we have in mind would be if a researcher might be interested
-in exploring potential pathways that exist between a health exposure like red
-meat consumption, its impact on the metabolic profile, and the subsequent impact
-on an outcome like type 2 diabetes incidence.
-So for instance, you want to ask questions to get answers that look like the
-figure below.
+A typical use case we have in mind would be if a researcher might be
+interested in exploring potential pathways that exist between a health
+exposure like red meat consumption, its impact on the metabolic profile,
+and the subsequent impact on an outcome like type 2 diabetes incidence.
+So for instance, you want to ask questions to get answers that look like
+the figure below.
 
 ```{r}
 #| echo = FALSE,
@@ -41,29 +42,29 @@ knitr::include_graphics("aim-output.png")
 
 The input for NetCoupler includes:
 
-1. Standardized metabolic or other high-dimensional data.
-2. Exposure or outcome data.
-3. Network estimating method (default is the PC algorithm [@Colombo2014] from
-the [pcalg](https://CRAN.R-project.org/package=pcalg) package).
-3. Modeling method (e.g. linear regression with `lm()`), including confounders
-to adjust for.
+1.  Standardized metabolic or other high-dimensional data.
+2.  Exposure or outcome data.
+3.  Network estimating method (default is the PC algorithm from the
+    [pcalg](https://CRAN.R-project.org/package=pcalg) package).
+4.  Modeling method (e.g. linear regression with `lm()`), including
+    confounders to adjust for.
 
 <!-- TODO: Add figure demonstrating NetCoupler -->
 
 The final output is the modeling results along with the results from
-NetCoupler's classification. Results can then be displayed as a joint network
-model in graphical format.
+NetCoupler's classification. Results can then be displayed as a joint
+network model in graphical format.
 
-There are a few key assumptions to consider before using NetCoupler for your
-own research purposes.
+There are a few key assumptions to consider before using NetCoupler for
+your own research purposes.
 
 <!-- TODO: Add link to assumptions of PC-algorithm -->
 
-1. -omics data is the basis for the network. We haven't tested this on non-omics
-datasets, so can't guarantee it works as intended.
-1. The variables used for the metabolic network are numerical
-1. Metabolic data should have a theoretical network underlying it.
-1. Missing data are not used in any of the NetCoupler processes.
+1.  -omics data is the basis for the network. We haven't tested this on
+    non-omics datasets, so can't guarantee it works as intended.
+2.  The variables used for the metabolic network are numerical
+3.  Metabolic data should have a theoretical network underlying it.
+4.  Missing data are not used in any of the NetCoupler processes.
 
 <!-- TODO: Add other assumptions -->
 
@@ -71,22 +72,25 @@ datasets, so can't guarantee it works as intended.
 
 NetCoupler has several frameworks in mind:
 
-- Works with [magrittr](https://magrittr.tidyverse.org/) `%>%` or base R
-`|>` operator.
-- Works with [tidyselect](https://tidyselect.r-lib.org/) helpers (e.g.
-`starts_with()`, `contains()`).
-- Is auto-complete friendly (e.g. start function names with `nc_`).
-- Inputs and outputs of functions are
-[tibbles](https://tibble.tidyverse.org/)/dataframes or [tidygraph tibbles](https://tidygraph.data-imaginist.com/).
-- Generic modeling approach by using model and settings as function argument
-inputs.
-    - This allows flexibility with what model can be used (e.g. linear regression,
-    cox models).
-    - Almost all functionality of modeling in R is available here, for instance
-    handling of missing data or of categorical variables.
+-   Works with [magrittr](https://magrittr.tidyverse.org/) `%>%` or base
+    R `|>` operator.
+-   Works with [tidyselect](https://tidyselect.r-lib.org/) helpers (e.g.
+    `starts_with()`, `contains()`).
+-   Is auto-complete friendly (e.g. start function names with `nc_`).
+-   Inputs and outputs of functions are
+    [tibbles](https://tibble.tidyverse.org/)/dataframes or [tidygraph
+    tibbles](https://tidygraph.data-imaginist.com/).
+-   Generic modeling approach by using model and settings as function
+    argument inputs.
+    -   This allows flexibility with what model can be used (e.g. linear
+        regression, cox models).
+    -   Almost all functionality of modeling in R is available here, for
+        instance handling of missing data or of categorical variables.
 
 <!-- - Works with the [tidymodel](https://www.tidymodels.org/) approach, such as by  -->
+
 <!-- making use of [parsnip](https://parsnip.tidymodels.org/) functions to make the  -->
+
 <!-- models. -->
 
 ## Workflow
@@ -94,32 +98,36 @@ inputs.
 The general workflow for using NetCoupler revolves around several main
 functions, listed below as well as visualized in the figure below:
 
-- `nc_standardize()`: The algorithm in general, but especially the network
-estimation method, is sensitive to the values and distribution of the variables.
-Scaling the variables by standardizing, mean-centering, and natural log
-transforming them are important to obtaining more accurate estimations.
-- `nc_estimate_network()`: Estimate the connections between metabolic variables
-as a undirected graph based on dependencies between variables. This network is
-used to identify metabolic variables that are connected to each other as
-neighbours.
-    - We plan on implementing other network estimators aside from the PC-algorithm
-    at some point in the future.
-- `nc_estimate_exposure_links()` and `nc_estimate_outcome_links()`: Uses the
-standardized data and the estimated network to classify the conditionally
-independent relationship between each metabolic variable and an external
-variable (e.g. an outcome or an exposure) as either being a direct, ambiguous,
-or no effect relationship.
-    - Setting the threshold for classifying effects as direct, ambigious, or none
-    is done through the argument `classify_option_list`. See the help documentation
-    of the estimating functions for more details. For larger datasets, with more
-    sample size and variables included in the network, we *strongly* recommend
-    lowering the threshold used to reduce the risk of false positives.
-- `nc_join_links()`: **Not implemented yet.** Join together the exposure- and outcome-side estimated links.
-- `nc_plot_network()`: **Not implemented yet.** Visualize the connections
-estimated from `nc_estimate_network()`.
-- `nc_plot_links()`: **Not implemented yet.** Plots the output results from
-either `nc_estimate_exposure_links()`, `nc_estimate_outcome_links()`, or
-`nc_join_links()`.
+-   `nc_standardize()`: The algorithm in general, but especially the
+    network estimation method, is sensitive to the values and
+    distribution of the variables. Scaling the variables by
+    standardizing, mean-centering, and natural log transforming them are
+    important to obtaining more accurate estimations.
+-   `nc_estimate_network()`: Estimate the connections between metabolic
+    variables as a undirected graph based on dependencies between
+    variables. This network is used to identify metabolic variables that
+    are connected to each other as neighbours.
+    -   We plan on implementing other network estimators aside from the
+        PC-algorithm at some point in the future.
+-   `nc_estimate_exposure_links()` and `nc_estimate_outcome_links()`:
+    Uses the standardized data and the estimated network to classify the
+    conditionally independent relationship between each metabolic
+    variable and an external variable (e.g. an outcome or an exposure)
+    as either being a direct, ambiguous, or no effect relationship.
+    -   Setting the threshold for classifying effects as direct,
+        ambigious, or none is done through the argument
+        `classify_option_list`. See the help documentation of the
+        estimating functions for more details. For larger datasets, with
+        more sample size and variables included in the network, we
+        *strongly* recommend lowering the threshold used to reduce the
+        risk of false positives.
+-   `nc_join_links()`: **Not implemented yet.** Join together the
+    exposure- and outcome-side estimated links.
+-   `nc_plot_network()`: **Not implemented yet.** Visualize the
+    connections estimated from `nc_estimate_network()`.
+-   `nc_plot_links()`: **Not implemented yet.** Plots the output results
+    from either `nc_estimate_exposure_links()`,
+    `nc_estimate_outcome_links()`, or `nc_join_links()`.
 
 ```{r}
 #| echo = FALSE,
@@ -133,18 +141,18 @@ knitr::include_graphics("nc-diagram-io.png", dpi = 144)
 
 ## Simple example
 
-The below is an example using a simulated dataset for demonstrating NetCoupler.
-For more examples, particularly on how to use with different models,
-check out the `vignette("examples")`.
+The below is an example using a simulated dataset for demonstrating
+NetCoupler. For more examples, particularly on how to use with different
+models, check out the `vignette("examples")`.
 
 ### Estimating the metabolic network
 
-For estimating the network, it's (basically) required to standardize
-the metabolic variables before inputting into `nc_estimate_network()`.
-This function also log-transforms and scales 
-(mean-center and z-score normalize) the values of the metabolic variables.
-We do this because the network estimation algorithm can sometimes be finicky
-about differences in variable numerical scale (mean of 1 vs mean of 1000).
+For estimating the network, it's (basically) required to standardize the
+metabolic variables before inputting into `nc_estimate_network()`. This
+function also log-transforms and scales (mean-center and z-score
+normalize) the values of the metabolic variables. We do this because the
+network estimation algorithm can sometimes be finicky about differences
+in variable numerical scale (mean of 1 vs mean of 1000).
 
 ```{r metabolic-standardize}
 library(NetCoupler)
@@ -152,13 +160,14 @@ std_metabolic_data <- simulated_data %>%
     nc_standardize(starts_with("metabolite"))
 ```
 
-If you have potential confounders that you need to adjust for during the estimating
-links phase of NetCoupler, you'll need to include these confounding variables
-when standardizing the metabolic variables. You do this by regressing the confounding
-variables on the metabolic variables by using the `regressed_on` argument
-of `nc_standardize()`. This will automatically first standardize the variables,
-run models on the metabolic variables that includes the confounding variables,
-and then extract the residuals from the model which are then used to construct
+If you have potential confounders that you need to adjust for during the
+estimating links phase of NetCoupler, you'll need to include these
+confounding variables when standardizing the metabolic variables. You do
+this by regressing the confounding variables on the metabolic variables
+by using the `regressed_on` argument of `nc_standardize()`. This will
+automatically first standardize the variables, run models on the
+metabolic variables that includes the confounding variables, and then
+extract the residuals from the model which are then used to construct
 the network. Here's an example:
 
 ```{r metabolic-standardize-residuals, eval=FALSE}
@@ -167,9 +176,9 @@ std_metabolic_data <- simulated_data %>%
                    regressed_on = "age")
 ```
 
-After that, you can estimate the network. The network is by default estimated
-using the PC-algorithm. You can read more about it in the help page of the
-`pc_estimate_undirected_graph()` internal function.
+After that, you can estimate the network. The network is by default
+estimated using the PC-algorithm. You can read more about it in the help
+page of the `pc_estimate_undirected_graph()` internal function.
 
 ```{r create-network}
 # Make partial independence network from metabolite data
@@ -178,22 +187,26 @@ metabolite_network <- std_metabolic_data %>%
 ```
 
 <!-- To see what the network looks like, -->
+
 <!-- use the function `nc_plot_network()`. -->
 
 <!-- ```{r visualize-metabolic-network, fig.width=5.6, fig.height=4.5} -->
+
 <!-- std_metabolic_data %>% -->
+
 <!--     nc_plot_network(metabolite_network) -->
+
 <!-- ``` -->
 
 <!-- While the plot is a bit crowded, it at least provides a base to start tidying up -->
+
 <!-- from. -->
 
 ### Estimating exposure and outcome-side connections
 
-For the exposure and outcome side, 
-you should standardize the metabolic variables, 
-but this time, we don't regress on the confounders 
-since they will be included in the models.
+For the exposure and outcome side, you should standardize the metabolic
+variables, but this time, we don't regress on the confounders since they
+will be included in the models.
 
 ```{r standardize-data}
 standardized_data <- simulated_data %>% 
@@ -201,20 +214,19 @@ standardized_data <- simulated_data %>%
 ```
 
 Now you can estimate the outcome or exposure and identify direct effects
-for either the exposure side (`exposure -> metabolite`) 
-or the outcome side (`metabolite -> outcome`).
-For the exposure side, 
-the function identifies whether a link between the exposure 
-and an index node (one metabolic variable in the network) exists,
-independent of potential confounders 
-and from neighbouring nodes (other metabolic variables linked to the index variable).
-Depending on how consistent and strong the link is,
-the effect is classified as "direct", "ambiguous", or "none".
+for either the exposure side (`exposure -> metabolite`) or the outcome
+side (`metabolite -> outcome`). For the exposure side, the function
+identifies whether a link between the exposure and an index node (one
+metabolic variable in the network) exists, independent of potential
+confounders and from neighbouring nodes (other metabolic variables
+linked to the index variable). Depending on how consistent and strong
+the link is, the effect is classified as "direct", "ambiguous", or
+"none".
 <!-- For more details on the algorithm, see the `vignette("description")`. -->
 
-In the example below, we specifically generated the simulated data so that
-the exposure is associated with metabolites 1, 8, and 12.
-And as we can see, those links have been correctly identified.
+In the example below, we specifically generated the simulated data so
+that the exposure is associated with metabolites 1, 8, and 12. And as we
+can see, those links have been correctly identified.
 
 ```{r example-use, cache=TRUE}
 outcome_estimates <- standardized_data %>%
@@ -234,9 +246,10 @@ exposure_estimates <- standardized_data %>%
 exposure_estimates
 ```
 
-If you want to adjust for confounders and have already used `regressed_on` in
-the `nc_standardize()` function, add confounders to `nc_estimate_outcome_links()`
-or `nc_estimate_exposure_links()` with the `adjustment_vars` argument:
+If you want to adjust for confounders and have already used
+`regressed_on` in the `nc_standardize()` function, add confounders to
+`nc_estimate_outcome_links()` or `nc_estimate_exposure_links()` with the
+`adjustment_vars` argument:
 
 ```{r estimation-adjustment, eval=FALSE}
 outcome_estimates <- standardized_data %>%
@@ -253,38 +266,56 @@ outcome_estimates <- standardized_data %>%
 <!-- ### Plotting  -->
 
 <!-- To visualize the results of the linked network graph and the effect -->
+
 <!-- classification, there are two functions to show the exposure and the outcome -->
+
 <!-- plots. In general, these plot functions are currently mostly for exploratory -->
+
 <!-- purposes and are too "busy" and crowded to be meaningful for presentation or -->
+
 <!-- publication. However, these are good starting points for making prettier, -->
+
 <!-- more legible plots. -->
 
 <!-- ```{r plot-outcome-estimation-networks, fig.width=7, fig.height=6} -->
+
 <!-- nc_plot_outcome_estimation( -->
+
 <!--     standardized_data, -->
+
 <!--     metabolite_network, -->
+
 <!--     outcome_estimates -->
+
 <!-- ) -->
+
 <!-- ``` -->
 
 <!-- ```{r plot-exposure-estimation-networks, fig.width=7, fig.height=6} -->
+
 <!-- nc_plot_exposure_estimation( -->
+
 <!--     standardized_data, -->
+
 <!--     metabolite_network, -->
+
 <!--     exposure_estimates -->
+
 <!-- ) -->
+
 <!-- ``` -->
 
 ## Slow code? Use parallel processing with future
 
-If the analysis is taking a while, you can use the future package to speed things
-up by implementing parallel processing. It's easy to use parallel processing with
-NetCoupler since it uses the future package. By setting the "processing plan" with
-`future::plan()` to `multisession`, NetCoupler will use parallel processing for its
-computationally intensive component of the algorithm.
-After you run your code, close up the parallel
-processing by putting it back to normal with `plan(sequential)`. Using the future
-package you can speed up the processing by almost 2.5 times.
+If the analysis is taking a while, you can use the future package to
+speed things up by implementing parallel processing. It's easy to use
+parallel processing with NetCoupler since it uses the future package. By
+setting the "processing plan" with `future::plan()` to `multisession`,
+NetCoupler will use parallel processing for its computationally
+intensive component of the algorithm. After you run your code, close up
+the parallel processing by putting it back to normal with
+`plan(sequential)`. Using the future package you can speed up the
+processing by almost 2.5 times.
 
 ```{r future-parallel-processing, eval=FALSE}
 # You'll need to have furrr installed for this to work.
