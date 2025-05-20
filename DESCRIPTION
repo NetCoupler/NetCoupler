@@ -1,6 +1,6 @@
 Package: NetCoupler
 Title: Inference of Causal Links Between a Network and an External Variable
-Version: 0.1.1
+Version: 0.1.1.9000
 Authors@R: c(
     person("Luke", "Johnston", , "lwjohnst@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0003-4169-2616")),
