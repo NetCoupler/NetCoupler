@@ -271,10 +271,9 @@ classify_options <- function(single_metabolite_threshold = 0.05,
 
 run_model_and_tidy <- function(x, y, index_node, network_neighbours, model_function, model_args, exponentiate) {
     formula <- stats::reformulate(termlabels = x, response = y)
-    function_with_args_as_list <- purrr::lift_dl(model_function)
     model_args <- c(list(formula = formula),
                     model_args)
-    function_with_args_as_list(model_args) %>%
+    do.call(model_function, model_args) %>%
         tidy_models(index_node = index_node, exponentiate = exponentiate,
                     network_neighbours = network_neighbours)
 }
